@@ -60,9 +60,7 @@ private:
 
 	NowElement    e_nowElement;
 
-	KdTexture     m_player_r_Tex;
-	KdTexture     m_player_g_Tex;
-	KdTexture     m_player_b_Tex;
+	KdTexture     m_playerTex;
 	S_Player      s_player;
 
 	KdTexture     m_exhaustTex;

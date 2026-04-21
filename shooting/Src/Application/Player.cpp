@@ -14,21 +14,8 @@ void C_Player::Draw()
 {
 	if (s_player.m_alive)
 	{
-		if (e_nowElement==Fire)
-		{
-			SHADER.m_spriteShader.SetMatrix(s_player.m_mat);
-			SHADER.m_spriteShader.DrawTex(&m_player_r_Tex, Math::Rectangle(e_playerMotion*96, 0, 96, 96), 1.0f);
-		}
-		else if (e_nowElement == Grass)
-		{
-			SHADER.m_spriteShader.SetMatrix(s_player.m_mat);
-			SHADER.m_spriteShader.DrawTex(&m_player_g_Tex, Math::Rectangle(e_playerMotion * 96, 0, 96, 96), 1.0f);
-		}
-		else if (e_nowElement == Water)
-		{
-			SHADER.m_spriteShader.SetMatrix(s_player.m_mat);
-			SHADER.m_spriteShader.DrawTex(&m_player_b_Tex, Math::Rectangle(e_playerMotion * 96, 0, 96, 96), 1.0f);
-		}
+		SHADER.m_spriteShader.SetMatrix(s_player.m_mat);
+		SHADER.m_spriteShader.DrawTex(&m_playerTex, Math::Rectangle(e_playerMotion * 96, e_nowElement*96, 96, 96), 1.0f);
 	}
 
 	SHADER.m_spriteShader.SetMatrix(s_exhaust.m_mat);
@@ -121,9 +108,7 @@ void C_Player::Update()
 
 void C_Player::Init()
 {
-	m_player_r_Tex.Load("player_r_.png");
-	m_player_g_Tex.Load("player_g_.png");
-	m_player_b_Tex.Load("player_b_.png");
+	m_playerTex.Load("player.png");
 	m_exhaustTex.Load("exhaust.png");
 
 
@@ -153,8 +138,6 @@ void C_Player::Init()
 
 void C_Player::Release()
 {
-	m_player_r_Tex.Release();
-	m_player_g_Tex.Release();
-	m_player_b_Tex.Release();
+	m_playerTex.Release();
 	m_exhaustTex.Release();
 }

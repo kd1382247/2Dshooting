@@ -35,4 +35,10 @@ private:
 	KdTexture m_hpBar_g_Tex;    //HP緑バー
 	S_UI      s_hpBar_g;
 
+	KdTexture m_UiPanelTex;
+	S_UI      s_UiPanel;
+
+	KdTexture m_playerIconTex;
+	S_UI      s_playerIcon;
+
 };
