@@ -7,7 +7,7 @@ C_GameUI::C_GameUI()
 
 C_GameUI::~C_GameUI()
 {
-	Release();
+	//Release();
 }
 
 void C_GameUI::Draw()
