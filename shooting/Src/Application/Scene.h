@@ -1,7 +1,5 @@
 #pragma once
 
-class C_Player;
-
 class Scene
 {
 private:
@@ -28,8 +26,6 @@ public:
 private:
 
 	Scene() {}
-
-	C_Player* m_player;
 
 public:
 	static Scene& GetInstance()
