@@ -1,15 +1,5 @@
 #include "GameUI.h"
 
-C_GameUI::C_GameUI()
-{
-	Init();
-}
-
-C_GameUI::~C_GameUI()
-{
-	Release();
-}
-
 void C_GameUI::Draw()
 {
 	//背景描画

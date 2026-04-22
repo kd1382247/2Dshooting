@@ -53,19 +53,35 @@ class C_Player
 {
 public:
 
-	C_Player();
-	~C_Player();
+	C_Player() { Init(); }
+	~C_Player() { Release(); }
 
 	void Draw();
 	void Update();
 	void Init();
-	void Release();
-
-
+	
 	float GetAnimCnt() { return s_exhaust.m_animCnt; }
 private:
+	//解放処理
+	void Release();
 
-	NowElement    e_nowElement;
+	//プレイヤーの関数
+	void DrawPlayer();
+	void UpdatePlayer();
+	void InitPlayer();
+
+	//排気エフェクト
+	void DrawExhaust();
+	void UpdateExhaust();
+	void InitExhaust();
+
+	//属性切り替えエフェクト
+	void DrawChangeEffect();
+	void UpdateChangeEffect();
+	void InitChangeEffect();
+	
+	
+	NowElement e_nowElement;
 
 	KdTexture     m_playerTex;
 	S_Player      s_player;

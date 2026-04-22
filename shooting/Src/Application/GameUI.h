@@ -10,16 +10,18 @@ class C_GameUI
 {
 public:
 
-	C_GameUI();
-	~C_GameUI();
+	C_GameUI() { Init(); }
+	~C_GameUI() { Release(); }
 
 	void Draw();
 	void Init();
 	void Update();
-	void Release();
-
+	
 
 private:
+
+	void Release();
+
 
 	KdTexture m_specialGaugeTex;//必殺ゲージ
 
