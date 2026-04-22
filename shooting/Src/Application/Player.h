@@ -42,6 +42,13 @@ struct Exhaust
 	float         m_angle;
 };
 
+struct ChangeEffect
+{
+	Math::Vector2 m_pos;
+	Math::Matrix  m_mat;
+	float         m_animCnt;
+	float         m_alive;
+};
 class C_Player
 {
 public:
@@ -66,6 +73,9 @@ private:
 	KdTexture     m_exhaustTex;
 	Exhaust       s_exhaust;
 
+	KdTexture     m_changeEffectTex;
+	ChangeEffect  s_changeEffect;
+
 	PlayerMotion  e_playerMotion;
 	
 	float         m_rightMoveCnt;
@@ -74,5 +84,7 @@ private:
 	bool          m_leftMoveFlg;
 	const int     m_moveSpeed=5;
 
+
+	bool          m_keyFlg;
 
 };
