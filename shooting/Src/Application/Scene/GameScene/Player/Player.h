@@ -1,5 +1,7 @@
 #pragma once
 
+class C_Bullet;
+
 enum PlayerMotion
 {
 	RightMove2 = 4,
@@ -70,8 +72,14 @@ public:
 
 	NowElement GetNowElement() { return e_nowElement; }
 private:
+
+	C_Bullet* m_bullet;
+
 	//解放処理
 	void Release();
+
+	//弾発射関数
+	void Shot();
 
 	//プレイヤーの関数
 	void DrawPlayer();
@@ -89,8 +97,7 @@ private:
 	void DrawChangeEffect();
 	void UpdateChangeEffect();
 	void InitChangeEffect();
-	
-	
+
 	NowElement    e_nowElement;
 
 	KdTexture     m_playerTex;

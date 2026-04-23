@@ -3,7 +3,6 @@
 //前方宣言
 class C_Player;
 class C_GameUI;
-
 class C_PlayStage
 {
 public:
@@ -19,6 +18,6 @@ public:
 
 private:
 	
-	C_Player *m_player=nullptr;
-	C_GameUI *m_gameUi=nullptr;
+	C_Player *m_player=  nullptr;
+	C_GameUI *m_gameUi=  nullptr;
 };

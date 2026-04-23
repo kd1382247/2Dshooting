@@ -1,10 +1,11 @@
 #include "Player.h"
-
+#include"Bullet.h"
 void C_Player::Draw()
 {
 	DrawPlayer();
 	DrawExhaust();
 	DrawChangeEffect();
+	m_bullet->Draw();
 }
 
 void C_Player::Update()
@@ -13,10 +14,13 @@ void C_Player::Update()
 	UpdatePlayer();
 	UpdateExhaust();
 	UpdateChangeEffect();
+	m_bullet->Update();
 }
 
 void C_Player::Init()
 {
+	m_bullet = new C_Bullet();
+
 	InitPlayer();
 	InitExhaust();
 	InitChangeEffect();
@@ -27,6 +31,17 @@ void C_Player::Release()
 	m_playerTex.Release();
 	m_exhaustTex.Release();
 	m_changeEffectTex.Release();
+
+	if (m_bullet)
+	{
+		delete m_bullet;
+		m_bullet = nullptr;
+	}
+}
+
+void C_Player::Shot()
+{
+	m_bullet->SpawnBullet(s_player.m_pos);
 }
 
 void C_Player::DrawPlayer()
@@ -93,6 +108,11 @@ void C_Player::UpdatePlayer()
 		//左右に動いていなければ待機モーション
 		if (!m_leftMoveFlg && !m_rightMoveCnt)e_playerMotion = Idle;
 
+		if (GetAsyncKeyState(VK_RETURN) & 0x8000)
+		{
+			Shot();
+		}
+
 
 		ElementChange();
 		
@@ -130,7 +150,6 @@ void C_Player::InitPlayer()
 
 	e_nowElement = Fire;
 	m_keyFlg = false;
-
 
 	m_charaTex.Load("Textures/Player/chara.png");
 	s_chara.m_pos = { -580.0f,300.0f };

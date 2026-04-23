@@ -14,7 +14,6 @@ C_PlayStage::~C_PlayStage()
 
 void C_PlayStage::Draw()
 {
-
 	m_gameUi->Draw();
 	m_player->Draw();
 }
@@ -24,11 +23,11 @@ void C_PlayStage::Update()
 
 	m_gameUi->Update();
 	m_player->Update();
+	
 }
 
 void C_PlayStage::Init()
 {
-
 	m_player = new C_Player();
 	m_gameUi = new C_GameUI();
 }
