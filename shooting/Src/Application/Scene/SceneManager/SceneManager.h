@@ -1,7 +1,7 @@
 #pragma once
 
-#include"TItleScene.h"
-#include"GameScene.h"
+#include"../TitleScene/TitleScene.h"
+#include"../GameScene/GameScene.h"
 class C_SceneManager
 {
 public:

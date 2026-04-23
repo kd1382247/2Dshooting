@@ -49,6 +49,12 @@ struct ChangeEffect
 	float         m_animCnt;
 	float         m_alive;
 };
+
+struct S_Chara
+{
+	Math::Vector2 m_pos;
+	Math::Matrix  m_mat;
+};
 class C_Player
 {
 public:
@@ -61,6 +67,8 @@ public:
 	void Init();
 	
 	float GetAnimCnt() { return s_exhaust.m_animCnt; }
+
+	NowElement GetNowElement() { return e_nowElement; }
 private:
 	//解放処理
 	void Release();
@@ -69,6 +77,8 @@ private:
 	void DrawPlayer();
 	void UpdatePlayer();
 	void InitPlayer();
+
+	void ElementChange();
 
 	//排気エフェクト
 	void DrawExhaust();
@@ -81,7 +91,7 @@ private:
 	void InitChangeEffect();
 	
 	
-	NowElement e_nowElement;
+	NowElement    e_nowElement;
 
 	KdTexture     m_playerTex;
 	S_Player      s_player;
@@ -91,6 +101,9 @@ private:
 
 	KdTexture     m_changeEffectTex;
 	ChangeEffect  s_changeEffect;
+
+	KdTexture     m_charaTex;
+	S_Chara       s_chara;
 
 	PlayerMotion  e_playerMotion;
 	

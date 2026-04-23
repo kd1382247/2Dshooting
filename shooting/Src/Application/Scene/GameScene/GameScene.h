@@ -1,6 +1,6 @@
 #pragma once
 
-#include "State.h"
+#include "../SceneManager/State.h"
 #include "PlayStage.h"
 
 class C_GameScene :public C_State

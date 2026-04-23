@@ -55,6 +55,9 @@
     <Filter Include="Src\Application\Scene\GameScene">
       <UniqueIdentifier>{a216cc97-c255-445c-9c80-5797fd55680b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\Scene\GameScene\Player">
+      <UniqueIdentifier>{b548b402-3094-42c7-aae7-ea68a1229ed0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -150,29 +153,29 @@
     <ClInclude Include="Src\Application\Scene.h">
       <Filter>Src\Application</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\SceneManager.h">
+    <ClInclude Include="Src\Application\Scene\GameScene\GameScene.h">
+      <Filter>Src\Application\Scene\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Scene\GameScene\GameUI.h">
+      <Filter>Src\Application\Scene\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Scene\GameScene\PlayStage.h">
+      <Filter>Src\Application\Scene\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Scene\GameScene\Player\Player.h">
+      <Filter>Src\Application\Scene\GameScene\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Scene\SceneManager\SceneManager.h">
       <Filter>Src\Application\Scene\SceneManager</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\State.h">
+    <ClInclude Include="Src\Application\Scene\SceneManager\State.h">
       <Filter>Src\Application\Scene\SceneManager</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Player.h">
-      <Filter>Src\Application\Scene\GameScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\TitleScene.h">
+    <ClInclude Include="Src\Application\Scene\TitleScene\Title.h">
       <Filter>Src\Application\Scene\TitleScene</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Title.h">
+    <ClInclude Include="Src\Application\Scene\TitleScene\TitleScene.h">
       <Filter>Src\Application\Scene\TitleScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\PlayStage.h">
-      <Filter>Src\Application\Scene\GameScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameScene.h">
-      <Filter>Src\Application\Scene\GameScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\GameUI.h">
-      <Filter>Src\Application\Scene\GameScene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -239,17 +242,17 @@
     <ClCompile Include="Src\Application\Scene.cpp">
       <Filter>Src\Application</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Player.cpp">
+    <ClCompile Include="Src\Application\Scene\GameScene\GameUI.cpp">
       <Filter>Src\Application\Scene\GameScene</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Title.cpp">
+    <ClCompile Include="Src\Application\Scene\GameScene\PlayStage.cpp">
+      <Filter>Src\Application\Scene\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Scene\GameScene\Player\Player.cpp">
+      <Filter>Src\Application\Scene\GameScene\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Scene\TitleScene\Title.cpp">
       <Filter>Src\Application\Scene\TitleScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\PlayStage.cpp">
-      <Filter>Src\Application\Scene\GameScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\GameUI.cpp">
-      <Filter>Src\Application\Scene\GameScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

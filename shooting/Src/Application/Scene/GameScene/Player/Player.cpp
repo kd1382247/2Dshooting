@@ -34,8 +34,11 @@ void C_Player::DrawPlayer()
 	if (s_player.m_alive)
 	{
 		SHADER.m_spriteShader.SetMatrix(s_player.m_mat);
-		SHADER.m_spriteShader.DrawTex(&m_playerTex, Math::Rectangle(e_playerMotion * 96, e_nowElement * 96, 96, 96), 1.0f);
+		SHADER.m_spriteShader.DrawTex(&m_playerTex, Math::Rectangle((int)e_playerMotion * 96, (int)e_nowElement * 96, 96, 96), 1.0f);
 	}
+
+	SHADER.m_spriteShader.SetMatrix(s_chara.m_mat);
+	SHADER.m_spriteShader.DrawTex(&m_charaTex, Math::Rectangle((int)e_nowElement * 88, 0, 88, 88), 1.0f);
 }
 
 void C_Player::UpdatePlayer()
@@ -91,47 +94,8 @@ void C_Player::UpdatePlayer()
 		if (!m_leftMoveFlg && !m_rightMoveCnt)e_playerMotion = Idle;
 
 
-		if (GetAsyncKeyState('1') & 0x8000)
-		{
-			if (!m_keyFlg)
-			{
-				e_nowElement = Fire;
-				m_keyFlg = true;
-				if (!s_changeEffect.m_alive)
-				{
-					s_changeEffect.m_alive = true;
-				}
-			}
-
-		}
-		else if (GetAsyncKeyState('2') & 0x8000)
-		{
-
-			if (!m_keyFlg)
-			{
-				e_nowElement = Grass;
-				m_keyFlg = true;
-
-				if (!s_changeEffect.m_alive)
-				{
-					s_changeEffect.m_alive = true;
-				}
-			}
-		}
-		else if (GetAsyncKeyState('3') & 0x8000)
-		{
-			if (!m_keyFlg)
-			{
-				e_nowElement = Water;
-				m_keyFlg = true;
-
-				if (!s_changeEffect.m_alive)
-				{
-					s_changeEffect.m_alive = true;
-				}
-			}
-		}
-		else m_keyFlg = false;
+		ElementChange();
+		
 
 		s_player.m_pos += s_player.m_move;
 
@@ -139,12 +103,14 @@ void C_Player::UpdatePlayer()
 		s_player.m_scaleMat = Math::Matrix::CreateScale(s_player.m_scale.x, s_player.m_scale.y, 0);
 		s_player.m_rotationMat = Math::Matrix::CreateRotationZ(ToRadians(s_player.m_angle));
 		s_player.m_mat = s_player.m_scaleMat * s_player.m_rotationMat * s_player.m_transMat;
+
+		s_chara.m_mat = Math::Matrix::CreateTranslation(s_chara.m_pos.x, s_chara.m_pos.y, 0);
 	}
 }
 
 void C_Player::InitPlayer()
 {
-	m_playerTex.Load("player.png");
+	m_playerTex.Load("Textures/Player/player.png");
 
 	s_player.m_alive = true;
 	s_player.m_hitFlg = false;
@@ -164,6 +130,55 @@ void C_Player::InitPlayer()
 
 	e_nowElement = Fire;
 	m_keyFlg = false;
+
+
+	m_charaTex.Load("Textures/Player/chara.png");
+	s_chara.m_pos = { -580.0f,300.0f };
+}
+
+void C_Player::ElementChange()
+{
+	if (GetAsyncKeyState('1') & 0x8000)
+	{
+		if (!m_keyFlg)
+		{
+			if (!s_changeEffect.m_alive&&e_nowElement!=Fire)
+			{
+				s_changeEffect.m_alive = true;
+				e_nowElement = Fire;
+				m_keyFlg = true;
+			}
+		}
+
+	}
+	else if (GetAsyncKeyState('2') & 0x8000)
+	{
+
+		if (!m_keyFlg)
+		{
+			if (!s_changeEffect.m_alive && e_nowElement !=Grass)
+			{
+				s_changeEffect.m_alive = true;
+				e_nowElement = Grass;
+				m_keyFlg = true;
+			}
+		}
+	}
+	else if (GetAsyncKeyState('3') & 0x8000)
+	{
+		if (!m_keyFlg)
+		{
+			
+
+			if (!s_changeEffect.m_alive && e_nowElement != Water)
+			{
+				s_changeEffect.m_alive = true;
+				e_nowElement = Water;
+				m_keyFlg = true;
+			}
+		}
+	}
+	else m_keyFlg = false;
 }
 
 void C_Player::DrawExhaust()
@@ -195,7 +210,7 @@ void C_Player::UpdateExhaust()
 
 void C_Player::InitExhaust()
 {
-	m_exhaustTex.Load("exhaust.png");
+	m_exhaustTex.Load("Textures/Player/exhaust.png");
 	s_exhaust.m_alive = true;
 	s_exhaust.m_animCnt = 0.0f;
 	s_exhaust.m_pos = { 0.0f,0.0f };
@@ -224,7 +239,7 @@ void C_Player::UpdateChangeEffect()
 			s_changeEffect.m_animCnt = 0.0f;
 		}
 
-		s_changeEffect.m_pos = s_player.m_pos;
+		s_changeEffect.m_pos = { s_player.m_pos.x-5,s_player.m_pos.y };
 
 		s_changeEffect.m_mat = Math::Matrix::CreateTranslation(s_changeEffect.m_pos.x, s_changeEffect.m_pos.y, 0);
 	}
@@ -232,7 +247,7 @@ void C_Player::UpdateChangeEffect()
 
 void C_Player::InitChangeEffect()
 {
-	m_changeEffectTex.Load("Texture/changeEffect.png");
+	m_changeEffectTex.Load("Textures/Player/changeEffect.png");
 	s_changeEffect.m_alive = false;
 	s_changeEffect.m_animCnt = 0.0f;
 	s_changeEffect.m_pos = { 0.0f,0.0f };

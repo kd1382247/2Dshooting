@@ -43,4 +43,6 @@ private:
 	KdTexture m_playerIconTex;
 	S_UI      s_playerIcon;
 
+	
+
 };

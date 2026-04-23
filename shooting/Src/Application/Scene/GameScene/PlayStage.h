@@ -1,6 +1,8 @@
 #pragma once
-#include "Player.h"
-#include "GameUI.h"
+
+//前方宣言
+class C_Player;
+class C_GameUI;
 
 class C_PlayStage
 {
@@ -17,6 +19,6 @@ public:
 
 private:
 	
-	C_Player m_player;
-	C_GameUI m_ui;
+	C_Player *m_player=nullptr;
+	C_GameUI *m_gameUi=nullptr;
 };
