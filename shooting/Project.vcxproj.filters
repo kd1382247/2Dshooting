@@ -46,9 +46,6 @@
     <Filter Include="Src\Application\Scene">
       <UniqueIdentifier>{b5d60bd4-00e5-4c64-a4a8-c041aaefd178}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\Scene\SceneManager">
-      <UniqueIdentifier>{fc25a0f5-920e-49db-8d3b-5e3e7f0a23a7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\Scene\TitleScene">
       <UniqueIdentifier>{d53dacb2-0813-4f9c-af04-0aab4de03914}</UniqueIdentifier>
     </Filter>
@@ -168,12 +165,6 @@
     <ClInclude Include="Src\Application\Scene\GameScene\Player\Player.h">
       <Filter>Src\Application\Scene\GameScene\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Scene\SceneManager\SceneManager.h">
-      <Filter>Src\Application\Scene\SceneManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\Scene\SceneManager\State.h">
-      <Filter>Src\Application\Scene\SceneManager</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\Scene\TitleScene\Title.h">
       <Filter>Src\Application\Scene\TitleScene</Filter>
     </ClInclude>
@@ -188,6 +179,9 @@
     </ClInclude>
     <ClInclude Include="Src\Application\Scene\GameScene\GameUI\GameUI.h">
       <Filter>Src\Application\Scene\GameScene\GameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Scene\SceneManager.h">
+      <Filter>Src\Application\Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -277,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Scene\GameScene\GameUI\GameUI.cpp">
       <Filter>Src\Application\Scene\GameScene\GameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Scene\SceneManager.cpp">
+      <Filter>Src\Application\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

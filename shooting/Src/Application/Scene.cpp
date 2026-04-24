@@ -6,22 +6,23 @@
 
 void Scene::Draw2D()
 {
-	SCENEMANAGER.Draw();
+	C_SceneManager::GetInstance().Draw();
 }
 
 void Scene::Update()
 {
-	SCENEMANAGER.Update();
+	C_SceneManager::GetInstance().PreUpdate();
+	C_SceneManager::GetInstance().Update();
 }
 
 void Scene::Init()
 {
-	SCENEMANAGER.ChangeState(new C_GameScene());
+
 }
 
 void Scene::Release()
 {
-	SCENEMANAGER.Release();
+	
 }
 
 void Scene::ImGuiUpdate()
