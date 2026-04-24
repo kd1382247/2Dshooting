@@ -5,7 +5,7 @@ void C_Player::Draw()
 	DrawPlayer();
 	DrawExhaust();
 	DrawChangeEffect();
-	m_bullet->Draw();
+	m_bullet->Draw((int)e_nowElement);
 }
 
 void C_Player::Update()
@@ -19,7 +19,7 @@ void C_Player::Update()
 
 void C_Player::Init()
 {
-	m_bullet = new C_Bullet();
+	m_bullet = std::make_shared<C_Bullet>();
 
 	InitPlayer();
 	InitExhaust();
@@ -31,15 +31,9 @@ void C_Player::Release()
 	m_playerTex.Release();
 	m_exhaustTex.Release();
 	m_changeEffectTex.Release();
-
-	if (m_bullet)
-	{
-		delete m_bullet;
-		m_bullet = nullptr;
-	}
 }
 
-void C_Player::Shot()
+void C_Player::Shoot()
 {
 	m_bullet->SpawnBullet(s_player.m_pos);
 }
@@ -110,7 +104,7 @@ void C_Player::UpdatePlayer()
 
 		if (GetAsyncKeyState(VK_RETURN) & 0x8000)
 		{
-			Shot();
+			Shoot();
 		}
 
 

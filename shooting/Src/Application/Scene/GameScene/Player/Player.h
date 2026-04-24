@@ -70,16 +70,15 @@ public:
 	
 	float GetAnimCnt() { return s_exhaust.m_animCnt; }
 
-	NowElement GetNowElement() { return e_nowElement; }
 private:
 
-	C_Bullet* m_bullet;
+	std::shared_ptr<C_Bullet>m_bullet;
 
 	//解放処理
 	void Release();
 
 	//弾発射関数
-	void Shot();
+	void Shoot();
 
 	//プレイヤーの関数
 	void DrawPlayer();

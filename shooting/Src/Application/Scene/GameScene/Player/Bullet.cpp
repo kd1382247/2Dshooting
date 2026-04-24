@@ -1,13 +1,13 @@
 #include "Bullet.h"
 
-void C_Bullet::Draw()
+void C_Bullet::Draw(int a_nowElement)
 {
 	for (int i = 0; i < bulletNum; i++)
 	{
 		if (s_bullet[i].m_aliveFlg)
 		{
 			SHADER.m_spriteShader.SetMatrix(s_bullet[i].m_mat);
-			SHADER.m_spriteShader.DrawTex(&m_bulletTex, Math::Rectangle(2*22, 0, 22, 10), 1.0f);
+			SHADER.m_spriteShader.DrawTex(&m_bulletTex, Math::Rectangle(a_nowElement*22, 0, 22, 6), 1.0f);
 		}
 	}
 }

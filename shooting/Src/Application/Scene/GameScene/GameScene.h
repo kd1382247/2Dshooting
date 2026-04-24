@@ -1,19 +1,23 @@
 #pragma once
-
 #include "../SceneManager/State.h"
-#include "PlayStage.h"
+
+//前方宣言
+class C_PlayStage;
 
 class C_GameScene :public C_State
 {
 
 public:
-	C_GameScene() {}
+	C_GameScene() { Init(); }
 	~C_GameScene() {}
 
-	void Draw()override { playStage.Draw(); }
-	void Update()override { playStage.Update(); }
-	void Init()override { playStage.Init(); }
+	void Draw()override;
+	void Update()override;
+	void Init()override;
+
+
 private:
 
-	C_PlayStage playStage;
+	std::shared_ptr<C_PlayStage>m_playStage;
+
 };

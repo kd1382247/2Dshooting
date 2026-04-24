@@ -1,5 +1,7 @@
 #pragma once
 
+
+
 struct S_Bullet
 {
 	Math::Vector2 m_pos;
@@ -18,7 +20,7 @@ public:
 	~C_Bullet() { Release(); }
 
 
-	void Draw();
+	void Draw(int a_nowElement);
 	void Update();
 	void Init();
 
@@ -27,6 +29,7 @@ public:
 
 private:
 
+
 	void Release();
 	void BulletMove();
 	
@@ -34,7 +37,7 @@ private:
 	S_Bullet         s_bullet[bulletNum];
 	KdTexture        m_bulletTex;
 
-	const float      m_bulletSpeed = 10.0f;
+	const float      m_bulletSpeed = 15.0f;
 
 	int              m_shotWait;
 };
