@@ -1,7 +1,8 @@
 #pragma once
 
-#include"../TitleScene/TitleScene.h"
-#include"../GameScene/GameScene.h"
+#include"TitleScene/TitleScene.h"
+#include"GameScene/GameScene.h"
+
 class C_SceneManager
 {
 public:
@@ -12,9 +13,9 @@ public:
 		return instance;
 	}
 
-	C_State* currentState = nullptr;
+	C_BaseScene* currentState = nullptr;
 
-	void ChangeState(C_State* a_newState)
+	void ChangeState(C_BaseScene* a_newState)
 	{
 		delete currentState;
 		currentState = a_newState;

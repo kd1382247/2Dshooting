@@ -58,6 +58,12 @@
     <Filter Include="Src\Application\Scene\GameScene\Player">
       <UniqueIdentifier>{b548b402-3094-42c7-aae7-ea68a1229ed0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\Scene\BaseScene">
+      <UniqueIdentifier>{4037165f-b6d8-4af4-aec2-a20031673026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Scene\GameScene\GameUI">
+      <UniqueIdentifier>{cf14d774-9cf3-4e2e-9076-2bc9cb2e266c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -156,9 +162,6 @@
     <ClInclude Include="Src\Application\Scene\GameScene\GameScene.h">
       <Filter>Src\Application\Scene\GameScene</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Scene\GameScene\GameUI.h">
-      <Filter>Src\Application\Scene\GameScene</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\Scene\GameScene\PlayStage.h">
       <Filter>Src\Application\Scene\GameScene</Filter>
     </ClInclude>
@@ -179,6 +182,12 @@
     </ClInclude>
     <ClInclude Include="Src\Application\Scene\GameScene\Player\Bullet.h">
       <Filter>Src\Application\Scene\GameScene\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Scene\BaseScene\BaseScene.h">
+      <Filter>Src\Application\Scene\BaseScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Scene\GameScene\GameUI\GameUI.h">
+      <Filter>Src\Application\Scene\GameScene\GameUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -245,9 +254,6 @@
     <ClCompile Include="Src\Application\Scene.cpp">
       <Filter>Src\Application</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Scene\GameScene\GameUI.cpp">
-      <Filter>Src\Application\Scene\GameScene</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\Scene\GameScene\PlayStage.cpp">
       <Filter>Src\Application\Scene\GameScene</Filter>
     </ClCompile>
@@ -265,6 +271,12 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Scene\TitleScene\TitleScene.cpp">
       <Filter>Src\Application\Scene\TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Scene\BaseScene\BaseScene.cpp">
+      <Filter>Src\Application\Scene\BaseScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Scene\GameScene\GameUI\GameUI.cpp">
+      <Filter>Src\Application\Scene\GameScene\GameUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

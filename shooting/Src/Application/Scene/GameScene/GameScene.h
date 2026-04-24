@@ -1,10 +1,10 @@
 #pragma once
-#include "../SceneManager/State.h"
+#include "../BaseScene/BaseScene.h"
 
 //前方宣言
 class C_PlayStage;
 
-class C_GameScene :public C_State
+class C_GameScene :public C_BaseScene
 {
 
 public:

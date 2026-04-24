@@ -1,4 +1,5 @@
 #include "GameScene.h"
+
 #include"PlayStage.h"
 
 void C_GameScene::Draw()

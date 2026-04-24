@@ -1,6 +1,6 @@
 #include "PlayStage.h"
 #include"../GameScene/Player/Player.h"
-#include"../GameScene/GameUI.h"
+#include"../GameScene/GameUI/GameUI.h"
 
 void C_PlayStage::Draw()
 {
