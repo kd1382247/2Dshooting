@@ -5,7 +5,7 @@ void C_Player::Draw()
 	DrawPlayer();
 	DrawExhaust();
 	DrawChangeEffect();
-	m_bullet->Draw((int)e_nowElement);
+	m_bullet->Draw();
 }
 
 void C_Player::Update()
@@ -35,24 +35,24 @@ void C_Player::Release()
 
 void C_Player::Shoot()
 {
-	m_bullet->SpawnBullet(s_player.m_pos);
+	m_bullet->SpawnBullet(s_player.m_pos,s_player.m_nowElement);
 }
 
 void C_Player::DrawPlayer()
 {
-	if (s_player.m_alive)
+	if (s_player.m_aliveFlg)
 	{
 		SHADER.m_spriteShader.SetMatrix(s_player.m_mat);
-		SHADER.m_spriteShader.DrawTex(&m_playerTex, Math::Rectangle((int)e_playerMotion * 96, (int)e_nowElement * 96, 96, 96), 1.0f);
+		SHADER.m_spriteShader.DrawTex(&m_playerTex, Math::Rectangle((int)e_playerMotion * 96, (int)s_player.m_nowElement * 96, 96, 96), 1.0f);
 	}
 
 	SHADER.m_spriteShader.SetMatrix(s_chara.m_mat);
-	SHADER.m_spriteShader.DrawTex(&m_charaTex, Math::Rectangle((int)e_nowElement * 88, 0, 88, 88), 1.0f);
+	SHADER.m_spriteShader.DrawTex(&m_charaTex, Math::Rectangle((int)s_player.m_nowElement * 88, 0, 88, 88), 1.0f);
 }
 
 void C_Player::UpdatePlayer()
 {
-	if(s_player.m_alive)
+	if(s_player.m_aliveFlg)
 	{
 		s_player.m_move = { 0.0f,0.0f };
 
@@ -114,9 +114,8 @@ void C_Player::UpdatePlayer()
 		s_player.m_pos += s_player.m_move;
 
 		s_player.m_transMat = Math::Matrix::CreateTranslation(s_player.m_pos.x, s_player.m_pos.y, 0);
-		s_player.m_scaleMat = Math::Matrix::CreateScale(s_player.m_scale.x, s_player.m_scale.y, 0);
 		s_player.m_rotationMat = Math::Matrix::CreateRotationZ(ToRadians(s_player.m_angle));
-		s_player.m_mat = s_player.m_scaleMat * s_player.m_rotationMat * s_player.m_transMat;
+		s_player.m_mat = s_player.m_rotationMat * s_player.m_transMat;
 
 		s_chara.m_mat = Math::Matrix::CreateTranslation(s_chara.m_pos.x, s_chara.m_pos.y, 0);
 	}
@@ -126,9 +125,8 @@ void C_Player::InitPlayer()
 {
 	m_playerTex.Load("Textures/Player/player.png");
 
-	s_player.m_alive = true;
+	s_player.m_aliveFlg = true;
 	s_player.m_hitFlg = false;
-	s_player.m_scale = { 1.0f,1.0f };
 	s_player.m_angle = 270.0f;
 	s_player.m_pos = { 0.0f,0.0f };
 	s_player.m_move = { 0.0f,0.0f };
@@ -142,11 +140,11 @@ void C_Player::InitPlayer()
 	m_rightMoveFlg = false;
 	m_leftMoveFlg = false;
 
-	e_nowElement = Fire;
+	s_player.m_nowElement = Element::FIre;
 	m_keyFlg = false;
 
 	m_charaTex.Load("Textures/Player/chara.png");
-	s_chara.m_pos = { -580.0f,300.0f };
+	s_chara.m_pos = { -580.0f,-300.0f };
 }
 
 void C_Player::ElementChange()
@@ -155,10 +153,10 @@ void C_Player::ElementChange()
 	{
 		if (!m_keyFlg)
 		{
-			if (!s_changeEffect.m_alive&&e_nowElement!=Fire)
+			if (!s_changeEffect.m_alive&&s_player.m_nowElement!=Element::FIre)
 			{
 				s_changeEffect.m_alive = true;
-				e_nowElement = Fire;
+				s_player.m_nowElement = Element::FIre;
 				m_keyFlg = true;
 			}
 		}
@@ -169,10 +167,10 @@ void C_Player::ElementChange()
 
 		if (!m_keyFlg)
 		{
-			if (!s_changeEffect.m_alive && e_nowElement !=Grass)
+			if (!s_changeEffect.m_alive && s_player.m_nowElement !=Grass)
 			{
 				s_changeEffect.m_alive = true;
-				e_nowElement = Grass;
+				s_player.m_nowElement = Element::Grass;
 				m_keyFlg = true;
 			}
 		}
@@ -183,10 +181,10 @@ void C_Player::ElementChange()
 		{
 			
 
-			if (!s_changeEffect.m_alive && e_nowElement != Water)
+			if (!s_changeEffect.m_alive && s_player.m_nowElement != Water)
 			{
 				s_changeEffect.m_alive = true;
-				e_nowElement = Water;
+				s_player.m_nowElement = Element::Water;
 				m_keyFlg = true;
 			}
 		}
@@ -196,7 +194,7 @@ void C_Player::ElementChange()
 
 void C_Player::DrawExhaust()
 {
-	if(s_player.m_alive)
+	if(s_player.m_aliveFlg)
 	{
 		SHADER.m_spriteShader.SetMatrix(s_exhaust.m_mat);
 		SHADER.m_spriteShader.DrawTex(&m_exhaustTex, Math::Rectangle((int)s_exhaust.m_animCnt * 96, 0, 96, 96), 1.0f);
@@ -223,7 +221,7 @@ void C_Player::UpdateExhaust()
 
 void C_Player::InitExhaust()
 {
-	m_exhaustTex.Load("Textures/Player/exhaust.png");
+	m_exhaustTex.Load("Textures/Effect/exhaust.png");
 	s_exhaust.m_alive = true;
 	s_exhaust.m_animCnt = 0.0f;
 	s_exhaust.m_pos = { 0.0f,0.0f };
@@ -260,7 +258,7 @@ void C_Player::UpdateChangeEffect()
 
 void C_Player::InitChangeEffect()
 {
-	m_changeEffectTex.Load("Textures/Player/changeEffect.png");
+	m_changeEffectTex.Load("Textures/Effect/changeEffect.png");
 	s_changeEffect.m_alive = false;
 	s_changeEffect.m_animCnt = 0.0f;
 	s_changeEffect.m_pos = { 0.0f,0.0f };

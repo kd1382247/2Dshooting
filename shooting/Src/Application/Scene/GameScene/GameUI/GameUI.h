@@ -14,12 +14,12 @@ public:
 	~C_GameUI() { Release(); }
 
 	void Draw();
-	void Init();
 	void Update();
 	
 
 private:
 
+	void Init();
 	void Release();
 
 
@@ -27,6 +27,13 @@ private:
 
 	KdTexture m_backgroundTex;  //背景
 	S_UI      s_background;
+
+	KdTexture m_hudTex;         //HUD
+	S_UI      s_hud;
+
+	KdTexture m_starsTex;       //星
+	S_UI      s_stars;          
+	float     m_animCnt;
 
 	KdTexture m_hpIconTex;      //HP枠
 	S_UI      s_hpIcon; 

@@ -24,12 +24,12 @@ public:
 			m_currentScene = std::make_shared<C_GameScene>();
 			break;
 		}
-		m_currentSceneType = a_sceneType;
+		e_currentSceneType = a_sceneType;
 	}
 
 	void SetNextSceneType(SceneType a_nextScene)
 	{
-		m_nextSceneType = a_nextScene;
+		e_nextSceneType = a_nextScene;
 	}
 
 	void PreUpdate();
@@ -43,8 +43,8 @@ private:
 
 	std::shared_ptr<C_BaseScene>m_currentScene;
 
-	SceneType m_currentSceneType=SceneType::Title;
-	SceneType m_nextSceneType=m_currentSceneType;
+	SceneType e_currentSceneType=SceneType::Title;
+	SceneType e_nextSceneType=e_currentSceneType;
 
 //シングルトンパータン
 private:

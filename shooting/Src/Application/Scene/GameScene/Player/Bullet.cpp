@@ -1,13 +1,13 @@
 #include "Bullet.h"
 
-void C_Bullet::Draw(int a_nowElement)
+void C_Bullet::Draw()
 {
 	for (int i = 0; i < bulletNum; i++)
 	{
 		if (s_bullet[i].m_aliveFlg)
 		{
 			SHADER.m_spriteShader.SetMatrix(s_bullet[i].m_mat);
-			SHADER.m_spriteShader.DrawTex(&m_bulletTex, Math::Rectangle(a_nowElement*22, 0, 22, 6), 1.0f);
+			SHADER.m_spriteShader.DrawTex(&m_bulletTex, Math::Rectangle((int)s_bullet[i].m_nowElement*22, 0, 22, 6), 1.0f);
 		}
 	}
 }
@@ -20,7 +20,7 @@ void C_Bullet::Update()
 void C_Bullet::Init()
 {
 
-	m_bulletTex.Load("Textures/player/bullet1.png");
+	m_bulletTex.Load("Textures/Player/bullet1.png");
 	m_shotWait = 0;
 
 	for (int i = 0; i < bulletNum; i++)
@@ -31,7 +31,7 @@ void C_Bullet::Init()
 	}
 }
 
-void C_Bullet::SpawnBullet(Math::Vector2 a_pos)
+void C_Bullet::SpawnBullet(Math::Vector2 a_pos,Element a_nowElement)
 {
 
 	if(m_shotWait==0)
@@ -42,6 +42,10 @@ void C_Bullet::SpawnBullet(Math::Vector2 a_pos)
 			{
 				s_bullet[i].m_aliveFlg = true;
 				s_bullet[i].m_move = { m_bulletSpeed,0 };
+
+				if (a_nowElement == Element::FIre)s_bullet[i].m_nowElement = Element::FIre;
+				if (a_nowElement == Element::Water)s_bullet[i].m_nowElement = Element::Water;
+				if (a_nowElement == Element::Grass)s_bullet[i].m_nowElement = Element::Grass;
 
 				if (i % 2 != 0)
 				{

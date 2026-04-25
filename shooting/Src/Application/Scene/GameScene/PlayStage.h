@@ -13,12 +13,13 @@ public:
 
 	void Draw();
 	void Update();
-	void Init();
-
-	void Release();
+	
 
 private:
 	
+	void Init();
+	void Release();
+
 	std::shared_ptr<C_Player> m_player;
 	std::shared_ptr<C_GameUI> m_gameUi;
 

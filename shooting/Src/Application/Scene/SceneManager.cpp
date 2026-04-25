@@ -7,9 +7,9 @@ void C_SceneManager::Draw()
 
 void C_SceneManager::PreUpdate()
 {
-	if (m_currentSceneType != m_nextSceneType)
+	if (e_currentSceneType != e_nextSceneType)
 	{
-		ChangeScene(m_nextSceneType);
+		ChangeScene(e_nextSceneType);
 	}
 }
 
@@ -20,7 +20,7 @@ void C_SceneManager::Update()
 
 void C_SceneManager::Init()
 {
-	ChangeScene(m_currentSceneType);
+	ChangeScene(e_currentSceneType);
 }
 
 void C_SceneManager::Release()
