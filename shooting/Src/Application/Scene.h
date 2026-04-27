@@ -23,9 +23,13 @@ public:
 	// GUIˆ—
 	void ImGuiUpdate();
 
+	void SetTime(float a_time) { m_time = a_time; }
+
 private:
 
 	Scene() {}
+
+	float m_time;
 
 public:
 	static Scene& GetInstance()

@@ -43,7 +43,7 @@ private:
 
 	std::shared_ptr<C_BaseScene>m_currentScene;
 
-	SceneType e_currentSceneType=SceneType::Title;
+	SceneType e_currentSceneType=SceneType::Game;
 	SceneType e_nextSceneType=e_currentSceneType;
 
 //シングルトンパータン

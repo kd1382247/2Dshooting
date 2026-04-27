@@ -51,12 +51,6 @@ public:
 		float         m_alive;
 	};
 
-	struct S_Chara
-	{
-		Math::Vector2 m_pos;
-		Math::Matrix  m_mat;
-	};
-
 public:
 
 	C_Player() { Init(); }
@@ -67,7 +61,15 @@ public:
 	
 	
 	float GetAnimCnt() { return s_exhaust.m_animCnt; }
+	int GetNowElement() { return (int)s_player.m_nowElement; }
 
+	// HP関連のゲッター
+	float GetMaxHp() { return m_maxHp; }
+	float GetCurrentHp() { return m_hp; }
+
+	// クールタイムのゲッター
+	float GetMaxCoolTime() { return m_maxCoolTime; }
+	float GetCurrentCoolTime() { return m_coolTime; }
 private:
 
 	std::shared_ptr<C_Bullet>m_bullet;
@@ -99,15 +101,13 @@ private:
 
 	KdTexture     m_playerTex;
 	S_Player      s_player;
+	
 
 	KdTexture     m_exhaustTex;
 	S_Exhaust       s_exhaust;
 
 	KdTexture     m_changeEffectTex;
 	S_ChangeEffect  s_changeEffect;
-
-	KdTexture     m_charaTex;
-	S_Chara       s_chara;
 
 	PlayerMotion  e_playerMotion;
 	
@@ -117,7 +117,16 @@ private:
 	bool          m_leftMoveFlg;
 	const int     m_moveSpeed=5;
 
+	const float   m_maxHp = 100;
+	float         m_hp = 100;
+
+	const float   m_maxCoolTime = 600;
+	float         m_coolTime=600;
 
 	bool          m_keyFlg;
 
+	float         m_frame = 0;
+
+	float         m_time=0;
+	float         m_timeCnt=0;
 };

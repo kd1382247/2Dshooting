@@ -4,15 +4,18 @@
 
 void C_PlayStage::Draw()
 {
-	m_gameUi->Draw();
+	m_gameUi->Draw(m_player->GetNowElement());
 	m_player->Draw();
 }
 
 void C_PlayStage::Update()
 {
 
-	m_gameUi->Update();
+
 	m_player->Update();
+	m_gameUi->Update(m_player->GetCurrentHp(),      m_player->GetMaxHp(),
+		             m_player->GetCurrentCoolTime(),m_player->GetMaxCoolTime());
+	
 	
 }
 

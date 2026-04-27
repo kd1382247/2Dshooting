@@ -1,5 +1,7 @@
 #include "Player.h"
 #include"Bullet.h"
+#include"../../../Scene.h"
+
 void C_Player::Draw()
 {
 	DrawPlayer();
@@ -45,14 +47,11 @@ void C_Player::DrawPlayer()
 		SHADER.m_spriteShader.SetMatrix(s_player.m_mat);
 		SHADER.m_spriteShader.DrawTex(&m_playerTex, Math::Rectangle((int)e_playerMotion * 96, (int)s_player.m_nowElement * 96, 96, 96), 1.0f);
 	}
-
-	SHADER.m_spriteShader.SetMatrix(s_chara.m_mat);
-	SHADER.m_spriteShader.DrawTex(&m_charaTex, Math::Rectangle((int)s_player.m_nowElement * 88, 0, 88, 88), 1.0f);
 }
 
 void C_Player::UpdatePlayer()
 {
-	if(s_player.m_aliveFlg)
+	if (s_player.m_aliveFlg)
 	{
 		s_player.m_move = { 0.0f,0.0f };
 
@@ -107,9 +106,45 @@ void C_Player::UpdatePlayer()
 			Shoot();
 		}
 
+		if (GetAsyncKeyState('R') & 0x8000)
+		{
+			m_hp += 1;
+
+			if (m_hp > m_maxHp)
+			{
+				m_hp = m_maxHp;
+			}
+
+		}
+		if (GetAsyncKeyState('T') & 0x8000)
+		{
+			m_hp -= 1;
+			if (m_hp < 0)
+			{
+				m_hp = 0;
+			}
+		}
+
+
+		if (m_frame > 60*0.01 )
+		{
+			m_frame = 0.0f;
+			if (m_coolTime < m_maxCoolTime)
+			{
+				m_coolTime++;
+			}
+		}
+		
+		m_timeCnt++;
+		if (m_timeCnt > 60 * 1)
+		{
+			m_time++;
+			m_timeCnt = 0.0f;
+			SCENE.SetTime(m_time);
+		}
 
 		ElementChange();
-		
+
 
 		s_player.m_pos += s_player.m_move;
 
@@ -117,7 +152,8 @@ void C_Player::UpdatePlayer()
 		s_player.m_rotationMat = Math::Matrix::CreateRotationZ(ToRadians(s_player.m_angle));
 		s_player.m_mat = s_player.m_rotationMat * s_player.m_transMat;
 
-		s_chara.m_mat = Math::Matrix::CreateTranslation(s_chara.m_pos.x, s_chara.m_pos.y, 0);
+		m_frame++;
+
 	}
 }
 
@@ -133,6 +169,8 @@ void C_Player::InitPlayer()
 	s_player.m_hp = 0.0f;
 	s_player.m_animCnt = 0.0f;
 
+	
+
 	e_playerMotion = Idle;
 
 	m_rightMoveCnt = 0.0f;
@@ -143,53 +181,59 @@ void C_Player::InitPlayer()
 	s_player.m_nowElement = Element::FIre;
 	m_keyFlg = false;
 
-	m_charaTex.Load("Textures/Player/chara.png");
-	s_chara.m_pos = { -580.0f,-300.0f };
+	
 }
 
 void C_Player::ElementChange()
 {
-	if (GetAsyncKeyState('1') & 0x8000)
+
+	if(m_coolTime==m_maxCoolTime)
 	{
-		if (!m_keyFlg)
+		if (GetAsyncKeyState('1') & 0x8000)
 		{
-			if (!s_changeEffect.m_alive&&s_player.m_nowElement!=Element::FIre)
+			if (!m_keyFlg)
 			{
-				s_changeEffect.m_alive = true;
-				s_player.m_nowElement = Element::FIre;
-				m_keyFlg = true;
+				if (!s_changeEffect.m_alive && s_player.m_nowElement != Element::FIre)
+				{
+					s_changeEffect.m_alive = true;
+					s_player.m_nowElement = Element::FIre;
+					m_keyFlg = true;
+					m_coolTime = 0.0f;
+				}
+			}
+
+		}
+		else if (GetAsyncKeyState('2') & 0x8000)
+		{
+
+			if (!m_keyFlg)
+			{
+				if (!s_changeEffect.m_alive && s_player.m_nowElement != Grass)
+				{
+					s_changeEffect.m_alive = true;
+					s_player.m_nowElement = Element::Grass;
+					m_keyFlg = true;
+					m_coolTime = 0.0f;
+				}
 			}
 		}
-
-	}
-	else if (GetAsyncKeyState('2') & 0x8000)
-	{
-
-		if (!m_keyFlg)
+		else if (GetAsyncKeyState('3') & 0x8000)
 		{
-			if (!s_changeEffect.m_alive && s_player.m_nowElement !=Grass)
+			if (!m_keyFlg)
 			{
-				s_changeEffect.m_alive = true;
-				s_player.m_nowElement = Element::Grass;
-				m_keyFlg = true;
+
+
+				if (!s_changeEffect.m_alive && s_player.m_nowElement != Water)
+				{
+					s_changeEffect.m_alive = true;
+					s_player.m_nowElement = Element::Water;
+					m_keyFlg = true;
+					m_coolTime = 0.0f;
+				}
 			}
 		}
+		else m_keyFlg = false;
 	}
-	else if (GetAsyncKeyState('3') & 0x8000)
-	{
-		if (!m_keyFlg)
-		{
-			
-
-			if (!s_changeEffect.m_alive && s_player.m_nowElement != Water)
-			{
-				s_changeEffect.m_alive = true;
-				s_player.m_nowElement = Element::Water;
-				m_keyFlg = true;
-			}
-		}
-	}
-	else m_keyFlg = false;
 }
 
 void C_Player::DrawExhaust()
