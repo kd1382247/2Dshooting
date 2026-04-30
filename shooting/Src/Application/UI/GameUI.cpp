@@ -1,6 +1,8 @@
 #include "GameUI.h"
 
-void C_GameUI::Draw(int a_nowElement)
+#include"../Game/Player.h"
+
+void C_GameUI::Draw()
 {
 
 	//背景描画
@@ -36,18 +38,17 @@ void C_GameUI::Draw(int a_nowElement)
 
 	//キャラアイコンの枠描画
 	SHADER.m_spriteShader.SetMatrix(s_charaPanel.m_mat);
-	SHADER.m_spriteShader.DrawTex(&m_charaPanelTex, Math::Rectangle((int)m_charaPanelAnimCnt * 96, a_nowElement*96, 96, 96), 1.0f);
+	SHADER.m_spriteShader.DrawTex(&m_charaPanelTex, Math::Rectangle((int)m_charaPanelAnimCnt * 96, m_player->GetNowElement()*96, 96, 96), 1.0f);
 
 
 	//キャラアイコンの描画
 	SHADER.m_spriteShader.SetMatrix(s_charaIcon.m_mat);
-	SHADER.m_spriteShader.DrawTex(&m_charaIconTex, Math::Rectangle(a_nowElement*88, 0, 88, 88), 1.0f);
+	SHADER.m_spriteShader.DrawTex(&m_charaIconTex, Math::Rectangle(m_player->GetNowElement() *88, 0, 88, 88), 1.0f);
 	
 }
 
 void C_GameUI::Init()
 {
-
 	m_backgroundTex.Load("Textures/UI/background.png");
 	s_background.m_pos = {0.0f,0.0f};
 
@@ -81,7 +82,7 @@ void C_GameUI::Init()
 
 }
 
-void C_GameUI::Update(float a_currentHp,float a_maxHp,float a_currentCoolTime,float a_maxCoolTime)
+void C_GameUI::Update()
 {
 	//星のアニメーション
 	m_starAnimCnt += 0.2;
@@ -98,13 +99,13 @@ void C_GameUI::Update(float a_currentHp,float a_maxHp,float a_currentCoolTime,fl
 	}
 
 	// HPバーの割合
-	m_hpRate = a_currentHp / a_maxHp;
+	m_hpRate = m_player->GetCurrentHp() / m_player->GetMaxHp();
 
 	// HPバーの座標を管理  初期値   最大幅         最大幅    HPバーの割合  
 	s_hpBar_g.m_pos.x = m_baseX + (m_maxWidth - (m_maxWidth * m_hpRate))/2;
 
 
-	m_coolTimeRate = a_currentCoolTime / a_maxCoolTime;
+	m_coolTimeRate = m_player->GetCurrentCoolTime() / m_player->GetMaxCoolTime();
 	s_coolTimeBar.m_pos.x = m_baseX + (m_maxWidth - (m_maxWidth * m_coolTimeRate)) / 2;
 
 	

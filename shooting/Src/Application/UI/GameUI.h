@@ -1,5 +1,7 @@
 #pragma once
 
+class C_Player;
+
 class C_GameUI
 {
 public:
@@ -14,11 +16,14 @@ public:
 	C_GameUI() { Init(); }
 	~C_GameUI() { Release(); }
 
-	void Draw(int a_nowElement);
-	void Update(float a_currentHp,float a_maxHp,float a_currentCoolTime,float a_maxCoolTime);
+	void Draw();
+	void Update();
 	
+	void SetInstance(std::shared_ptr<C_Player>a_player) { m_player = a_player; }
 
 private:
+
+	std::shared_ptr<C_Player>m_player;
 
 	void Init();
 	void Release();

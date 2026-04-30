@@ -1,36 +1,23 @@
 #pragma once
-#include "Element.h"
+#include"../Base/BaseObject.h"
+
+
 class C_Bullet;
 
 
-class C_Player
+class C_Player:public C_BaseObject
 {
 
 public:
 	enum PlayerMotion
 	{
-		RightMove2 = 4,
-		RightMove1 = 3,
+		MinLeftMove = 1,
+		MaxLeftMove = 0,
 		Idle = 2,
-		LeftMove1 = 1,
-		LeftMove2 = 0
+		MinRightMove = 3,
+		MaxRightMove = 4,
 	};
 
-
-	struct S_Player
-	{
-		Math::Vector2 m_pos;
-		Math::Vector2 m_move;
-		Math::Matrix  m_transMat;
-		Math::Matrix  m_rotationMat;
-		Math::Matrix  m_mat;
-		float         m_hp;
-		bool          m_aliveFlg;
-		bool          m_hitFlg;
-		float         m_animCnt;
-		float         m_angle;
-		Element       m_nowElement;
-	};
 
 	struct S_Exhaust
 	{
@@ -38,7 +25,6 @@ public:
 		Math::Matrix  m_mat;
 		Math::Matrix  m_transMat;
 		Math::Matrix  m_rotationMat;
-		bool          m_alive;
 		float         m_animCnt;
 		float         m_angle;
 	};
@@ -54,14 +40,19 @@ public:
 public:
 
 	C_Player() { Init(); }
-	~C_Player() { Release(); }
+	~C_Player()override { Release(); }
 
-	void Draw();
-	void Update();
+	void Draw()    override;
+	void Update()  override;
 	
 	
+	void SetInstance(std::shared_ptr<C_Bullet>a_bullet) { m_bullet = a_bullet; }
+
 	float GetAnimCnt() { return s_exhaust.m_animCnt; }
 	int GetNowElement() { return (int)s_player.m_nowElement; }
+
+	Math::Vector2 GetPos() { return s_player.m_pos; }
+
 
 	// HP関連のゲッター
 	float GetMaxHp() { return m_maxHp; }
@@ -73,10 +64,11 @@ public:
 private:
 
 	std::shared_ptr<C_Bullet>m_bullet;
+	
 
 	//解放処理
-	void Init();
-	void Release();
+	void Init()    override;
+	void Release() override;
 
 	//弾発射関数
 	void Shoot();
@@ -100,13 +92,12 @@ private:
 
 
 	KdTexture     m_playerTex;
-	S_Player      s_player;
+	S_Object      s_player;
 	
-
 	KdTexture     m_exhaustTex;
-	S_Exhaust       s_exhaust;
+	S_Exhaust     s_exhaust;
 
-	KdTexture     m_changeEffectTex;
+	KdTexture       m_changeEffectTex;
 	S_ChangeEffect  s_changeEffect;
 
 	PlayerMotion  e_playerMotion;

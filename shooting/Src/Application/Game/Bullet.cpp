@@ -1,5 +1,6 @@
 #include "Bullet.h"
 
+#include"Player.h"
 void C_Bullet::Draw()
 {
 	for (int i = 0; i < bulletNum; i++)
@@ -31,7 +32,7 @@ void C_Bullet::Init()
 	}
 }
 
-void C_Bullet::SpawnBullet(Math::Vector2 a_pos,Element a_nowElement)
+void C_Bullet::SpawnBullet()
 {
 
 	if(m_shotWait==0)
@@ -43,19 +44,19 @@ void C_Bullet::SpawnBullet(Math::Vector2 a_pos,Element a_nowElement)
 				s_bullet[i].m_aliveFlg = true;
 				s_bullet[i].m_move = { m_bulletSpeed,0 };
 
-				if (a_nowElement == Element::FIre)s_bullet[i].m_nowElement = Element::FIre;
-				if (a_nowElement == Element::Water)s_bullet[i].m_nowElement = Element::Water;
-				if (a_nowElement == Element::Grass)s_bullet[i].m_nowElement = Element::Grass;
+				if (m_player->GetNowElement() == Element::Fire)s_bullet[i].m_nowElement = Element::Fire;
+				if (m_player->GetNowElement() == Element::Water)s_bullet[i].m_nowElement = Element::Water;
+				if (m_player->GetNowElement() == Element::Grass)s_bullet[i].m_nowElement = Element::Grass;
 
 				if (i % 2 != 0)
 				{
-					s_bullet[i].m_pos = { a_pos.x ,a_pos.y + 20 };
+					s_bullet[i].m_pos = { m_player->GetPos().x ,m_player->GetPos().y + 20};
 					m_shotWait = 10;
 					break;
 				}
 				else if(i%2==0)
 				{
-					s_bullet[i].m_pos = { a_pos.x ,a_pos.y - 20 };
+					s_bullet[i].m_pos = { m_player->GetPos().x ,m_player->GetPos().y - 20 };
 				}
 				
 			}

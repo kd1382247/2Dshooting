@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../BaseScene/BaseScene.h"
+#include "../Base/BaseScene.h"
 
 class C_Title;
 

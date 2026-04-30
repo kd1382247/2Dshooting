@@ -1,28 +1,23 @@
 #include "Player.h"
 #include"Bullet.h"
-#include"../../../Scene.h"
+#include"../Scene.h"
 
 void C_Player::Draw()
 {
 	DrawPlayer();
 	DrawExhaust();
 	DrawChangeEffect();
-	m_bullet->Draw();
 }
 
 void C_Player::Update()
 {
-
 	UpdatePlayer();
 	UpdateExhaust();
 	UpdateChangeEffect();
-	m_bullet->Update();
 }
 
 void C_Player::Init()
 {
-	m_bullet = std::make_shared<C_Bullet>();
-
 	InitPlayer();
 	InitExhaust();
 	InitChangeEffect();
@@ -37,7 +32,7 @@ void C_Player::Release()
 
 void C_Player::Shoot()
 {
-	m_bullet->SpawnBullet(s_player.m_pos,s_player.m_nowElement);
+	m_bullet->SpawnBullet();
 }
 
 void C_Player::DrawPlayer()
@@ -63,8 +58,8 @@ void C_Player::UpdatePlayer()
 				s_player.m_move.y = m_moveSpeed;
 				m_leftMoveFlg = true;
 				m_leftMoveCnt++;
-				if (m_leftMoveCnt < 60 * 0.3f)e_playerMotion = LeftMove1;
-				if (m_leftMoveCnt > 60 * 0.3f)e_playerMotion = LeftMove2;
+				if (m_leftMoveCnt < 60 * 0.3f)e_playerMotion = MinLeftMove;
+				if (m_leftMoveCnt > 60 * 0.3f)e_playerMotion = MaxLeftMove;
 			}
 		}
 		else
@@ -80,8 +75,8 @@ void C_Player::UpdatePlayer()
 				s_player.m_move.y = m_moveSpeed * -1;
 				m_rightMoveFlg = true;
 				m_rightMoveCnt++;
-				if (m_rightMoveCnt < 60 * 0.3f)e_playerMotion = RightMove1;
-				if (m_rightMoveCnt > 60 * 0.3f)e_playerMotion = RightMove2;
+				if (m_rightMoveCnt < 60 * 0.3f)e_playerMotion = MinRightMove;
+				if (m_rightMoveCnt > 60 * 0.3f)e_playerMotion = MaxRightMove;
 			}
 		}
 		else
@@ -101,29 +96,14 @@ void C_Player::UpdatePlayer()
 		//左右に動いていなければ待機モーション
 		if (!m_leftMoveFlg && !m_rightMoveCnt)e_playerMotion = Idle;
 
+
+
+
 		if (GetAsyncKeyState(VK_RETURN) & 0x8000)
 		{
 			Shoot();
 		}
 
-		if (GetAsyncKeyState('R') & 0x8000)
-		{
-			m_hp += 1;
-
-			if (m_hp > m_maxHp)
-			{
-				m_hp = m_maxHp;
-			}
-
-		}
-		if (GetAsyncKeyState('T') & 0x8000)
-		{
-			m_hp -= 1;
-			if (m_hp < 0)
-			{
-				m_hp = 0;
-			}
-		}
 
 
 		if (m_frame > 60*0.01 )
@@ -162,15 +142,11 @@ void C_Player::InitPlayer()
 	m_playerTex.Load("Textures/Player/player.png");
 
 	s_player.m_aliveFlg = true;
-	s_player.m_hitFlg = false;
 	s_player.m_angle = 270.0f;
 	s_player.m_pos = { 0.0f,0.0f };
 	s_player.m_move = { 0.0f,0.0f };
-	s_player.m_hp = 0.0f;
-	s_player.m_animCnt = 0.0f;
 
 	
-
 	e_playerMotion = Idle;
 
 	m_rightMoveCnt = 0.0f;
@@ -178,7 +154,7 @@ void C_Player::InitPlayer()
 	m_rightMoveFlg = false;
 	m_leftMoveFlg = false;
 
-	s_player.m_nowElement = Element::FIre;
+	s_player.m_nowElement = Element::Fire;
 	m_keyFlg = false;
 
 	
@@ -193,10 +169,10 @@ void C_Player::ElementChange()
 		{
 			if (!m_keyFlg)
 			{
-				if (!s_changeEffect.m_alive && s_player.m_nowElement != Element::FIre)
+				if (!s_changeEffect.m_alive && s_player.m_nowElement != Element::Fire)
 				{
 					s_changeEffect.m_alive = true;
-					s_player.m_nowElement = Element::FIre;
+					s_player.m_nowElement = Element::Fire;
 					m_keyFlg = true;
 					m_coolTime = 0.0f;
 				}
@@ -247,26 +223,28 @@ void C_Player::DrawExhaust()
 
 void C_Player::UpdateExhaust()
 {
-	s_exhaust.m_pos.x = s_player.m_pos.x - 38.0f;
-	s_exhaust.m_pos.y = s_player.m_pos.y;
-
-	s_exhaust.m_transMat = Math::Matrix::CreateTranslation(s_exhaust.m_pos.x, s_exhaust.m_pos.y, 0);
-	s_exhaust.m_rotationMat = Math::Matrix::CreateRotationZ(ToRadians(s_exhaust.m_angle));
-
-	s_exhaust.m_mat = s_exhaust.m_rotationMat * s_exhaust.m_transMat;
-
-	//排気アニメーション
-	s_exhaust.m_animCnt += 0.3f;
-	if (s_exhaust.m_animCnt > 5.0f)
+	if(s_player.m_aliveFlg)
 	{
-		s_exhaust.m_animCnt = 0.0f;
+		s_exhaust.m_pos.x = s_player.m_pos.x - 38.0f;
+		s_exhaust.m_pos.y = s_player.m_pos.y;
+
+		s_exhaust.m_transMat = Math::Matrix::CreateTranslation(s_exhaust.m_pos.x, s_exhaust.m_pos.y, 0);
+		s_exhaust.m_rotationMat = Math::Matrix::CreateRotationZ(ToRadians(s_exhaust.m_angle));
+
+		s_exhaust.m_mat = s_exhaust.m_rotationMat * s_exhaust.m_transMat;
+
+		//排気アニメーション
+		s_exhaust.m_animCnt += 0.3f;
+		if (s_exhaust.m_animCnt > 5.0f)
+		{
+			s_exhaust.m_animCnt = 0.0f;
+		}
 	}
 }
 
 void C_Player::InitExhaust()
 {
 	m_exhaustTex.Load("Textures/Effect/exhaust.png");
-	s_exhaust.m_alive = true;
 	s_exhaust.m_animCnt = 0.0f;
 	s_exhaust.m_pos = { 0.0f,0.0f };
 	s_exhaust.m_angle = 270.0f;
