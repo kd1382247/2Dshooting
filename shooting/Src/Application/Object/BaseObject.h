@@ -33,9 +33,8 @@ protected:
 		Math::Matrix  m_mat;
 		float         m_angle;
 		bool          m_aliveFlg;
-		float         m_radius;
 		Element       m_nowElement;
 	};
 
-	
+	float         m_radius;
 };

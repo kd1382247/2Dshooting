@@ -1,9 +1,10 @@
 #pragma once
-#include"../Base/BaseObject.h"
+#include"../BaseObject.h"
 
 
 class C_Bullet;
-
+class C_Exhaust;
+class C_ChangeEffect;
 
 class C_Player:public C_BaseObject
 {
@@ -18,25 +19,6 @@ public:
 		MaxRightMove = 4,
 	};
 
-
-	struct S_Exhaust
-	{
-		Math::Vector2 m_pos;
-		Math::Matrix  m_mat;
-		Math::Matrix  m_transMat;
-		Math::Matrix  m_rotationMat;
-		float         m_animCnt;
-		float         m_angle;
-	};
-
-	struct S_ChangeEffect
-	{
-		Math::Vector2 m_pos;
-		Math::Matrix  m_mat;
-		float         m_animCnt;
-		float         m_alive;
-	};
-
 public:
 
 	C_Player() { Init(); }
@@ -48,11 +30,14 @@ public:
 	
 	void SetInstance(std::shared_ptr<C_Bullet>a_bullet) { m_bullet = a_bullet; }
 
-	float GetAnimCnt() { return s_exhaust.m_animCnt; }
 	int GetNowElement() { return (int)s_player.m_nowElement; }
 
 	Math::Vector2 GetPos() { return s_player.m_pos; }
 
+	void SetAliveFlg(bool a_flg) { s_player.m_aliveFlg = a_flg; }
+
+	float GetRadius() { return m_radius; }
+	bool  GetAliveFlg() { return s_player.m_aliveFlg; }
 
 	// HP関連のゲッター
 	float GetMaxHp() { return m_maxHp; }
@@ -63,7 +48,9 @@ public:
 	float GetCurrentCoolTime() { return m_coolTime; }
 private:
 
-	std::shared_ptr<C_Bullet>m_bullet;
+	std::shared_ptr<C_Bullet>m_bullet=nullptr;
+	std::shared_ptr<C_Exhaust>m_exhaust=nullptr;
+	std::shared_ptr<C_ChangeEffect>m_changeEffect=nullptr;
 	
 
 	//解放処理
@@ -74,50 +61,33 @@ private:
 	void Shoot();
 
 	//プレイヤーの関数
-	void DrawPlayer();
-	void UpdatePlayer();
-	void InitPlayer();
-
 	void ElementChange();
 
-	//排気エフェクト
-	void DrawExhaust();
-	void UpdateExhaust();
-	void InitExhaust();
-
-	//属性切り替えエフェクト
-	void DrawChangeEffect();
-	void UpdateChangeEffect();
-	void InitChangeEffect();
-
+	
 
 	KdTexture     m_playerTex;
 	S_Object      s_player;
 	
-	KdTexture     m_exhaustTex;
-	S_Exhaust     s_exhaust;
-
-	KdTexture       m_changeEffectTex;
-	S_ChangeEffect  s_changeEffect;
-
 	PlayerMotion  e_playerMotion;
 	
 	float         m_rightMoveCnt;
 	float         m_leftMoveCnt;
 	bool          m_rightMoveFlg;
 	bool          m_leftMoveFlg;
+
 	const int     m_moveSpeed=5;
 
+
+	// 体力
 	const float   m_maxHp = 100;
 	float         m_hp = 100;
-
-	const float   m_maxCoolTime = 600;
-	float         m_coolTime=600;
+	// クールタイム
+	const float   m_maxCoolTime = 300;
+	float         m_coolTime=300;
 
 	bool          m_keyFlg;
 
 	float         m_frame = 0;
-
 	float         m_time=0;
 	float         m_timeCnt=0;
 };

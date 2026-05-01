@@ -1,6 +1,6 @@
 #include "TitleScene.h"
 
-#include"../SceneManager.h"
+#include"../../SceneManager.h"
 #include"Title.h"
 
 void C_TitleScene::Draw()

@@ -49,13 +49,12 @@ void C_Enemy::Init()
 	//敵の初期化
 	for (int i = 0; i < enemyNum; i++)
 	{
-		s_enemy[i].m_pos = { 0.0f,0.0f };
 		s_enemy[i].m_move = { -1.0f,0.0f };
-		s_enemy[i].m_angle = 0.0f;
 		s_enemy[i].m_aliveFlg = true;
-		m_animCnt[i] = 0.0f;
 		s_enemy[i].m_nowElement = Element::Fire;
 	}
+
+	m_radius = 32.0f;
 
 	FILE* fp;
 

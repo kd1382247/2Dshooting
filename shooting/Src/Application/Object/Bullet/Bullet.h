@@ -1,5 +1,5 @@
 #pragma once
-#include"../Base/BaseObject.h"
+#include"../BaseObject.h"
 
 
 class C_Player;
@@ -21,6 +21,12 @@ public:
 
 	void SpawnBullet();
 
+	Math::Vector2 GetPos(int a_i) { return s_bullet[a_i].m_pos; }
+	float         GetRadius() { return m_radius; }
+	int           GetNum() { return bulletNum; }
+	bool          GetAliveFlg(int a_i) { return s_bullet[a_i].m_aliveFlg; }
+	void  SetAliveFlg(int a_i, bool a_flg) { s_bullet[a_i].m_aliveFlg = a_flg; }
+
 private:
 
 	std::shared_ptr<C_Player>m_player;
@@ -30,10 +36,11 @@ private:
 	void BulletMove();
 	
 	static const int bulletNum = 50;
-	S_Object         s_bullet[bulletNum];
+	S_Object         s_bullet[bulletNum] = {};
 	KdTexture        m_bulletTex;
 
 	const float      m_bulletSpeed = 15.0f;
+
 
 	int              m_shotWait;
 };

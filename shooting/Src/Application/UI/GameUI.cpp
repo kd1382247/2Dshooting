@@ -1,6 +1,6 @@
 #include "GameUI.h"
 
-#include"../Game/Player.h"
+#include"../Object/Player/Player.h"
 
 void C_GameUI::Draw()
 {

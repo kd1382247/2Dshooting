@@ -46,17 +46,44 @@
     <Filter Include="Src\Application\Scene">
       <UniqueIdentifier>{b5d60bd4-00e5-4c64-a4a8-c041aaefd178}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\Game">
-      <UniqueIdentifier>{025dbe85-1d16-4ef7-81de-ca5918df7615}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\UI">
       <UniqueIdentifier>{d2281d6e-637a-4b0e-a253-f6283663e16a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\Data">
-      <UniqueIdentifier>{e1ada962-0737-4250-ab09-a747b30b8df8}</UniqueIdentifier>
+    <Filter Include="Src\Application\Object">
+      <UniqueIdentifier>{025dbe85-1d16-4ef7-81de-ca5918df7615}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\Base">
-      <UniqueIdentifier>{99835120-59b2-4cb3-b8a2-dfad79138f6b}</UniqueIdentifier>
+    <Filter Include="Src\Application\Object\Player">
+      <UniqueIdentifier>{8194f5c1-9639-4881-b573-acc035e67c2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Object\Bullet">
+      <UniqueIdentifier>{582a809c-699b-4493-9472-2a6da80e6819}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Object\Enemy">
+      <UniqueIdentifier>{d073bb95-8ead-401c-856a-f3a02a86fd38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Scene\GameScene">
+      <UniqueIdentifier>{b5822eab-2403-487c-97d3-56ceb8665d3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Scene\TitleScene">
+      <UniqueIdentifier>{c969c93b-97fa-4cd8-9ddf-8fd17e98bffb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Collision">
+      <UniqueIdentifier>{322342d0-5e2f-416b-babe-eff146e07a39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Effect">
+      <UniqueIdentifier>{bc958925-5e1c-4a2a-aa8b-4da2400ae83a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Effect\HitEffect">
+      <UniqueIdentifier>{8e7f6d94-0f69-41d0-8517-d4a3872f01d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Effect\Explosion">
+      <UniqueIdentifier>{2eb47778-a858-4d03-88e8-d5c6f2c3ab83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Effect\Exhaust">
+      <UniqueIdentifier>{6b98ab45-f19b-4bda-ab77-e8f652264639}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Effect\ChangeEffect">
+      <UniqueIdentifier>{71c6b16a-b728-4df0-8ab5-7503bcfb617c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -153,38 +180,50 @@
     <ClInclude Include="Src\Application\Scene.h">
       <Filter>Src\Application</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Scene\GameScene.h">
-      <Filter>Src\Application\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\Scene\Title.h">
-      <Filter>Src\Application\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\Application\Scene\TitleScene.h">
-      <Filter>Src\Application\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\SceneManager.h">
       <Filter>Src\Application</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\UI\GameUI.h">
       <Filter>Src\Application\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Game\Bullet.h">
-      <Filter>Src\Application\Game</Filter>
+    <ClInclude Include="Src\Application\Scene\BaseScene.h">
+      <Filter>Src\Application\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Game\Enemy.h">
-      <Filter>Src\Application\Game</Filter>
+    <ClInclude Include="Src\Application\Scene\GameScene\GameScene.h">
+      <Filter>Src\Application\Scene\GameScene</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Game\Player.h">
-      <Filter>Src\Application\Game</Filter>
+    <ClInclude Include="Src\Application\Scene\TitleScene\Title.h">
+      <Filter>Src\Application\Scene\TitleScene</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Data\Element.h">
-      <Filter>Src\Application\Data</Filter>
+    <ClInclude Include="Src\Application\Scene\TitleScene\TitleScene.h">
+      <Filter>Src\Application\Scene\TitleScene</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Base\BaseObject.h">
-      <Filter>Src\Application\Base</Filter>
+    <ClInclude Include="Src\Application\Object\BaseObject.h">
+      <Filter>Src\Application\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Base\BaseScene.h">
-      <Filter>Src\Application\Base</Filter>
+    <ClInclude Include="Src\Application\Object\Bullet\Bullet.h">
+      <Filter>Src\Application\Object\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Object\Enemy\Enemy.h">
+      <Filter>Src\Application\Object\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Object\Player\Player.h">
+      <Filter>Src\Application\Object\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Collision\CollisionManager.h">
+      <Filter>Src\Application\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Effect\Explosion\Explosion.h">
+      <Filter>Src\Application\Effect\Explosion</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Effect\Exhaust\Exhaust.h">
+      <Filter>Src\Application\Effect\Exhaust</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Effect\ChangeEffect\ChangeEffect.h">
+      <Filter>Src\Application\Effect\ChangeEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Effect\HitEffect\HitEffect.h">
+      <Filter>Src\Application\Effect\HitEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -248,38 +287,53 @@
     <ClCompile Include="src\System\Window\KdGameWindow.cpp">
       <Filter>Src\System\Window</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Scene\GameScene.cpp">
-      <Filter>Src\Application\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\Scene\Title.cpp">
-      <Filter>Src\Application\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\Scene\TitleScene.cpp">
-      <Filter>Src\Application\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\SceneManager.cpp">
       <Filter>Src\Application</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\UI\GameUI.cpp">
       <Filter>Src\Application\UI</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Game\Bullet.cpp">
-      <Filter>Src\Application\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\Game\Enemy.cpp">
-      <Filter>Src\Application\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\Application\Game\Player.cpp">
-      <Filter>Src\Application\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\Scene.cpp">
       <Filter>Src\Application</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Base\BaseObject.cpp">
-      <Filter>Src\Application\Base</Filter>
+    <ClCompile Include="Src\Application\Scene\BaseScene.cpp">
+      <Filter>Src\Application\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Base\BaseScene.cpp">
-      <Filter>Src\Application\Base</Filter>
+    <ClCompile Include="Src\Application\Scene\GameScene\GameScene.cpp">
+      <Filter>Src\Application\Scene\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Scene\TitleScene\Title.cpp">
+      <Filter>Src\Application\Scene\TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Scene\TitleScene\TitleScene.cpp">
+      <Filter>Src\Application\Scene\TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\BaseObject.cpp">
+      <Filter>Src\Application\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Bullet\Bullet.cpp">
+      <Filter>Src\Application\Object\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Enemy\Enemy.cpp">
+      <Filter>Src\Application\Object\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Player\Player.cpp">
+      <Filter>Src\Application\Object\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Collision\CollisionManager.cpp">
+      <Filter>Src\Application\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Effect\Explosion\Explosion.cpp">
+      <Filter>Src\Application\Effect\Explosion</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Effect\Exhaust\Exhaust.cpp">
+      <Filter>Src\Application\Effect\Exhaust</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Effect\ChangeEffect\ChangeEffect.cpp">
+      <Filter>Src\Application\Effect\ChangeEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Effect\HitEffect\HitEffect.cpp">
+      <Filter>Src\Application\Effect\HitEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

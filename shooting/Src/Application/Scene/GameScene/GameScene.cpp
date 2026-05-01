@@ -1,10 +1,14 @@
 #include "GameScene.h"
 
-#include"../SceneManager.h"
-#include"../Game/Player.h"
-#include"../Game/Bullet.h"
-#include"../UI/GameUI.h"
-#include"../Game/Enemy.h"
+#include"../../SceneManager.h"
+
+#include"../../Object/Player/Player.h"
+#include"../../Object/Bullet/Bullet.h"
+#include"../../UI/GameUI.h"
+#include"../../Object/Enemy/Enemy.h"
+#include"../../Collision/CollisionManager.h"
+#include"../../Effect/HitEffect/HitEffect.h"
+#include"../../Effect/Explosion/Explosion.h"
 
 
 void C_GameScene::Draw()
@@ -14,6 +18,8 @@ void C_GameScene::Draw()
 	{
 		m_objList[i]->Draw();
 	}
+
+	m_hitEffect->Draw();
 }
 
 void C_GameScene::Update()
@@ -27,6 +33,11 @@ void C_GameScene::Update()
 		m_objList[i]->Update();
 	}
 	
+	m_collision->checkBulletEnemy();
+	m_collision->checkPlayerEnemy();
+
+	m_hitEffect->Update();
+
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 	{
 		C_SceneManager::GetInstance().SetNextSceneType(C_SceneManager::SceneType::Title);
@@ -37,6 +48,10 @@ void C_GameScene::Update()
 void C_GameScene::Init()
 {
 	m_gameUi = std::make_shared<C_GameUI>();
+	m_collision = std::make_shared<C_Collision>();
+	m_hitEffect = std::make_shared<C_HitEffect>();
+	m_explosion = std::make_shared<C_Explosion>();
+
 
 	std::shared_ptr<C_Player>player;
 	player = std::make_shared<C_Player>();
@@ -51,9 +66,11 @@ void C_GameScene::Init()
 	m_objList.push_back(enemy);
 
 
+
 	//インスタンス生成後にインスタンスを渡す
 	player->SetInstance(bullet);
 	bullet->SetInstance(player);
 	m_gameUi->SetInstance(player);
-	
+	m_collision->SetInstance(player, bullet, enemy,m_hitEffect);
+
 }
