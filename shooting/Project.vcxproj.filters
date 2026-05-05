@@ -85,6 +85,21 @@
     <Filter Include="Src\Application\Effect\ChangeEffect">
       <UniqueIdentifier>{71c6b16a-b728-4df0-8ab5-7503bcfb617c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\Object\Enemy\GearEnemy">
+      <UniqueIdentifier>{b73db5d9-2608-4914-a73e-3051da88c7f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Object\Enemy\SpikeEnemy">
+      <UniqueIdentifier>{cef9388c-6616-477c-8638-fe3ed1f1fd98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Scene\GameScene\GameController">
+      <UniqueIdentifier>{bde8364f-fea1-4530-9643-7ba80ed354d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Object\Enemy\RushEnemy">
+      <UniqueIdentifier>{9798a642-b2a2-44ff-9df5-1499dc84c976}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Object\Enemy\ShotEnemy">
+      <UniqueIdentifier>{17acfb24-dd59-4567-91ce-4ad2dafee6c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -204,13 +219,10 @@
     <ClInclude Include="Src\Application\Object\Bullet\Bullet.h">
       <Filter>Src\Application\Object\Bullet</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Object\Enemy\Enemy.h">
-      <Filter>Src\Application\Object\Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\Object\Player\Player.h">
       <Filter>Src\Application\Object\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Collision\CollisionManager.h">
+    <ClInclude Include="Src\Application\Collision\Collision.h">
       <Filter>Src\Application\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\Effect\Explosion\Explosion.h">
@@ -224,6 +236,21 @@
     </ClInclude>
     <ClInclude Include="Src\Application\Effect\HitEffect\HitEffect.h">
       <Filter>Src\Application\Effect\HitEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Object\Enemy\GearEnemy\GearEnemy.h">
+      <Filter>Src\Application\Object\Enemy\GearEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Object\Enemy\SpikeEnemy\SpikeEnemy.h">
+      <Filter>Src\Application\Object\Enemy\SpikeEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Scene\GameScene\GameController\GameController.h">
+      <Filter>Src\Application\Scene\GameScene\GameController</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Object\Enemy\RushEnemy\RushEnemy.h">
+      <Filter>Src\Application\Object\Enemy\RushEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Object\Enemy\ShotEnemy\ShotEnemy.h">
+      <Filter>Src\Application\Object\Enemy\ShotEnemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -314,13 +341,10 @@
     <ClCompile Include="Src\Application\Object\Bullet\Bullet.cpp">
       <Filter>Src\Application\Object\Bullet</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Object\Enemy\Enemy.cpp">
-      <Filter>Src\Application\Object\Enemy</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Application\Object\Player\Player.cpp">
       <Filter>Src\Application\Object\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Collision\CollisionManager.cpp">
+    <ClCompile Include="Src\Application\Collision\Collision.cpp">
       <Filter>Src\Application\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Src\Application\Effect\Explosion\Explosion.cpp">
@@ -334,6 +358,21 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Effect\HitEffect\HitEffect.cpp">
       <Filter>Src\Application\Effect\HitEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Enemy\GearEnemy\GearEnemy.cpp">
+      <Filter>Src\Application\Object\Enemy\GearEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Enemy\SpikeEnemy\SpikeEnemy.cpp">
+      <Filter>Src\Application\Object\Enemy\SpikeEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Scene\GameScene\GameController\GameController.cpp">
+      <Filter>Src\Application\Scene\GameScene\GameController</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Enemy\RushEnemy\RushEnemy.cpp">
+      <Filter>Src\Application\Object\Enemy\RushEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Object\Enemy\ShotEnemy\ShotEnemy.cpp">
+      <Filter>Src\Application\Object\Enemy\ShotEnemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

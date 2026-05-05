@@ -9,15 +9,15 @@ void C_Exhaust::Draw(bool a_flg)
 	}
 }
 
-void C_Exhaust::Update(bool a_flg,Math::Vector2 a_pos)
+void C_Exhaust::Update(bool a_flg,Math::Vector2 a_pos,float a_angle,float a_distance)
 {
 	if (a_flg)
 	{
-		m_pos.x = a_pos.x - 38.0f;
+		m_pos.x = a_pos.x + a_distance;
 		m_pos.y = a_pos.y;
 
 		m_transMat = Math::Matrix::CreateTranslation(m_pos.x,m_pos.y, 0);
-		m_rotationMat = Math::Matrix::CreateRotationZ(ToRadians(m_angle));
+		m_rotationMat = Math::Matrix::CreateRotationZ(ToRadians(a_angle));
 
 		m_mat = m_rotationMat * m_transMat;
 
@@ -35,11 +35,9 @@ void C_Exhaust::Init()
 	m_tex.Load("Textures/Effect/exhaust.png");
 	m_animCnt = 0.0f;
 	m_pos = { 0.0f,0.0f };
-	m_angle = 270.0f;
-
 }
 
 void C_Exhaust::Release()
 {
-
+	m_tex.Release();
 }

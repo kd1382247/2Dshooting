@@ -34,7 +34,7 @@ private:
 	KdTexture m_backgroundTex;  //背景
 	S_UI      s_background;
 
-	KdTexture m_hudPanelTex;         //HUD
+	KdTexture m_hudPanelTex;    //HUD
 	S_UI      s_hudPanel;
 
 	KdTexture m_starsTex;       //星
@@ -44,32 +44,35 @@ private:
 	KdTexture m_hpIconTex;      //HP枠
 	S_UI      s_hpIcon; 
 
-	KdTexture m_coolTimeIconTex;      //HP枠
+	KdTexture m_coolTimeIconTex;//HP枠
 	S_UI      s_coolTimeIcon;
 
-	KdTexture m_hpBar_r_Tex;    //HP赤バー
-	S_UI      s_hpBar_r;
 
-	KdTexture m_hpBar_g_Tex;    //HP緑バー
-	S_UI      s_hpBar_g;
+	KdTexture m_hpBarTex;       //HP緑バー
+	S_UI      s_hpBar;
+	float     m_hpRate = 0;
+
+	KdTexture m_coolTimeBarTex; //クールタイムバー
+	S_UI      s_coolTimeBar;
+	float     m_coolTimeRate = 0;
+
 	float     m_maxWidth;
 	float     m_baseX;
-
-	KdTexture m_coolTimeBarTex;
-	S_UI      s_coolTimeBar;
 
 	KdTexture m_UiPanelTex;
 	S_UI      s_UiPanel;
 
-	KdTexture m_charaPanelTex;
-	S_UI      s_charaPanel;
-	float     m_charaPanelAnimCnt;
 
-	KdTexture m_charaIconTex;
-	S_UI      s_charaIcon;
+	KdTexture m_fireIconTex;
+	S_UI      s_fireIcon;
+	float     m_fireAlpha;
 
-	float     m_hpRate=0;
+	KdTexture m_waterIconTex;
+	S_UI      s_waterIcon;
+	float     m_waterAlpha;
 
-	float     m_coolTimeRate=0;
+	KdTexture m_grassIconTex;
+	S_UI      s_grassIcon;
+	float     m_grassAlpha;
 
 };

@@ -6,6 +6,9 @@ class C_Bullet;
 class C_Exhaust;
 class C_ChangeEffect;
 
+class C_GameScene;
+
+
 class C_Player:public C_BaseObject
 {
 
@@ -30,7 +33,7 @@ public:
 	
 	void SetInstance(std::shared_ptr<C_Bullet>a_bullet) { m_bullet = a_bullet; }
 
-	int GetNowElement() { return (int)s_player.m_nowElement; }
+	Element GetNowElement() { return s_player.m_nowElement; }
 
 	Math::Vector2 GetPos() { return s_player.m_pos; }
 
@@ -46,16 +49,30 @@ public:
 	// クールタイムのゲッター
 	float GetMaxCoolTime() { return m_maxCoolTime; }
 	float GetCurrentCoolTime() { return m_coolTime; }
+
+
+	void SetOwner(C_GameScene* a_owner) { m_owner = a_owner; }
+
+
 private:
 
 	std::shared_ptr<C_Bullet>m_bullet=nullptr;
+
 	std::shared_ptr<C_Exhaust>m_exhaust=nullptr;
+	const float               m_exhaustAngle = 270.0f;
+
 	std::shared_ptr<C_ChangeEffect>m_changeEffect=nullptr;
 	
+	C_GameScene* m_owner=nullptr;
 
 	//解放処理
 	void Init()    override;
 	void Release() override;
+
+	// プレイヤーの動き
+	void Move();
+
+	void CoolTime();
 
 	//弾発射関数
 	void Shoot();
@@ -63,20 +80,21 @@ private:
 	//プレイヤーの関数
 	void ElementChange();
 
-	
 
 	KdTexture     m_playerTex;
 	S_Object      s_player;
 	
 	PlayerMotion  e_playerMotion;
 	
+	const int m_playerWidht=55;
+	const int m_playerHight=35;
+
 	float         m_rightMoveCnt;
 	float         m_leftMoveCnt;
 	bool          m_rightMoveFlg;
 	bool          m_leftMoveFlg;
 
-	const int     m_moveSpeed=5;
-
+	const float   m_moveSpeed=5.0f;
 
 	// 体力
 	const float   m_maxHp = 100;
@@ -86,6 +104,8 @@ private:
 	float         m_coolTime=300;
 
 	bool          m_keyFlg;
+
+
 
 	float         m_frame = 0;
 	float         m_time=0;

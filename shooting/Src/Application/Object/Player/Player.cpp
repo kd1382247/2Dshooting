@@ -5,6 +5,7 @@
 #include"../../Effect/ChangeEffect/ChangeEffect.h"
 #include"../../Scene.h"
 
+
 void C_Player::Draw()
 {
 	if (s_player.m_aliveFlg)
@@ -21,68 +22,14 @@ void C_Player::Update()
 {
 	if (s_player.m_aliveFlg)
 	{
-		s_player.m_move = { 0.0f,0.0f };
+		Move();
 
-		//プレイヤーの移動
-		if (GetAsyncKeyState(VK_UP) & 0x8000)
-		{
-			if (!m_rightMoveFlg)
-			{
-				s_player.m_move.y = m_moveSpeed;
-				m_leftMoveFlg = true;
-				m_leftMoveCnt++;
-				if (m_leftMoveCnt < 60 * 0.3f)e_playerMotion = MinLeftMove;
-				if (m_leftMoveCnt > 60 * 0.3f)e_playerMotion = MaxLeftMove;
-			}
-		}
-		else
-		{
-			m_leftMoveCnt = 0.0f;
-			m_leftMoveFlg = false;
-		}
-
-		if (GetAsyncKeyState(VK_DOWN) & 0x8000)
-		{
-			if (!m_leftMoveFlg)
-			{
-				s_player.m_move.y = m_moveSpeed * -1;
-				m_rightMoveFlg = true;
-				m_rightMoveCnt++;
-				if (m_rightMoveCnt < 60 * 0.3f)e_playerMotion = MinRightMove;
-				if (m_rightMoveCnt > 60 * 0.3f)e_playerMotion = MaxRightMove;
-			}
-		}
-		else
-		{
-			m_rightMoveCnt = 0.0f;
-			m_rightMoveFlg = false;
-		}
-		if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
-		{
-			s_player.m_move.x = m_moveSpeed;
-		}
-
-		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
-		{
-			s_player.m_move.x = m_moveSpeed * -1;
-		}
-		//左右に動いていなければ待機モーション
-		if (!m_leftMoveFlg && !m_rightMoveCnt)e_playerMotion = Idle;
-
-
-		if (GetAsyncKeyState(VK_RETURN) & 0x8000)
+		if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 		{
 			Shoot();
 		}
 
-		if (m_frame > 60 * 0.01)
-		{
-			m_frame = 0.0f;
-			if (m_coolTime < m_maxCoolTime)
-			{
-				m_coolTime++;
-			}
-		}
+		CoolTime();
 
 		m_timeCnt++;
 		if (m_timeCnt > 60 * 1)
@@ -95,14 +42,10 @@ void C_Player::Update()
 		ElementChange();
 
 		m_changeEffect->Update(s_player.m_pos);
-		m_exhaust->Update(s_player.m_aliveFlg,s_player.m_pos);
 
-		s_player.m_pos += s_player.m_move;
+		m_exhaust->Update(s_player.m_aliveFlg,s_player.m_pos, m_exhaustAngle,-38);
 
-		s_player.m_transMat = Math::Matrix::CreateTranslation(s_player.m_pos.x, s_player.m_pos.y, 0);
-		s_player.m_rotationMat = Math::Matrix::CreateRotationZ(ToRadians(s_player.m_angle));
-		s_player.m_mat = s_player.m_rotationMat * s_player.m_transMat;
-
+		
 		m_frame++;
 
 	}
@@ -141,17 +84,102 @@ void C_Player::Release()
 	
 }
 
+void C_Player::Move()
+{
+	s_player.m_move = { 0.0f,0.0f };
+
+	//プレイヤーの移動
+	if (GetAsyncKeyState(VK_UP) & 0x8000)
+	{
+		if (!m_rightMoveFlg)
+		{
+			s_player.m_move.y = m_moveSpeed;
+			m_leftMoveFlg = true;
+			m_leftMoveCnt++;
+			if (m_leftMoveCnt < 60 * 0.3f)e_playerMotion = MinLeftMove;
+			if (m_leftMoveCnt > 60 * 0.3f)e_playerMotion = MaxLeftMove;
+		}
+	}
+	else
+	{
+		m_leftMoveCnt = 0.0f;
+		m_leftMoveFlg = false;
+	}
+
+	if (GetAsyncKeyState(VK_DOWN) & 0x8000)
+	{
+		if (!m_leftMoveFlg)
+		{
+			s_player.m_move.y = m_moveSpeed * -1;
+			m_rightMoveFlg = true;
+			m_rightMoveCnt++;
+			if (m_rightMoveCnt < 60 * 0.3f)e_playerMotion = MinRightMove;
+			if (m_rightMoveCnt > 60 * 0.3f)e_playerMotion = MaxRightMove;
+		}
+	}
+	else
+	{
+		m_rightMoveCnt = 0.0f;
+		m_rightMoveFlg = false;
+	}
+	if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+	{
+		s_player.m_move.x = m_moveSpeed;
+	}
+
+	if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+	{
+		s_player.m_move.x = m_moveSpeed * -1;
+	}
+	//左右に動いていなければ待機モーション
+	if (!m_leftMoveFlg && !m_rightMoveCnt)e_playerMotion = Idle;
+
+
+	// 上下左右の壁判定
+	// 右
+	if (s_player.m_pos.x > screenRight - m_playerWidht)s_player.m_pos.x = screenRight - m_playerWidht;
+	// 左
+	if (s_player.m_pos.x < screenLeft+ m_playerWidht)s_player.m_pos.x = screenLeft+ m_playerWidht;
+	// 上
+	if (s_player.m_pos.y > screenTop-m_playerHight)s_player.m_pos.y = screenTop- m_playerHight;
+	// 下
+	if (s_player.m_pos.y < screenBottom+ m_playerHight)s_player.m_pos.y = screenBottom+ m_playerHight;
+
+
+	s_player.m_pos += s_player.m_move;
+
+
+	s_player.m_transMat = Math::Matrix::CreateTranslation(s_player.m_pos.x, s_player.m_pos.y, 0);
+	s_player.m_rotationMat = Math::Matrix::CreateRotationZ(ToRadians(s_player.m_angle));
+	s_player.m_mat = s_player.m_rotationMat * s_player.m_transMat;
+
+}
+
+void C_Player::CoolTime()
+{
+
+	if (m_frame > 60 * 0.01)
+	{
+		m_frame = 0.0f;
+		if (m_coolTime < m_maxCoolTime)
+		{
+			m_coolTime++;
+		}
+	}
+}
+
 void C_Player::Shoot()
 {
 	m_bullet->SpawnBullet();
 }
+
 
 void C_Player::ElementChange()
 {
 
 	if(m_coolTime==m_maxCoolTime)
 	{
-		if (GetAsyncKeyState('1') & 0x8000)
+		if (GetAsyncKeyState('Q') & 0x8000)
 		{
 			if (!m_keyFlg)
 			{
@@ -165,7 +193,7 @@ void C_Player::ElementChange()
 			}
 
 		}
-		else if (GetAsyncKeyState('2') & 0x8000)
+		else if (GetAsyncKeyState('W') & 0x8000)
 		{
 
 			if (!m_keyFlg)
@@ -179,7 +207,7 @@ void C_Player::ElementChange()
 				}
 			}
 		}
-		else if (GetAsyncKeyState('3') & 0x8000)
+		else if (GetAsyncKeyState('E') & 0x8000)
 		{
 			if (!m_keyFlg)
 			{

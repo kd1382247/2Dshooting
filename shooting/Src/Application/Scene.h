@@ -24,12 +24,14 @@ public:
 	void ImGuiUpdate();
 
 	void SetTime(float a_time) { m_time = a_time; }
+	void SetDeg(float a_deg) { m_deg = a_deg; }
 
 private:
 
 	Scene() {}
 
 	float m_time;
+	float m_deg;
 
 public:
 	static Scene& GetInstance()

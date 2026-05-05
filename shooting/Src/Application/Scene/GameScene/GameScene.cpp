@@ -5,27 +5,27 @@
 #include"../../Object/Player/Player.h"
 #include"../../Object/Bullet/Bullet.h"
 #include"../../UI/GameUI.h"
-#include"../../Object/Enemy/Enemy.h"
-#include"../../Collision/CollisionManager.h"
-#include"../../Effect/HitEffect/HitEffect.h"
-#include"../../Effect/Explosion/Explosion.h"
-
+#include"../../Collision/Collision.h"
+// 敵
+#include"../../Object/Enemy//GearEnemy/GearEnemy.h"
+#include"../../Object/Enemy/SpikeEnemy/SpikeEnemy.h"
+#include"../../Object/Enemy/RushEnemy/RushEnemy.h"
+#include"../../Object/Enemy/ShotEnemy/ShotEnemy.h"
 
 void C_GameScene::Draw()
 {
 	m_gameUi->Draw();
+
 	for (int i = 0; i < m_objList.size(); i++)
 	{
 		m_objList[i]->Draw();
 	}
 
-	m_hitEffect->Draw();
 }
 
 void C_GameScene::Update()
 {
 
-	
 	m_gameUi->Update();
 
 	for (int i = 0; i < m_objList.size(); i++)
@@ -33,12 +33,10 @@ void C_GameScene::Update()
 		m_objList[i]->Update();
 	}
 	
-	m_collision->checkBulletEnemy();
-	m_collision->checkPlayerEnemy();
 
-	m_hitEffect->Update();
+	m_collision->Update();
 
-	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+	if (GetAsyncKeyState('7') & 0x8000)
 	{
 		C_SceneManager::GetInstance().SetNextSceneType(C_SceneManager::SceneType::Title);
 	}
@@ -48,29 +46,51 @@ void C_GameScene::Update()
 void C_GameScene::Init()
 {
 	m_gameUi = std::make_shared<C_GameUI>();
+
+
 	m_collision = std::make_shared<C_Collision>();
-	m_hitEffect = std::make_shared<C_HitEffect>();
-	m_explosion = std::make_shared<C_Explosion>();
 
-
+	
 	std::shared_ptr<C_Player>player;
 	player = std::make_shared<C_Player>();
 	m_objList.push_back(player);
 
+	// 歯車型の敵
+	std::shared_ptr<C_GearEnemy>gearEnemy;
+	gearEnemy = std::make_shared<C_GearEnemy>();
+	m_objList.push_back(gearEnemy);
+
+	// トゲ型の敵
+	std::shared_ptr<C_SpikeEnemy>spikeEnemy;
+	spikeEnemy = std::make_shared<C_SpikeEnemy>();
+	m_objList.push_back(spikeEnemy);
+
+	// 突進タイプの敵
+	std::shared_ptr<C_RushEnemy>rushEnemy;
+	rushEnemy = std::make_shared<C_RushEnemy>();
+	m_objList.push_back(rushEnemy);
+
+	// 弾を撃ってくるタイプの敵
+	std::shared_ptr<C_ShotEnemy>shotEnemy;
+	shotEnemy = std::make_shared<C_ShotEnemy>();
+	m_objList.push_back(shotEnemy);
+
+	// 弾
 	std::shared_ptr<C_Bullet>bullet;
 	bullet = std::make_shared<C_Bullet>();
 	m_objList.push_back(bullet);
 
-	std::shared_ptr<C_Enemy>enemy;
-	enemy = std::make_shared<C_Enemy>();
-	m_objList.push_back(enemy);
-
-
 
 	//インスタンス生成後にインスタンスを渡す
+	m_gameUi->SetInstance(player);
 	player->SetInstance(bullet);
 	bullet->SetInstance(player);
-	m_gameUi->SetInstance(player);
-	m_collision->SetInstance(player, bullet, enemy,m_hitEffect);
+
+	m_collision->SetInstance(player,
+		                     bullet,
+		                     gearEnemy,
+		                     spikeEnemy,
+		                     rushEnemy);
+
 
 }

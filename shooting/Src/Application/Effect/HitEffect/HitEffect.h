@@ -18,7 +18,7 @@ public:
 
 	void Draw();
 	void Update();
-	void SpawnEffect(Math::Vector2 a_pos);
+	void Spawn(Math::Vector2 a_pos);
 
 	
 private:
@@ -26,9 +26,8 @@ private:
 	void Init();
 	void Release();
 
-	KdTexture          m_collisionEfTex;
+	KdTexture    m_hitEffectTex;
 
-	static const int   collisionEfNum = 50;
-	S_HitEffect  s_collisionEf[collisionEfNum]{};
+	S_HitEffect  s_hitEffect={};
 
 };

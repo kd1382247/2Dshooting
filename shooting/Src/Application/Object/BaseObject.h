@@ -12,17 +12,23 @@ public:
 	virtual void Update()=0;
 	virtual void Init()=0;
 
-
-protected:
-
-	virtual void Release();
-
+	
 	enum Element
 	{
 		Fire,
 		Grass,
 		Water
 	};
+
+protected:
+
+	virtual void Release();
+
+	//画面端用の定数
+	static const int screenLeft = -640;  //左端
+	static const int screenRight = 640;  //右端
+	static const int screenTop = 360;    //上端
+	static const int screenBottom = -240;//下端
 
 	struct S_Object
 	{
@@ -36,5 +42,5 @@ protected:
 		Element       m_nowElement;
 	};
 
-	float         m_radius;
+	float         m_radius = {};
 };

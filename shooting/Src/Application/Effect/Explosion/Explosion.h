@@ -28,8 +28,7 @@ private:
 
 	KdTexture        m_explosionTex;
 
-	static const int explosionNum=50;
-	S_Explosion      s_explosion[explosionNum]{};
+	S_Explosion      s_explosion = {};
 
 
 };
