@@ -3,22 +3,14 @@
 
 class C_Exhaust;
 class C_Explosion;
-
+class C_EnemyBullet;
 
 class C_ShotEnemy :public C_BaseObject
 {
 public:
 
 
-	struct S_EnemyBullet
-	{
-		Math::Vector2 m_pos;
-		Math::Vector2 m_move;
-		Math::Matrix  m_mat;
-		bool          m_aliveFlg;
-		bool          m_radius;
-		Element       m_nowElement;
-	};
+	
 
 	C_ShotEnemy() { Init(); }
 	~C_ShotEnemy() override{ Release(); }
@@ -36,29 +28,29 @@ public:
 	void damage(int a_i) { m_hp[a_i]--; }
 	void SetHp(int a_hp, int a_i) { m_hp[a_i] = a_hp; }
 
+	void SetInstance(std::shared_ptr<C_EnemyBullet>a_enemyBullet) { m_enemyBullet = a_enemyBullet; }
+
 private:
 
 	void Init()override;
 	void Release()override;
 
-	void MoveEnemy();
+	void Move();
 	void AliveState();
-	void Shot(Math::Vector2 a_pos,Element a_nowElemet);
+	void Action();
 
-	void MoveBullet();
+
+
 
 	KdTexture m_shotEnemyTex;
 	static const int shotEnemyNum = 12;
 	S_Object  s_shotEnemy[shotEnemyNum] = {};
+	bool      m_shotFlg[shotEnemyNum] = {};
+	float     m_shotWait[shotEnemyNum] = {};
+	int       m_shotCnt[shotEnemyNum] = {};
+	float     m_coolTime[shotEnemyNum] = {};
 
-	// 弾
-	KdTexture        m_enemyBulletTex;
-	static const int enemyBulletNum = 24;
-	S_EnemyBullet    s_enemyBullet[enemyBulletNum] = {};
-	const float      m_bulletMoveSpeed = -5;
-	
-
-	const float      m_moveSpeedX = -1.5f;
+	const float      m_moveSpeedX = -1.0f;
 
 	float            m_hp[shotEnemyNum] = {};
 	
@@ -66,8 +58,12 @@ private:
 	// 排気エフェクト
 	std::shared_ptr<C_Exhaust>m_exhaust[shotEnemyNum];
 	const float               m_exhaustAngle = 90.0f;
+	const float               m_exhaustDistance = 38;
 
 
 	std::shared_ptr<C_Explosion>m_explosion[shotEnemyNum];
+
+	std::shared_ptr<C_EnemyBullet>m_enemyBullet;
+
 
 };

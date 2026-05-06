@@ -4,6 +4,7 @@
 
 #include"../../Object/Player/Player.h"
 #include"../../Object/Bullet/Bullet.h"
+#include"../../Object/Enemy/ShotEnemy/EnemyBullet.h"
 #include"../../UI/GameUI.h"
 #include"../../Collision/Collision.h"
 // 敵
@@ -75,22 +76,30 @@ void C_GameScene::Init()
 	shotEnemy = std::make_shared<C_ShotEnemy>();
 	m_objList.push_back(shotEnemy);
 
-	// 弾
+	// プレイヤーの弾
 	std::shared_ptr<C_Bullet>bullet;
 	bullet = std::make_shared<C_Bullet>();
 	m_objList.push_back(bullet);
+
+	// 敵の弾
+	std::shared_ptr<C_EnemyBullet>enemyBullet;
+	enemyBullet = std::make_shared<C_EnemyBullet>();
+	m_objList.push_back(enemyBullet);
 
 
 	//インスタンス生成後にインスタンスを渡す
 	m_gameUi->SetInstance(player);
 	player->SetInstance(bullet);
 	bullet->SetInstance(player);
+	shotEnemy->SetInstance(enemyBullet);
 
 	m_collision->SetInstance(player,
 		                     bullet,
+		                     enemyBullet,
 		                     gearEnemy,
 		                     spikeEnemy,
-		                     rushEnemy);
+		                     rushEnemy,
+							 shotEnemy);
 
 
 }

@@ -2,10 +2,11 @@
 
 #include"../Object/Player/Player.h"
 #include"../Object/Bullet/Bullet.h"
-
+#include"../Object/Enemy/ShotEnemy/EnemyBullet.h"
 #include"../Object/Enemy/GearEnemy/GearEnemy.h"
 #include"../Object/Enemy/SpikeEnemy/SpikeEnemy.h"
 #include"../Object/Enemy/RushEnemy/RushEnemy.h"
+#include"../Object/Enemy/ShotEnemy/ShotEnemy.h"
 
 
 void C_Collision::Update()
@@ -18,6 +19,10 @@ void C_Collision::Update()
 
 	CheckBulletRushEnemy();
 	CheckPlayerRushEnemy();
+
+	CheckBulletShotEnemy();
+	CheckPlayerShotEnemy();
+	CheckPlayerEnemyBullet();
 
 }
 
@@ -132,4 +137,59 @@ void C_Collision::CheckPlayerRushEnemy()
 			}
 		}
 	}
+}
+
+void C_Collision::CheckBulletShotEnemy()
+{
+	for (int i = 0; i < m_shotEnemy->GetNum(); i++)
+	{
+		for (int j = 0; j < m_bullet->GetNum(); j++)
+		{
+			if (m_shotEnemy->GetAliveFlg(i) && m_bullet->GetAliveFlg(j))
+			{
+				Math::Vector2 pos = m_shotEnemy->GetPos(i) - m_bullet->GetPos(j);
+
+				if (pos.Length() < m_bullet->GetRadius() + m_shotEnemy->GetRadius())
+				{
+					m_shotEnemy->damage(i);
+					m_bullet->SetHitFlg(j, true);
+				}
+			}
+		}
+	}
+}
+
+void C_Collision::CheckPlayerShotEnemy()
+{
+	for (int i = 0; i < m_shotEnemy->GetNum(); i++)
+	{
+		if (m_shotEnemy->GetAliveFlg(i) && m_player->GetAliveFlg())
+		{
+			Math::Vector2 pos = m_player->GetPos() - m_shotEnemy->GetPos(i);
+
+
+			if (pos.Length() < m_player->GetRadius() + m_shotEnemy->GetRadius())
+			{
+				m_shotEnemy->SetHp(0, i);
+			}
+		}
+	}
+}
+
+void C_Collision::CheckPlayerEnemyBullet()
+{
+
+	for (int i = 0; i < m_enemyBullet->GetNum(); i++)
+	{
+		if (m_enemyBullet->GetAliveFlg(i) && m_player->GetAliveFlg())
+		{
+			Math::Vector2 pos = m_player->GetPos() - m_enemyBullet->GetPos(i);
+
+			if (pos.Length() < m_player->GetRadius() + m_enemyBullet->GetRadius())
+			{
+				m_enemyBullet->SetHitFlg(i, true);
+			}
+		}
+	}
+
 }

@@ -168,6 +168,7 @@
     <ClInclude Include="Src\Application\Object\Bullet\Bullet.h" />
     <ClInclude Include="Src\Application\Object\Enemy\GearEnemy\GearEnemy.h" />
     <ClInclude Include="Src\Application\Object\Enemy\RushEnemy\RushEnemy.h" />
+    <ClInclude Include="Src\Application\Object\Enemy\ShotEnemy\EnemyBullet.h" />
     <ClInclude Include="Src\Application\Object\Enemy\ShotEnemy\ShotEnemy.h" />
     <ClInclude Include="Src\Application\Object\Enemy\SpikeEnemy\SpikeEnemy.h" />
     <ClInclude Include="Src\Application\Object\Player\Player.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="Src\Application\Object\Bullet\Bullet.cpp" />
     <ClCompile Include="Src\Application\Object\Enemy\GearEnemy\GearEnemy.cpp" />
     <ClCompile Include="Src\Application\Object\Enemy\RushEnemy\RushEnemy.cpp" />
+    <ClCompile Include="Src\Application\Object\Enemy\ShotEnemy\EnemyBullet.cpp" />
     <ClCompile Include="Src\Application\Object\Enemy\ShotEnemy\ShotEnemy.cpp" />
     <ClCompile Include="Src\Application\Object\Enemy\SpikeEnemy\SpikeEnemy.cpp" />
     <ClCompile Include="Src\Application\Object\Player\Player.cpp" />

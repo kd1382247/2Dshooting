@@ -170,7 +170,7 @@ void C_Player::CoolTime()
 
 void C_Player::Shoot()
 {
-	m_bullet->SpawnBullet();
+	m_bullet->Spawn(s_player.m_pos,s_player.m_nowElement);
 }
 
 

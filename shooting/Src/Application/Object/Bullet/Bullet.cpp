@@ -44,7 +44,7 @@ void C_Bullet::Init()
 	}
 }
 
-void C_Bullet::SpawnBullet()
+void C_Bullet::Spawn(Math::Vector2 a_pos,Element a_nowElement)
 {
 
 	if(m_shotWait==0)
@@ -56,12 +56,9 @@ void C_Bullet::SpawnBullet()
 				s_bullet[i].m_aliveFlg = true;
 				s_bullet[i].m_move = { m_bulletSpeed,0 };
 
-				if (m_player->GetNowElement() == Element::Fire)s_bullet[i].m_nowElement = Element::Fire;
-				if (m_player->GetNowElement() == Element::Grass)s_bullet[i].m_nowElement = Element::Grass;
-				if (m_player->GetNowElement() == Element::Water)s_bullet[i].m_nowElement = Element::Water;
-
+				s_bullet[i].m_nowElement = a_nowElement;
 				
-				s_bullet[i].m_pos = { m_player->GetPos().x + 20,m_player->GetPos().y };
+				s_bullet[i].m_pos = { a_pos.x + 20,a_pos.y };
 				m_hitFlg[i] = false;
 				m_shotWait = 10;
 				break;

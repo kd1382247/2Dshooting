@@ -2,6 +2,7 @@
 
 #include"../../../Effect/Exhaust/Exhaust.h"
 #include"../../../Effect/Explosion/Explosion.h"
+#include"EnemyBullet.h"
 
 void C_ShotEnemy::Draw()
 {
@@ -12,17 +13,7 @@ void C_ShotEnemy::Draw()
 		if (s_shotEnemy[i].m_aliveFlg)
 		{
 			SHADER.m_spriteShader.SetMatrix(s_shotEnemy[i].m_mat);
-			SHADER.m_spriteShader.DrawTex(&m_shotEnemyTex, Math::Rectangle( 0, 0, 96, 96), 1.0f);
-		}
-	}
-
-	// 弾
-	for (int i = 0; i < enemyBulletNum; i++)
-	{
-		if (s_enemyBullet[i].m_aliveFlg)
-		{
-			SHADER.m_spriteShader.SetMatrix(s_enemyBullet[i].m_mat);
-			SHADER.m_spriteShader.DrawTex(&m_enemyBulletTex, Math::Rectangle(0, 0, 96, 96), 1.0f);
+			SHADER.m_spriteShader.DrawTex(&m_shotEnemyTex, Math::Rectangle( (int)s_shotEnemy[i].m_nowElement*96, 0, 96, 96), 1.0f);
 		}
 	}
 
@@ -43,13 +34,14 @@ void C_ShotEnemy::Draw()
 void C_ShotEnemy::Update()
 {
 	AliveState();
-	MoveEnemy();
-	MoveBullet();
+	Move();
+	Action();
+
 
 	// 排気エフェクト
 	for (int i = 0; i < shotEnemyNum; i++)
 	{
-		m_exhaust[i]->Update(s_shotEnemy[i].m_aliveFlg, s_shotEnemy[i].m_pos, m_exhaustAngle, 38.0f);
+		m_exhaust[i]->Update(s_shotEnemy[i].m_aliveFlg, s_shotEnemy[i].m_pos, m_exhaustAngle, m_exhaustDistance);
 	}
 
 	// 爆破エフェクト
@@ -72,6 +64,10 @@ void C_ShotEnemy::Spawn()
 			m_hp[i] = 5;
 			int random = rand() % 461 - 200;
 			s_shotEnemy[i].m_pos.y = random;
+			m_shotFlg[i] = false;
+			m_shotWait[i] = 0.0f;
+			m_coolTime[i] = 0.0f;
+			m_shotCnt[i] = 0;
 		}
 	}
 
@@ -100,6 +96,8 @@ void C_ShotEnemy::Init()
 
 	m_shotEnemyTex.Load("Textures/Enemy/shotEnemy.png");
 
+	m_enemyBullet = std::make_shared<C_EnemyBullet>();
+
 	Spawn();
 
 	for (int i = 0; i < shotEnemyNum; i++)
@@ -120,11 +118,25 @@ void C_ShotEnemy::Release()
 	m_shotEnemyTex.Release();
 }
 
-void C_ShotEnemy::MoveEnemy()
+void C_ShotEnemy::Move()
 {
 	
-
-
+	for (int i = 0; i < shotEnemyNum; i++)
+	{
+		if (s_shotEnemy[i].m_aliveFlg)
+		{
+			if (s_shotEnemy[i].m_pos.x < 640)
+			{
+				m_shotFlg[i] = true;
+				m_shotWait[i]--;
+				if (m_shotWait[i] < 0)
+				{
+					m_shotWait[i] = 0;
+				}
+			
+			}
+		}
+	}
 
 	// 行列作成＋座標更新
 	for (int i = 0; i < shotEnemyNum; i++)
@@ -148,7 +160,7 @@ void C_ShotEnemy::AliveState()
 	{
 		if (s_shotEnemy[i].m_aliveFlg)
 		{
-			if (s_shotEnemy[i].m_pos.x < screenLeft - m_radius - 20)
+			if (s_shotEnemy[i].m_pos.x < screenLeft - m_radius - m_exhaustDistance)
 			{
 				s_shotEnemy[i].m_aliveFlg = false;
 			}
@@ -169,34 +181,31 @@ void C_ShotEnemy::AliveState()
 	}
 }
 
-void C_ShotEnemy::Shot(Math::Vector2 a_pos,Element a_nowElement)
+void C_ShotEnemy::Action()
 {
-	for (int i = 0; i < enemyBulletNum; i++)
+	for (int i = 0; i < shotEnemyNum; i++)
 	{
-		if (!s_enemyBullet[i].m_aliveFlg)
+		if (s_shotEnemy[i].m_aliveFlg)
 		{
-			s_enemyBullet[i].m_aliveFlg = true;
-			s_enemyBullet[i].m_pos = a_pos;
-			s_enemyBullet[i].m_nowElement = a_nowElement;
-			s_enemyBullet[i].m_move = { m_bulletMoveSpeed,0 };
+			if (m_shotFlg[i])
+			{
+				m_coolTime[i]++;
+				if(m_coolTime[i]>60*3)
+				{
+					if (m_shotWait[i] == 0)
+					{
+						m_enemyBullet->Spawn(s_shotEnemy[i].m_pos, s_shotEnemy[i].m_nowElement);
+						m_shotWait[i] = 20;
+						m_shotCnt[i]++;
+						if (m_shotCnt[i] >= 3)
+						{
+							m_shotCnt[i] = 0;
+							m_coolTime[i] = 0.0f;
+						}
+					}
+				}
+			}
 		}
 	}
-
 }
-
-void C_ShotEnemy::MoveBullet()
-{
-	for (int i = 0; i < enemyBulletNum; i++)
-	{
-		if (s_enemyBullet[i].m_aliveFlg)
-		{
-			s_enemyBullet[i].m_pos += s_enemyBullet[i].m_move;
-
-			s_enemyBullet[i].m_mat = Math::Matrix::CreateTranslation(s_enemyBullet[i].m_pos.x, s_enemyBullet[i].m_pos.y, 0);
-		}
-	}
-	
-}
-
-
 

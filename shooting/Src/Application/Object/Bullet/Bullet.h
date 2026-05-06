@@ -19,7 +19,7 @@ public:
 	
 	void SetInstance(std::shared_ptr<C_Player> a_player) { m_player = a_player; }
 
-	void SpawnBullet();
+	void Spawn(Math::Vector2 a_pos,Element a_nowElement);
 
 	Math::Vector2 GetPos(int a_i) { return s_bullet[a_i].m_pos; }
 	float         GetRadius() { return m_radius; }
