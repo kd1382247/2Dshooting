@@ -19,10 +19,7 @@ public:
 	int           GetNum() { return gearEnemyNum; }
 	bool          GetAliveFlg(int a_i) { return s_gearEnemy[a_i].m_aliveFlg; }
 
-	void SetAliveFlg(int a_i, bool a_flg) { s_gearEnemy[a_i].m_aliveFlg = a_flg; }
-
-
-	void damage(int a_i) { m_hp[a_i]--; }
+	void Damage(int a_i) { m_hp[a_i]--; }
 	void SetHp(int a_hp,int a_i) { m_hp[a_i] = a_hp; }
 
 	Element GetElement(int a_i) { return s_gearEnemy[a_i].m_nowElement; }

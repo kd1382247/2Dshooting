@@ -25,7 +25,7 @@ public:
 	float         GetRadius() { return m_radius; }
 	int           GetNum() { return shotEnemyNum; }
 	bool          GetAliveFlg(int a_i) { return s_shotEnemy[a_i].m_aliveFlg; }
-	void damage(int a_i) { m_hp[a_i]--; }
+	void Damage(int a_i) { m_hp[a_i]--; }
 	void SetHp(int a_hp, int a_i) { m_hp[a_i] = a_hp; }
 
 	void SetInstance(std::shared_ptr<C_EnemyBullet>a_enemyBullet) { m_enemyBullet = a_enemyBullet; }

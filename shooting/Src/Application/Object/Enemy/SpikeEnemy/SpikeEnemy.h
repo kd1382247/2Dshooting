@@ -35,8 +35,11 @@ public:
 	float         GetRadius() { return m_radius; }
 	int           GetNum() { return spikeEnemyNum; }
 	bool          GetAliveFlg(int a_i) { return s_spikeEnemy[a_i].m_aliveFlg; }
-	void damage(int a_i) { m_hp[a_i]--; }
+	void Damage(int a_i) { m_hp[a_i]--; }
 	void SetHp(int a_hp, int a_i) { m_hp[a_i] = a_hp; }
+
+
+	Element GetElement(int a_i) { return s_spikeEnemy[a_i].m_nowElement; }
 
 private:
 

@@ -1,6 +1,6 @@
 #include "Bullet.h"
 
-#include"../Player/Player.h"
+
 #include"../../Effect/HitEffect/HitEffect.h"
 void C_Bullet::Draw()
 {

@@ -7,6 +7,8 @@ class C_GearEnemy;
 class C_SpikeEnemy;
 class C_RushEnemy;
 class C_ShotEnemy;
+class C_Boss;
+
 
 class C_Collision
 {
@@ -23,7 +25,8 @@ public:
 		             std::shared_ptr<C_GearEnemy>a_gearEnemy,
 		             std::shared_ptr<C_SpikeEnemy>a_spikeEnemy,
 		             std::shared_ptr<C_RushEnemy>a_rushEnemy,
-					 std::shared_ptr<C_ShotEnemy>a_shotEnemy)
+					 std::shared_ptr<C_ShotEnemy>a_shotEnemy,
+					 std::shared_ptr<C_Boss>a_boss)
 	{
 		m_player = a_player;
 		m_bullet = a_bulle;
@@ -32,6 +35,7 @@ public:
 		m_spikeEnemy = a_spikeEnemy;
 		m_rushEnemy = a_rushEnemy;
 		m_shotEnemy = a_shotEnemy;
+		m_boss = a_boss;
 	}
 	
 
@@ -55,6 +59,17 @@ private:
 	void CheckPlayerEnemyBullet();
 
 
+	// ボスとの当たり判定
+	void CheckBulletBoss();
+	void CheckPlayerBoss();
+
+	// ボスの周りの雑魚敵との判定
+	void CheckBulletSubEnemy();
+	void CheckPlayerSubEnemy();
+
+
+
+
 
 	std::shared_ptr<C_Player>m_player=nullptr;
 	std::shared_ptr<C_Bullet>m_bullet=nullptr;
@@ -63,5 +78,6 @@ private:
 	std::shared_ptr<C_SpikeEnemy>m_spikeEnemy = nullptr;
 	std::shared_ptr<C_RushEnemy>m_rushEnemy = nullptr;
 	std::shared_ptr<C_ShotEnemy>m_shotEnemy = nullptr;
+	std::shared_ptr<C_Boss>m_boss = nullptr;
 
 };

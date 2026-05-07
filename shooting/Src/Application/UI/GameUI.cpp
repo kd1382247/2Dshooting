@@ -5,15 +5,6 @@
 void C_GameUI::Draw()
 {
 
-	//背景描画
-	SHADER.m_spriteShader.SetMatrix(s_background.m_mat);
-	SHADER.m_spriteShader.DrawTex(&m_backgroundTex, Math::Rectangle(0, 0, 1280, 720), 1.0f);
-
-
-	//星描画
-	SHADER.m_spriteShader.SetMatrix(s_stars.m_mat);
-	SHADER.m_spriteShader.DrawTex(&m_starsTex, Math::Rectangle((int)m_starAnimCnt * 1280, 0, 1280, 720), 1.0f);
-
 
 	//HUD描画
 	SHADER.m_spriteShader.SetMatrix(s_hudPanel.m_mat);
@@ -47,6 +38,18 @@ void C_GameUI::Draw()
 	// 水アイコン描画
 	SHADER.m_spriteShader.SetMatrix(s_waterIcon.m_mat);
 	SHADER.m_spriteShader.DrawTex(&m_waterIconTex, Math::Rectangle(0, 0, 64, 100), m_waterAlpha);
+}
+
+void C_GameUI::Draw2()
+{
+	//背景描画
+	SHADER.m_spriteShader.SetMatrix(s_background.m_mat);
+	SHADER.m_spriteShader.DrawTex(&m_backgroundTex, Math::Rectangle(0, 0, 1280, 720), 1.0f);
+
+
+	//星描画
+	SHADER.m_spriteShader.SetMatrix(s_stars.m_mat);
+	SHADER.m_spriteShader.DrawTex(&m_starsTex, Math::Rectangle((int)m_starAnimCnt * 1280, 0, 1280, 720), 1.0f);
 }
 
 void C_GameUI::Init()

@@ -7,6 +7,7 @@
 #include"../Object/Enemy/SpikeEnemy/SpikeEnemy.h"
 #include"../Object/Enemy/RushEnemy/RushEnemy.h"
 #include"../Object/Enemy/ShotEnemy/ShotEnemy.h"
+#include"../Object/Boss/Boss.h"
 
 
 void C_Collision::Update()
@@ -24,6 +25,12 @@ void C_Collision::Update()
 	CheckPlayerShotEnemy();
 	CheckPlayerEnemyBullet();
 
+	CheckBulletBoss();
+	CheckPlayerBoss();
+	CheckBulletSubEnemy();
+	CheckPlayerSubEnemy();
+
+
 }
 
 void C_Collision::CheckBulletGearEnemy()
@@ -38,7 +45,7 @@ void C_Collision::CheckBulletGearEnemy()
 				
 				if (pos.Length() < m_gearEnemy->GetRadius() + m_bullet->GetRadius())
 				{
-					m_gearEnemy->damage(i);
+					m_gearEnemy->Damage(i);
 					m_bullet->SetHitFlg(j, true);
 				}
 			}
@@ -75,7 +82,7 @@ void C_Collision::CheckBulletSpikeEnemy()
 
 				if (pos.Length() < m_bullet->GetRadius() + m_spikeEnemy->GetRadius())
 				{
-					m_spikeEnemy->damage(i);
+					m_spikeEnemy->Damage(i);
 					m_bullet->SetHitFlg(j, true);
 				}
 			}
@@ -114,7 +121,7 @@ void C_Collision::CheckBulletRushEnemy()
 
 				if (pos.Length() < m_bullet->GetRadius() + m_rushEnemy->GetRadius())
 				{
-					m_rushEnemy->damage(i);
+					m_rushEnemy->Damage(i);
 					m_bullet->SetHitFlg(j, true);
 				}
 			}
@@ -151,7 +158,7 @@ void C_Collision::CheckBulletShotEnemy()
 
 				if (pos.Length() < m_bullet->GetRadius() + m_shotEnemy->GetRadius())
 				{
-					m_shotEnemy->damage(i);
+					m_shotEnemy->Damage(i);
 					m_bullet->SetHitFlg(j, true);
 				}
 			}
@@ -192,4 +199,114 @@ void C_Collision::CheckPlayerEnemyBullet()
 		}
 	}
 
+}
+
+void C_Collision::CheckBulletBoss()
+{
+	for (int i = 0; i < m_bullet->GetNum(); i++)
+	{
+		if (m_bullet->GetAliveFlg(i) && m_boss->BossGetAliveFlg())
+		{
+			Math::Vector2 pos = m_bullet->GetPos(i) - m_boss->BossGetPos();
+
+			if (pos.Length() < m_bullet->GetRadius() + m_boss->BossGetRadius())
+			{
+				m_bullet->SetHitFlg(i,true);
+			}
+		}
+	}
+}
+
+void C_Collision::CheckPlayerBoss()
+{
+
+	if (m_player->GetAliveFlg() && m_boss->BossGetAliveFlg())
+	{
+		Math::Vector2 pos = m_player->GetPos() - m_boss->BossGetPos();
+
+		if (pos.Length() < m_player->GetRadius() + m_boss->BossGetRadius())
+		{
+			
+		}
+	}
+
+
+}
+
+void C_Collision::CheckBulletSubEnemy()
+{
+
+	// 歯車型の敵との判定
+	for (int i = 0; i < m_bullet->GetNum(); i++)
+	{
+		for (int j = 0; j < m_boss->GEnemyGetNum(); j++)
+		{
+			if (m_bullet->GetAliveFlg(i) && m_boss->GEnemyGetAliveFlg(j))
+			{
+				Math::Vector2 pos = m_boss->GEnemyGetPos(j) - m_bullet->GetPos(i);
+
+				if (pos.Length() < m_boss->GEnemyGetRadius() + m_bullet->GetRadius())
+				{
+					m_bullet->SetHitFlg(i, true);
+					m_boss->GEnemyDamage(j);
+				}
+			}
+		}
+	}
+
+
+	// トゲ型の敵との判定
+	for (int i = 0; i < m_bullet->GetNum(); i++)
+	{
+		for (int j = 0; j < m_boss->SEnemyGetNum(); j++)
+		{
+			if(m_bullet->GetAliveFlg(i)&&m_boss->SEnemyGetAliveFlg(j))
+			{
+				Math::Vector2 pos = m_boss->SEnemyGetPos(j) - m_bullet->GetPos(i);
+
+				if (pos.Length() < m_boss->SEnemyGetRadius() + m_bullet->GetRadius())
+				{
+					m_bullet->SetHitFlg(i, true);
+					m_boss->SEnemyDamage(j);
+				}
+			}
+		}
+	}
+
+
+
+}
+
+void C_Collision::CheckPlayerSubEnemy()
+{
+	// 歯車型の敵との判定
+	for (int i = 0; i < m_boss->GEnemyGetNum(); i++)
+	{
+		if (m_player->GetAliveFlg() && m_boss->GEnemyGetAliveFlg(i))
+		{
+			Math::Vector2 pos = m_boss->GEnemyGetPos(i) - m_player->GetPos();
+
+			if (pos.Length() < m_player->GetRadius() + m_boss->GEnemyGetRadius())
+			{
+				m_boss->GEnemySetHp(0, i);
+			}
+		}
+	}
+
+
+
+	// トゲ型の敵との判定
+
+	for (int i = 0; i < m_boss->SEnemyGetNum(); i++)
+	{
+		if (m_player->GetAliveFlg() && m_boss->SEnemyGetAliveFlg(i))
+		{
+			Math::Vector2 pos = m_boss->SEnemyGetPos(i) - m_player->GetPos();
+
+			if (pos.Length() < m_player->GetRadius() + m_boss->SEnemyGetRadius())
+			{
+				m_boss->SEnemySetHp(0, i);
+			}
+		}
+	}
 }

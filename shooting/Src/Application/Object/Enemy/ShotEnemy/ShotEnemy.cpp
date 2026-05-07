@@ -66,7 +66,7 @@ void C_ShotEnemy::Spawn()
 			s_shotEnemy[i].m_pos.y = random;
 			m_shotFlg[i] = false;
 			m_shotWait[i] = 0.0f;
-			m_coolTime[i] = 0.0f;
+			m_coolTime[i] = 60*2.0f;
 			m_shotCnt[i] = 0;
 		}
 	}
@@ -105,7 +105,7 @@ void C_ShotEnemy::Init()
 		m_exhaust[i] = std::make_shared<C_Exhaust>();
 	}
 
-	m_radius = 30;
+	m_radius = 40;
 
 	for (int i = 0; i < shotEnemyNum; i++)
 	{

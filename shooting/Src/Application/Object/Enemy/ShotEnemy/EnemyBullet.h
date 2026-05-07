@@ -18,7 +18,7 @@ public:
 	};
 
 	C_EnemyBullet() { Init(); }
-	~C_EnemyBullet() { Release(); }
+	~C_EnemyBullet() override{ Release(); }
 
 
 	void Draw()override;

@@ -6,7 +6,7 @@
 class C_BaseObject;
 class C_GameUI;
 class C_Collision;
-
+class C_Boss;
 
 class C_GameScene :public C_BaseScene
 {
@@ -27,6 +27,9 @@ private:
 	std::shared_ptr<C_GameUI> m_gameUi;
 
 	std::shared_ptr<C_Collision>m_collision;
+
+
+	std::shared_ptr<C_Boss>m_boss;
 
 	std::vector<std::shared_ptr<C_BaseObject>>m_objList;
 

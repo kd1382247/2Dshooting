@@ -46,7 +46,7 @@ public:
 	float         GetRadius() { return m_radius; }
 	int           GetNum() { return rushEnemyNum; }
 	bool          GetAliveFlg(int a_i) { return s_rushEnemy[a_i].m_aliveFlg; }
-	void damage(int a_i) { m_hp[a_i]--; }
+	void Damage(int a_i) { m_hp[a_i]--; }
 	void SetHp(int a_hp, int a_i) { m_hp[a_i] = a_hp; }
 
 private:

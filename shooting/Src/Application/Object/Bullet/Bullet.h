@@ -2,7 +2,6 @@
 #include"../BaseObject.h"
 
 
-class C_Player;
 class C_HitEffect;
 
 class C_Bullet:public C_BaseObject
@@ -17,7 +16,6 @@ public:
 	void Draw();
 	void Update();
 	
-	void SetInstance(std::shared_ptr<C_Player> a_player) { m_player = a_player; }
 
 	void Spawn(Math::Vector2 a_pos,Element a_nowElement);
 
@@ -45,7 +43,6 @@ private:
 
 	int              m_shotWait;
 
-	std::shared_ptr<C_Player>m_player;
 
 	std::shared_ptr<C_HitEffect>m_hitEffect[bulletNum];
 

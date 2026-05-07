@@ -17,6 +17,7 @@ public:
 	~C_GameUI() { Release(); }
 
 	void Draw();
+	void Draw2();
 	void Update();
 	
 	void SetInstance(std::shared_ptr<C_Player>a_player) { m_player = a_player; }

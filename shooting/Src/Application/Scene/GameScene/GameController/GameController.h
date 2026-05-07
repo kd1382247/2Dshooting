@@ -7,6 +7,8 @@ public:
 	C_GameController() {}
 	~C_GameController(){}
 
+	
+
 
 private:
 

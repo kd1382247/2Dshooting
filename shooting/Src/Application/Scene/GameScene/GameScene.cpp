@@ -12,16 +12,24 @@
 #include"../../Object/Enemy/SpikeEnemy/SpikeEnemy.h"
 #include"../../Object/Enemy/RushEnemy/RushEnemy.h"
 #include"../../Object/Enemy/ShotEnemy/ShotEnemy.h"
+// ボス
+#include"../../Object/Boss/Boss.h"
 
 void C_GameScene::Draw()
 {
-	m_gameUi->Draw();
+	m_gameUi->Draw2();
+
+
+	m_boss->Draw();
 
 	for (int i = 0; i < m_objList.size(); i++)
 	{
 		m_objList[i]->Draw();
 	}
 
+	
+
+	m_gameUi->Draw();
 }
 
 void C_GameScene::Update()
@@ -34,6 +42,7 @@ void C_GameScene::Update()
 		m_objList[i]->Update();
 	}
 	
+	m_boss->Update();
 
 	m_collision->Update();
 
@@ -50,6 +59,9 @@ void C_GameScene::Init()
 
 
 	m_collision = std::make_shared<C_Collision>();
+
+	m_boss = std::make_shared<C_Boss>();
+
 
 	
 	std::shared_ptr<C_Player>player;
@@ -90,8 +102,8 @@ void C_GameScene::Init()
 	//インスタンス生成後にインスタンスを渡す
 	m_gameUi->SetInstance(player);
 	player->SetInstance(bullet);
-	bullet->SetInstance(player);
 	shotEnemy->SetInstance(enemyBullet);
+	m_boss->SetInstance(player);
 
 	m_collision->SetInstance(player,
 		                     bullet,
@@ -99,7 +111,8 @@ void C_GameScene::Init()
 		                     gearEnemy,
 		                     spikeEnemy,
 		                     rushEnemy,
-							 shotEnemy);
+							 shotEnemy,
+							 m_boss);
 
 
 }

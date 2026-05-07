@@ -105,7 +105,7 @@ void C_RushEnemy::Init()
 		m_exhaust[i] = std::make_shared<C_Exhaust>();
 	}
 
-	m_radius = 30;
+	m_radius = 35;
 
 	for(int i=0;i<rushEnemyNum;i++)
 	{
