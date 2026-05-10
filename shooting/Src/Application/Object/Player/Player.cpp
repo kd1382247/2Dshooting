@@ -11,7 +11,7 @@ void C_Player::Draw()
 	if (s_player.m_aliveFlg)
 	{
 		SHADER.m_spriteShader.SetMatrix(s_player.m_mat);
-		SHADER.m_spriteShader.DrawTex(&m_playerTex, Math::Rectangle((int)e_playerMotion * 96, (int)s_player.m_nowElement * 96, 96, 96), 1.0f);
+		SHADER.m_spriteShader.DrawTex(&m_playerTex, Math::Rectangle((int)e_playerMotion * 96, (int)s_player.m_nowElement * 96, 96, 96), m_alpha);
 	}
 	
 	m_exhaust->Draw(s_player.m_aliveFlg);
@@ -29,7 +29,9 @@ void C_Player::Update()
 			Shoot();
 		}
 
-		CoolTime();
+		HitCoolTime();
+
+		ElementChangeCoolTime();
 
 		m_timeCnt++;
 		if (m_timeCnt > 60 * 1)
@@ -39,9 +41,11 @@ void C_Player::Update()
 			SCENE.SetTime(m_time);
 		}
 
+		SCENE.SetDamage(m_hoge);
+
 		ElementChange();
 
-		m_changeEffect->Update(s_player.m_pos);
+		m_changeEffect->Update(s_player.m_pos,1);
 
 		m_exhaust->Update(s_player.m_aliveFlg,s_player.m_pos, m_exhaustAngle,-38);
 
@@ -53,7 +57,6 @@ void C_Player::Update()
 
 void C_Player::Init()
 {
-
 	m_exhaust = std::make_shared<C_Exhaust>();
 	m_changeEffect = std::make_shared<C_ChangeEffect>();
 
@@ -76,6 +79,11 @@ void C_Player::Init()
 	m_keyFlg = false;
 
 	m_radius = 25.0f;
+
+	m_alpha = 1.0f;
+	m_flashCnt = 0;
+
+
 }
 
 void C_Player::Release()
@@ -155,15 +163,40 @@ void C_Player::Move()
 
 }
 
-void C_Player::CoolTime()
+void C_Player::ElementChangeCoolTime()
 {
 
 	if (m_frame > 60 * 0.01)
 	{
 		m_frame = 0.0f;
-		if (m_coolTime < m_maxCoolTime)
+		if (m_elChangeCoolTime < m_maxElChangeCoolTime)
 		{
-			m_coolTime++;
+			m_elChangeCoolTime++;
+		}
+	}
+}
+
+void C_Player::HitCoolTime()
+{
+	if (m_hitCoolTimeFlg)
+	{
+		if (m_flashCnt == 60 * 0.1)
+		{
+			m_alpha = 0.4f;
+		}
+		else if (m_flashCnt == 60 * 0.2)
+		{
+			m_alpha = 1.0f;
+			m_flashCnt = 0;
+		}
+
+		m_flashCnt++;
+		m_hitCoolTime++;
+		if (m_hitCoolTime > 60 * 1.5)
+		{
+			m_hitCoolTime = 0;
+			m_hitCoolTimeFlg = false;
+			m_alpha = 1.0f;
 		}
 	}
 }
@@ -177,7 +210,7 @@ void C_Player::Shoot()
 void C_Player::ElementChange()
 {
 
-	if(m_coolTime==m_maxCoolTime)
+	if(m_elChangeCoolTime==m_maxElChangeCoolTime)
 	{
 		if (GetAsyncKeyState('Q') & 0x8000)
 		{
@@ -188,7 +221,7 @@ void C_Player::ElementChange()
 					m_changeEffect->SetAliveFlg(true);
 					s_player.m_nowElement = Element::Fire;
 					m_keyFlg = true;
-					m_coolTime = 0.0f;
+					m_elChangeCoolTime = 0.0f;
 				}
 			}
 
@@ -203,7 +236,7 @@ void C_Player::ElementChange()
 					m_changeEffect->SetAliveFlg(true);
 					s_player.m_nowElement = Element::Grass;
 					m_keyFlg = true;
-					m_coolTime = 0.0f;
+					m_elChangeCoolTime = 0.0f;
 				}
 			}
 		}
@@ -216,7 +249,7 @@ void C_Player::ElementChange()
 					m_changeEffect->SetAliveFlg(true);
 					s_player.m_nowElement = Element::Water;
 					m_keyFlg = true;
-					m_coolTime = 0.0f;
+					m_elChangeCoolTime = 0.0f;
 				}
 			}
 		}

@@ -103,6 +103,18 @@
     <Filter Include="Src\Application\Object\Boss">
       <UniqueIdentifier>{d73fe80a-196b-4078-8c56-26c521eb61ac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Src\Application\Data">
+      <UniqueIdentifier>{0dcbfd5a-b4c4-48ef-a579-87d5c5fc576b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Data\DamageIndicator">
+      <UniqueIdentifier>{a7cd4b6d-9a70-46be-973e-a8708a24fa7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Data\Element">
+      <UniqueIdentifier>{ff354c5d-7107-4413-b017-cc1d8c17eebf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Effect\DamagePopup">
+      <UniqueIdentifier>{a0e99ca9-d2b6-4098-804c-d83371a1b67c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Pch.h">
@@ -261,6 +273,18 @@
     <ClInclude Include="Src\Application\Object\Boss\Boss.h">
       <Filter>Src\Application\Object\Boss</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Application\Data\DamageIndicator\DamageIndicator.h">
+      <Filter>Src\Application\Data\DamageIndicator</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Data\Element\Element.h">
+      <Filter>Src\Application\Data\Element</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Effect\DamagePopup\DamagePopup.h">
+      <Filter>Src\Application\Effect\DamagePopup</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Collision\ElementAffinity.h">
+      <Filter>Src\Application\Collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pch.cpp">
@@ -388,6 +412,12 @@
     </ClCompile>
     <ClCompile Include="Src\Application\Object\Boss\Boss.cpp">
       <Filter>Src\Application\Object\Boss</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Effect\DamagePopup\DamagePopup.cpp">
+      <Filter>Src\Application\Effect\DamagePopup</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\Collision\ElementAffinity.cpp">
+      <Filter>Src\Application\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

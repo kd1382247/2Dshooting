@@ -2,12 +2,23 @@
 
 #include"../Player/Player.h"
 #include"../../Effect/Explosion/Explosion.h"
+#include"../../Effect/ChangeEffect/ChangeEffect.h"
 
 void C_Boss::Draw()
 {
+
+	if (!s_boss.m_aliveFlg)return;
+
 	DrawBoss();
+	DrawShield();
+	m_changeEffect->Draw();
+
+
 	DrawSpikeEnemy();
+	DrawSEnemyWarning();
+	
 	DrawGearEnemy();
+	DrawGEnemyWarning();
 
 	// 歯車型の敵用の爆破エフェクト
 	for (int i = 0; i < gearEnemyNum; i++)
@@ -24,13 +35,25 @@ void C_Boss::Draw()
 
 void C_Boss::Update()
 {
+	if (!s_boss.m_aliveFlg)return;
+
+	MoveBoss();
+
+	UpdateShield();
+	m_changeEffect->Update(s_boss.m_pos, 1.5);
+	Action();
+
 
 	AliveStateSpikeEnemy();
+	UpdateSEnemyWarning();
 	MoveSpikeEnemy();
 
-
+	
 	AliveStateGearEnemy();
+	UpdateGEnemyWarning();
 	MoveGearEnemy();
+	
+	
 
 	// 歯車型の敵用の爆破エフェクト
 	for (int i = 0; i < gearEnemyNum; i++)
@@ -43,18 +66,14 @@ void C_Boss::Update()
 	{
 		m_sEnemyExplosion[i]->Update();
 	}
-
-
-	MoveBoss();
-	Action();
-
 }
+
+
 
 void C_Boss::Init()
 {
 
-	m_player = std::shared_ptr<C_Player>();
-
+	m_changeEffect = std::make_shared<C_ChangeEffect>();
 	
 	for (int i = 0; i < gearEnemyNum; i++)
 	{
@@ -68,37 +87,39 @@ void C_Boss::Init()
 	}
 
 	InitBoss();
+	InitShield();
 	InitSpikeEnemy();
 	InitGearEnemy();
+
+	m_warningTex.Load("Textures/Boss/warning.png");
 
 }
 
 void C_Boss::Release()
 {
 	m_bossTex.Release();
+	m_spikeEnemyTex.Release();
+	m_gearEnemyTex.Release();
+	m_warningTex.Release();
 }
 
 void C_Boss::DrawBoss()
 {
-	SHADER.m_spriteShader.SetMatrix(s_boss.m_mat);
-	SHADER.m_spriteShader.DrawTex(&m_bossTex, Math::Rectangle((int)m_bossAnimCnt * 192, 0, 192, 192), 1.0f);
+	if(s_boss.m_aliveFlg)
+	{
+		SHADER.m_spriteShader.SetMatrix(s_boss.m_mat);
+		SHADER.m_spriteShader.DrawTex(&m_bossTex, Math::Rectangle((int)m_bossAnimCnt * 192, (int)s_boss.m_nowElement * 192, 192, 192), 1.0f);
+	}
 }
 
 
 void C_Boss::MoveBoss()
 {
-	m_bossAnimCnt += 0.1;
-	if (m_bossAnimCnt > 6)
-	{
-		m_bossAnimCnt = 0;
-	}
-
-
 	if (m_bossMoveFlg)
 	{
 
 		m_bossMoveCnt++;
-		if(m_bossMoveCnt<60*8)
+		if (m_bossMoveCnt < 60 * 8.5)
 		{
 			if (s_boss.m_pos.y > screenTop - m_bossRadius || s_boss.m_pos.y < screenBottom + m_bossRadius)
 			{
@@ -109,10 +130,12 @@ void C_Boss::MoveBoss()
 				s_boss.m_move.x *= -1;
 			}
 		}
-		if (m_bossMoveCnt > 60 * 8)
+		if (m_bossMoveCnt > 60 * 8.8)
 		{
+			// シールドを展開
+			s_shield.m_aliveFlg = true;
 
-			if(s_boss.m_pos!=m_bossInitPos)
+			if (s_boss.m_pos != m_bossInitPos)
 			{
 				Math::Vector2 pos = m_bossInitPos - s_boss.m_pos;
 
@@ -120,43 +143,61 @@ void C_Boss::MoveBoss()
 
 				s_boss.m_move = pos;
 
-				if (m_bossMoveCnt > 60 * 11)
+				
+				if (m_bossMoveCnt > 60 * 10)
 				{
 					s_boss.m_pos = m_bossInitPos;
 				}
 
 				if (s_boss.m_pos == m_bossInitPos)
 				{
-					SpawnGearEnemy();
-					SpawnSpikeEnemy();
+					ElementChange();
+
+					SpawnGEWarning();
+					SpawnSEWarning();
+
 					m_bossMoveFlg = false;
 					m_bossMoveCnt = 0;
 					s_boss.m_move = { 0,0 };
 				}
 			}
-			
 		}
 	}
-
-
+	
 	s_boss.m_pos += s_boss.m_move;
-
 	s_boss.m_mat = Math::Matrix::CreateTranslation(s_boss.m_pos.x, s_boss.m_pos.y, 0);
 }
 
+void C_Boss::SpawnBoss()
+{
+	// ボス
+	s_boss.m_pos = m_bossInitPos;
+	m_bossHp = 1000;
+	s_boss.m_aliveFlg = true;
 
+	int random = rand() % 3;
+	if (random == 0)s_boss.m_nowElement = Fire;
+	if (random == 1)s_boss.m_nowElement = Grass;
+	if (random == 2)s_boss.m_nowElement = Water;
+	// シールド
+	s_shield.m_aliveFlg = true;
+	s_shield.m_animCnt = { 0,0 };
+	s_shield.m_pos = { 0,0 };
+	s_shield.m_shieldReleaseFlg = false;
+
+
+	SpawnGEWarning();
+	SpawnSEWarning();
+}
 
 void C_Boss::InitBoss()
 {
 	m_bossTex.Load("Textures/Boss/Eyeball.png");
-	s_boss.m_pos = m_bossInitPos;
-	m_bossHp = 40;
-	s_boss.m_aliveFlg = true;
 }
 
 void C_Boss::Action()
 {
-	if (!m_ElementChangeFlg && !m_rotationAttackFlg && !m_homingAttackFlg)
+	if (!m_rotationAttackFlg && !m_homingAttackFlg)
 	{
 		m_bossActionCnt++;
 		if (m_bossActionCnt > 60 * 5)
@@ -187,7 +228,81 @@ void C_Boss::SetBossMove()
 	m_bossMoveCnt = 0;
 	m_bossMoveFlg = true;
 
-	m_gEnemyFalseCnt = 0;
+}
+
+void C_Boss::ElementChange()
+{
+	int random = rand() % 2;
+	Element nowElement = s_boss.m_nowElement;
+
+		if (nowElement==Fire)
+		{
+			if (random == 0)s_boss.m_nowElement = Grass;
+			if (random == 1)s_boss.m_nowElement = Water;
+		}
+		if (nowElement == Grass)
+		{
+			if (random == 0)s_boss.m_nowElement = Fire;
+			if (random == 1)s_boss.m_nowElement = Water;
+		}
+		if (nowElement == Water)
+		{
+			if (random == 0)s_boss.m_nowElement = Fire;
+			if (random == 1)s_boss.m_nowElement = Grass;
+		}
+
+		m_changeEffect->SetAliveFlg(true);
+
+}
+
+void C_Boss::DrawShield()
+{
+	if (!s_shield.m_aliveFlg)return;
+
+	SHADER.m_spriteShader.SetMatrix(s_shield.m_mat);
+	SHADER.m_spriteShader.DrawTex(&m_shieldTex, Math::Rectangle((int)s_shield.m_animCnt.x*130, (int)s_shield.m_animCnt.y*130, 130, 130), 0.6f);
+}
+
+void C_Boss::UpdateShield()
+{
+	if (!s_shield.m_aliveFlg)return;
+
+
+	s_shield.m_animCnt.x += 0.2;
+
+	if(!s_shield.m_shieldReleaseFlg)
+	{
+		if (s_shield.m_animCnt.x > 10)
+		{
+			s_shield.m_animCnt.y = 1;
+		}
+		if (s_shield.m_animCnt.x > 20)
+		{
+			s_shield.m_animCnt.x = 10;
+		}
+	}
+	if (s_shield.m_shieldReleaseFlg)
+	{
+		if (s_shield.m_animCnt.x > 3)
+		{
+			s_shield.m_animCnt = { 0,0 };
+			s_shield.m_aliveFlg = false;
+			s_shield.m_shieldReleaseFlg = false;
+		}
+
+	}
+
+	s_shield.m_pos.x = s_boss.m_pos.x;
+	s_shield.m_pos.y = s_boss.m_pos.y + 10;
+
+
+
+	s_shield.m_mat = Math::Matrix::CreateTranslation(s_shield.m_pos.x, s_shield.m_pos.y, 0);
+}
+
+void C_Boss::InitShield()
+{
+	m_shieldTex.Load("Textures/Boss/shield.png");
 }
 
 
@@ -198,7 +313,7 @@ void C_Boss::DrawSpikeEnemy()
 		if (s_spikeEnemy[i].m_aliveFlg)
 		{
 			SHADER.m_spriteShader.SetMatrix(s_spikeEnemy[i].m_mat);
-			SHADER.m_spriteShader.DrawTex(&m_spikeEnemyTex, Math::Rectangle((int)m_sEnemyAnimCnt[i] * 96, 0, 96, 96), 1.0f);
+			SHADER.m_spriteShader.DrawTex(&m_spikeEnemyTex, Math::Rectangle((int)m_sEnemyAnimCnt[i] * 96, (int)s_spikeEnemy[i].m_nowElement * 96, 96, 96), 1.0f);
 		}
 	}
 }
@@ -256,6 +371,11 @@ void C_Boss::MoveSpikeEnemy()
 					{
 						m_sEnemyMoveFlg[i] = true;
 						m_sEnemyMoveWait = 20;
+
+						if (m_homingAttackFlg)
+						{
+							m_homingFlg[i] = true;
+						}
 						break;
 					}
 				}
@@ -289,18 +409,19 @@ void C_Boss::MoveSpikeEnemy()
 				{
 					if (m_sEnemyMoveFlg[i] && m_homingCnt[i] < 60 * 1.5)
 					{
-						Math::Vector2 pos = m_player->GetPos() - s_spikeEnemy[i].m_pos;
+						if(m_homingFlg[i])
+						{
+							Math::Vector2 pos = m_player->GetPos() - s_spikeEnemy[i].m_pos;
 
-						pos.Normalize();
-						s_spikeEnemy[i].m_move = pos * 5;
-						m_homingCnt[i]++;
+							pos.Normalize();
+							s_spikeEnemy[i].m_move = pos * 5;
+							m_homingCnt[i]++;
+						}
 					}
 				}
 			}
 		}
-
 	}
-
 
 	// 行列作成+座標更新
 	for (int i = 0; i < spikeEnemyNum; i++)
@@ -310,7 +431,7 @@ void C_Boss::MoveSpikeEnemy()
 		
 			if (!m_sEnemyMoveFlg[i])
 			{
-				s_spikeEnemy[i].m_pos = s_boss.m_pos + s_spikeEnemy[i].m_move;
+				s_spikeEnemy[i].m_pos = m_bossInitPos + s_spikeEnemy[i].m_move;
 				m_sEnemyAttackPos[i] = s_spikeEnemy[i].m_pos;
 			}
 			// moveFlgがtrueかつ回転攻撃だったら
@@ -336,25 +457,6 @@ void C_Boss::MoveSpikeEnemy()
 void C_Boss::InitSpikeEnemy()
 {
 	m_spikeEnemyTex.Load("Textures/Boss/spikeEnemy.png");
-	for (int i = 0; i < spikeEnemyNum; i++)
-	{
-		if (!s_spikeEnemy[i].m_aliveFlg)
-		{
-			// 回転角度
-			m_sEnemyDeg[i] = m_sEnemyDegTable[i];
-
-			s_spikeEnemy[i].m_aliveFlg = true;
-			s_spikeEnemy[i].m_pos = Math::Vector2::Zero;
-			s_spikeEnemy[i].m_move = Math::Vector2::Zero;
-			m_sEnemyHp[i] = m_sEnemyMaxHp;
-
-			m_sEnemyAttackMove[i] = { m_AttackMoveSpeedX,0 };
-		}
-	}
-	m_sEnemyFalseCnt = 0;
-
-	m_homingAttackFlg = false;
-	m_rotationAttackFlg = false;
 }
 
 void C_Boss::AliveStateSpikeEnemy()
@@ -385,17 +487,28 @@ void C_Boss::AliveStateSpikeEnemy()
 			}
 		}
 	}
-
-
+	// トゲ型の敵が全ての生存フラグがfalseだったら
 	if (m_sEnemyFalseCnt >= spikeEnemyNum && !m_bossMoveFlg)
 	{
 		m_sEnemySpawnCnt++;
 		if (m_sEnemySpawnCnt > 60 * 5)
 		{
-			SpawnSpikeEnemy();
+			SpawnSEWarning();
 			m_sEnemySpawnCnt = 0;
 		}
+	}
 
+	// もしボスが動き出したら
+	if (m_bossMoveFlg)
+	{
+		for (int i = 0; i < spikeEnemyNum; i++)
+		{
+			if (s_spikeEnemy[i].m_aliveFlg)
+			{
+				s_spikeEnemy[i].m_aliveFlg = false;
+				m_sEnemyExplosion[i]->Spawn(s_spikeEnemy[i].m_pos);
+			}
+		}
 	}
 
 }
@@ -405,30 +518,121 @@ void C_Boss::SpawnSpikeEnemy()
 
 	for (int i = 0; i < spikeEnemyNum; i++)
 	{
-		if (!s_spikeEnemy[i].m_aliveFlg)
-		{
-			// 回転角度
-			m_sEnemyDeg[i] = m_sEnemyDegTable[i];
+		// 回転角度
+		m_sEnemyDeg[i] = m_sEnemyDegTable[i];
 
-			s_spikeEnemy[i].m_aliveFlg = true;
-			s_spikeEnemy[i].m_pos = Math::Vector2::Zero;
-			s_spikeEnemy[i].m_move = Math::Vector2::Zero;
-			m_sEnemyMoveFlg[i] = false;
-			m_homingCnt[i] = 0;
-			m_sEnemyHp[i] = m_sEnemyMaxHp;
+		s_spikeEnemy[i].m_aliveFlg = true;
+		s_spikeEnemy[i].m_pos = Math::Vector2::Zero;
+		s_spikeEnemy[i].m_move = Math::Vector2::Zero;
+		s_spikeEnemy[i].m_nowElement = s_boss.m_nowElement;
+		m_sEnemyMoveFlg[i] = false;
+		m_homingCnt[i] = 0;
+		m_homingFlg[i] = false;
+		m_sEnemyHp[i] = m_sEnemyMaxHp;
 
+		m_sEnemyAttackMove[i] = { m_AttackMoveSpeedX,0 };
 
-			m_sEnemyAttackMove[i] = { -2,0 };
-		}
 	}
 
 	m_homingAttackFlg = false;
 	m_rotationAttackFlg = false;
 	m_sEnemyFalseCnt = 0;
 
-
 }
 
+void C_Boss::DrawSEnemyWarning()
+{
+	if (!m_sEWarningFlg)return;
+	for (int i = 0; i < spikeEnemyNum; i++)
+	{
+		if (s_sEWarning[i].m_aliveFlg)
+		{
+			SHADER.m_spriteShader.SetMatrix(s_sEWarning[i].m_mat);
+			SHADER.m_spriteShader.DrawTex(&m_warningTex, Math::Rectangle(0, 0, 65, 65), m_sEAlpha);
+		}
+	}
+}
+
+void C_Boss::UpdateSEnemyWarning()
+{
+	if (!m_sEWarningFlg)return;
+
+
+	if (m_sEFlashCnt == 60 * 0.2)
+	{
+		m_sEAlpha = 0.4f;
+	}
+	else if (m_sEFlashCnt == 60 * 0.4)
+	{
+		m_sEAlpha = 1.0f;
+		m_sEFlashCnt = 0;
+	}
+
+	m_sEFlashCnt++;
+
+
+	if (m_sEWarningCnt > 60 * 2)
+	{
+		AliveStateSEWarning();
+		m_sEWarningCnt = 0;
+	}
+
+	m_sEWarningCnt++;
+
+
+	for (int i = 0; i < spikeEnemyNum; i++)
+	{
+		if (s_sEWarning[i].m_aliveFlg)
+		{
+			s_sEWarning[i].m_move.x = cosf(DirectX::XMConvertToRadians(m_sEWarningDeg[i])) * 200;
+			s_sEWarning[i].m_move.y = sinf(DirectX::XMConvertToRadians(m_sEWarningDeg[i])) * 200;
+		}
+	}
+
+	for (int i = 0; i < spikeEnemyNum; i++)
+	{
+		if (s_sEWarning[i].m_aliveFlg)
+		{
+			s_sEWarning[i].m_pos = m_bossInitPos + s_sEWarning[i].m_move;
+
+			s_sEWarning[i].m_mat = Math::Matrix::CreateTranslation(s_sEWarning[i].m_pos.x, s_sEWarning[i].m_pos.y, 0);
+		}
+	}
+
+}
+void C_Boss::AliveStateSEWarning()
+{
+	for (int i = 0; i < spikeEnemyNum; i++)
+	{
+		if (s_sEWarning[i].m_aliveFlg)
+		{
+			s_sEWarning[i].m_aliveFlg = false;
+		}
+	}
+
+	m_sEWarningFlg = false;
+
+	SpawnSpikeEnemy();
+}
+
+void C_Boss::SpawnSEWarning()
+{
+	for (int i = 0; i < spikeEnemyNum; i++)
+	{
+		// 回転角度
+		m_sEWarningDeg[i] = m_sEnemyDegTable[i];
+
+		s_sEWarning[i].m_aliveFlg = true;
+		s_sEWarning[i].m_pos = Math::Vector2::Zero;
+		s_sEWarning[i].m_move = Math::Vector2::Zero;
+
+	}
+
+	m_sEAlpha = 1.0f;
+	m_sEFlashCnt = 0;
+	m_sEWarningFlg = true;
+	m_sEWarningCnt = 0;
+}
 
 void C_Boss::DrawGearEnemy()
 {
@@ -437,7 +641,7 @@ void C_Boss::DrawGearEnemy()
 		if (s_gearEnemy[i].m_aliveFlg)
 		{
 			SHADER.m_spriteShader.SetMatrix(s_gearEnemy[i].m_mat);
-			SHADER.m_spriteShader.DrawTex(&m_gearEnemyTex, Math::Rectangle((int)m_gEnemyAnimCnt[i] * 96, 0, 96, 96), 1.0f);
+			SHADER.m_spriteShader.DrawTex(&m_gearEnemyTex, Math::Rectangle((int)m_gEnemyAnimCnt[i] * 96, (int)s_gearEnemy[i].m_nowElement*96, 96, 96), 1.0f);
 		}
 	}
 }
@@ -457,7 +661,6 @@ void C_Boss::MoveGearEnemy()
 		}
 	}
 
-
 	// 回転
 	for (int i = 0; i < gearEnemyNum; i++)
 	{
@@ -474,43 +677,21 @@ void C_Boss::MoveGearEnemy()
 		}
 	}
 
-	
-
 	for (int i = 0; i < gearEnemyNum; i++)
 	{
 		if (s_gearEnemy[i].m_aliveFlg)
 		{
 
-			s_gearEnemy[i].m_pos = s_boss.m_pos + s_gearEnemy[i].m_move;
+			s_gearEnemy[i].m_pos = m_bossInitPos + s_gearEnemy[i].m_move;
 
 			s_gearEnemy[i].m_mat = Math::Matrix::CreateTranslation(s_gearEnemy[i].m_pos.x, s_gearEnemy[i].m_pos.y, 0);
 		}
 	}
 }
 
-
-
 void C_Boss::InitGearEnemy()
 {
 	m_gearEnemyTex.Load("Textures/Boss/gearEnemy.png");
-	for (int i = 0; i < gearEnemyNum; i++)
-	{
-		if (!s_gearEnemy[i].m_aliveFlg)
-		{
-			// 回転角度
-			m_gEnemyDeg[i] = m_gEnemyDegTable[i];
-
-			s_gearEnemy[i].m_aliveFlg = true;
-			s_gearEnemy[i].m_pos = Math::Vector2::Zero;
-			s_gearEnemy[i].m_move = Math::Vector2::Zero;
-			m_homingCnt[i] = 0;
-			m_gEnemyHp[i] = m_gEnemyMaxHp;
-		}
-	}
-
-	m_gEnemyFalseCnt = 0;
-
-
 }
 
 void C_Boss::AliveStateGearEnemy()
@@ -530,10 +711,16 @@ void C_Boss::AliveStateGearEnemy()
 			}
 		}
 	}
-
+	// 歯車型の敵が全ての生存フラグがfalseだったら
 	if (m_gEnemyFalseCnt >= gearEnemyNum)
 	{
 		SetBossMove();
+		m_gEnemyFalseCnt = 0;
+		m_sEWarningFlg = false;
+
+		// シールド解除
+		s_shield.m_shieldReleaseFlg = true;
+		s_shield.m_animCnt = { 0,2 };
 	}
 }
 
@@ -542,17 +729,109 @@ void C_Boss::SpawnGearEnemy()
 
 	for (int i = 0; i < gearEnemyNum; i++)
 	{
-		if (!s_gearEnemy[i].m_aliveFlg)
-		{
-			// 回転角度
-			m_gEnemyDeg[i] = m_gEnemyDegTable[i];
+		// 回転角度
+		m_gEnemyDeg[i] = m_gEnemyDegTable[i];
 
-			s_gearEnemy[i].m_aliveFlg = true;
-			s_gearEnemy[i].m_pos = Math::Vector2::Zero;
-			s_gearEnemy[i].m_move = Math::Vector2::Zero;
-			m_homingCnt[i] = 0;
-			m_gEnemyHp[i] = m_gEnemyMaxHp;
-		}
+		s_gearEnemy[i].m_aliveFlg = true;
+		s_gearEnemy[i].m_pos = Math::Vector2::Zero;
+		s_gearEnemy[i].m_move = Math::Vector2::Zero;
+		s_gearEnemy[i].m_nowElement = s_boss.m_nowElement;
+		m_gEnemyHp[i] = m_gEnemyMaxHp;
+
 	}
 	m_gEnemyFalseCnt = 0;
+}
+
+void C_Boss::DrawGEnemyWarning()
+{
+	for (int i = 0; i < gearEnemyNum; i++)
+	{
+		if (s_gEWarning[i].m_aliveFlg)
+		{
+			SHADER.m_spriteShader.SetMatrix(s_gEWarning[i].m_mat);
+			SHADER.m_spriteShader.DrawTex(&m_warningTex, Math::Rectangle(0, 0, 65, 65), m_gEAlpha);
+		}
+	}
+}
+
+void C_Boss::UpdateGEnemyWarning()
+{
+
+	if (!m_gEWarningFlg)return;
+
+	if (m_gEWarningCnt > 60 * 2)
+	{
+		AliveStateGEWarning();
+		m_gEWarningCnt = 0;
+	}
+
+	m_gEWarningCnt++;
+
+
+	if (m_gEFlashCnt == 60 * 0.2)
+	{
+		m_gEAlpha = 0.4f;
+	}
+	else if (m_gEFlashCnt == 60 * 0.4)
+	{
+		m_gEAlpha = 1.0f;
+		m_gEFlashCnt = 0;
+	}
+
+	m_gEFlashCnt++;
+
+
+	for (int i = 0; i < gearEnemyNum; i++)
+	{
+		if (s_gEWarning[i].m_aliveFlg)
+		{
+			s_gEWarning[i].m_move.x = cosf(DirectX::XMConvertToRadians(m_gEWarningDeg[i])) * 100;
+			s_gEWarning[i].m_move.y = sinf(DirectX::XMConvertToRadians(m_gEWarningDeg[i])) * 100;
+		}
+	}
+
+	for (int i = 0; i < gearEnemyNum; i++)
+	{
+		if (s_gEWarning[i].m_aliveFlg)
+		{
+
+			s_gEWarning[i].m_pos = m_bossInitPos + s_gEWarning[i].m_move;
+
+			s_gEWarning[i].m_mat = Math::Matrix::CreateTranslation(s_gEWarning[i].m_pos.x, s_gEWarning[i].m_pos.y, 0);
+		}
+	}
+
+}
+
+
+void C_Boss::AliveStateGEWarning()
+{
+	for (int i = 0; i < gearEnemyNum; i++)
+	{
+		if (s_gEWarning[i].m_aliveFlg)
+		{
+			s_gEWarning[i].m_aliveFlg = false;
+		}
+	}
+
+	m_gEWarningFlg = false;
+	
+	SpawnGearEnemy();
+}
+
+void C_Boss::SpawnGEWarning()
+{
+	for (int i = 0; i < gearEnemyNum; i++)
+	{
+		// 回転角度
+		m_gEWarningDeg[i] = m_gEnemyDegTable[i];
+		s_gEWarning[i].m_aliveFlg = true;
+		s_gEWarning[i].m_pos = Math::Vector2::Zero;
+		s_gEWarning[i].m_move = Math::Vector2::Zero;
+	}
+
+	m_gEAlpha = 1.0f;
+	m_gEFlashCnt = 0;
+	m_gEWarningFlg = true;
+	m_gEWarningCnt = 0;
 }

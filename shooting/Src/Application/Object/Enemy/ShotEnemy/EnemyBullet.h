@@ -28,11 +28,14 @@ public:
 
 
 	// 当たり判定クラスで呼び出す関数
-	Math::Vector2 GetPos(int a_i) { return s_bullet[a_i].m_pos; }
-	float         GetRadius() { return m_radius; }
-	int           GetNum() { return bulletNum; }
-	bool          GetAliveFlg(int a_i) { return s_bullet[a_i].m_aliveFlg; }
-	void  SetHitFlg(int a_i, bool a_flg) { m_hitFlg[a_i] = a_flg; }
+	Math::Vector2 GetPos(int a_i)                { return s_bullet[a_i].m_pos; }
+	float         GetRadius()                    { return m_radius; }
+	float         GetAttackPow()                 { return m_attackPow; }
+	int           GetNum()                       { return bulletNum; }
+	bool          GetAliveFlg(int a_i)           { return s_bullet[a_i].m_aliveFlg; }
+	void          SetHitFlg(int a_i, bool a_flg) { m_hitFlg[a_i] = a_flg; }
+	Element       GetElement(int a_i)            { return s_bullet[a_i].m_nowElement; }
+
 
 private:
 
@@ -48,6 +51,7 @@ private:
 	const float      m_bulletMoveSpeed = -5;
 	const float      m_bulletDistance = 30;
 	bool             m_hitFlg[bulletNum] = {};
+	const float      m_attackPow = 6;
 
 	std::shared_ptr<C_HitEffect>m_hitEffect[bulletNum];
 

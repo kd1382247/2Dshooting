@@ -1,5 +1,4 @@
 #pragma once
-
 class C_Player;
 
 class C_GameUI

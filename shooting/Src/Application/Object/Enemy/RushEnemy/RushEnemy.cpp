@@ -12,7 +12,7 @@ void C_RushEnemy::Draw()
 		if (s_rushEnemy[i].m_aliveFlg)
 		{
 			SHADER.m_spriteShader.SetMatrix(s_rushEnemy[i].m_mat);
-			SHADER.m_spriteShader.DrawTex(&m_rushEnemyTex, Math::Rectangle((int)e_enemyMotion[i]*96, 0, 96, 96), 1.0f);
+			SHADER.m_spriteShader.DrawTex(&m_rushEnemyTex, Math::Rectangle((int)e_enemyMotion[i]*96, s_rushEnemy[i].m_nowElement*96, 96, 96), 1.0f);
 		}
 	}
 	// 排気エフェクト
@@ -50,7 +50,6 @@ void C_RushEnemy::Update()
 
 void C_RushEnemy::Spawn()
 {
-	
 
 	for (int i = 0; i < rushEnemyNum; i++)
 	{
@@ -68,37 +67,43 @@ void C_RushEnemy::Spawn()
 			s_rushEnemy[i].m_aliveFlg = true;
 			s_rushEnemy[i].m_angle = 90.0f;
 			e_enemyMotion[i] = Idle;
-			m_hp[i] = 5;
+			m_hp[i] = m_maxHp;
 			int random = rand() % 461 - 200;
 			s_rushEnemy[i].m_pos.y = random;
+
+			m_randomElement = rand() % 3;
+			s_rushEnemy[i].m_nowElement = e_elementTable[m_randomElement];
+
+
 		}
 	}
+
+	m_aliveFalseCnt = 0;
+	m_aliveFalseFlg = false;
 
 	//　座標をCSVファイルから読み込む
 	FILE* fp;
 
-	if (fopen_s(&fp, "Data/Enemy/RushEnemyPos.csv", "r") == 0)
+	if (fopen_s(&fp, "Data/Enemy/Rush ShotEnemyPos.csv", "r") == 0)
 	{
 		char dummy[255];
 		for (int i = 0; i < rushEnemyNum; i++)
 		{
 			if (fgets(dummy, 255, fp) != nullptr)//1行読み込み
 			{
-				Math::Vector2 pos;
-				fscanf_s(fp, ",%f,%f", &pos.x, &pos.y);//頭に , で読み飛ばし
-				s_rushEnemy[i].m_pos.x = pos.x;
+				float pos;
+				fscanf_s(fp, ",%f", &pos);//頭に , で読み飛ばし
+				s_rushEnemy[i].m_pos.x = pos;
 			}
 		}
 
 		fclose(fp);
 	}
-
 }
 
 void C_RushEnemy::Init()
 {
 	m_rushEnemyTex.Load("Textures/Enemy/rushEnemy.png");
-	Spawn();
 
 	for(int i=0;i<rushEnemyNum;i++)
 	{
@@ -212,6 +217,7 @@ void C_RushEnemy::AliveState()
 			if (s_rushEnemy[i].m_pos.x < screenLeft - m_radius-20)
 			{
 				s_rushEnemy[i].m_aliveFlg = false;
+				m_aliveFalseCnt++;
 			}
 		}
 	}
@@ -225,9 +231,16 @@ void C_RushEnemy::AliveState()
 			{
 				s_rushEnemy[i].m_aliveFlg = false;
 				m_explosion[i]->Spawn(s_rushEnemy[i].m_pos);
+				m_aliveFalseCnt++;
 			}
 		}
 	}
+
+	if (m_aliveFalseCnt >=rushEnemyNum)
+	{
+		m_aliveFalseFlg = true;
+	}
+
 }
 
 void C_RushEnemy::MovePattern()

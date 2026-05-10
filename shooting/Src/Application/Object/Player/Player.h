@@ -32,29 +32,42 @@ public:
 	
 	
 	void SetInstance(std::shared_ptr<C_Bullet>a_bullet) { m_bullet = a_bullet; }
-
 	Element GetNowElement() { return s_player.m_nowElement; }
-
 	Math::Vector2 GetPos() { return s_player.m_pos; }
-
 	void SetAliveFlg(bool a_flg) { s_player.m_aliveFlg = a_flg; }
 
 	float GetRadius() { return m_radius; }
 	bool  GetAliveFlg() { return s_player.m_aliveFlg; }
+
+	bool GetHitCoolTimeFlg() { return  m_hitCoolTimeFlg; }
+	void SetHitCoolTimeFlg(bool a_flg) { m_hitCoolTimeFlg = a_flg; }
+
 
 	// HP関連のゲッター
 	float GetMaxHp() { return m_maxHp; }
 	float GetCurrentHp() { return m_hp; }
 
 	// クールタイムのゲッター
-	float GetMaxCoolTime() { return m_maxCoolTime; }
-	float GetCurrentCoolTime() { return m_coolTime; }
+	float GetMaxElChangeCoolTime() { return m_maxElChangeCoolTime; }
+	float GetCurrentElChangeCoolTime() { return m_elChangeCoolTime; }
+
+
 
 
 	void SetOwner(C_GameScene* a_owner) { m_owner = a_owner; }
 
 
+	void Damage(float a_damage)
+	{ 
+		m_hp -= a_damage;
+		if (m_hp <= 0)m_hp = 0;
+	}
+
+
 private:
+
+
+	float m_hoge = {};
 
 	std::shared_ptr<C_Bullet>m_bullet=nullptr;
 
@@ -72,7 +85,11 @@ private:
 	// プレイヤーの動き
 	void Move();
 
-	void CoolTime();
+	void ElementChangeCoolTime();
+
+	void HitCoolTime();
+
+
 
 	//弾発射関数
 	void Shoot();
@@ -100,12 +117,17 @@ private:
 	const float   m_maxHp = 100;
 	float         m_hp = 100;
 	// クールタイム
-	const float   m_maxCoolTime = 300;
-	float         m_coolTime=300;
+	const float   m_maxElChangeCoolTime = 300;
+	float         m_elChangeCoolTime=300;
 
 	bool          m_keyFlg;
 
+	bool m_hitCoolTimeFlg = {};
+	int  m_hitCoolTime = {};
 
+	// ダメージを受けた際の点滅
+	float m_alpha;
+	float m_flashCnt;
 
 	float         m_frame = 0;
 	float         m_time=0;

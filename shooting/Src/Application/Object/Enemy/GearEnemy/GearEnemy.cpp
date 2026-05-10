@@ -37,14 +37,26 @@ void C_GearEnemy::Update()
 
 void C_GearEnemy::Spawn()
 {
+	m_randomElement = rand() % 3;
+
 	//敵の初期化
-	for (int i = 0; i < gearEnemyNum; i++)
+	for (int i = 0,j=0; i < gearEnemyNum; i++)
 	{
-		s_gearEnemy[i].m_move = { -1.0f,0.0f };
+		if (j >= 2)
+		{
+			j = 0;
+			m_randomElement = rand() % 3;
+		}
+		j++;
+
+		s_gearEnemy[i].m_move = { m_movePowX,0.0f };
 		s_gearEnemy[i].m_aliveFlg = true;
-		s_gearEnemy[i].m_nowElement = Element::Fire;
-		m_hp[i] = 5;
+		s_gearEnemy[i].m_nowElement = e_elementTable[m_randomElement];
+		m_hp[i] = m_maxHp;
 	}
+
+	m_aliveFalseCnt = 0;
+	m_aliveFalseFlg = false;
 
 	m_radius = 32.0f;
 
@@ -65,6 +77,7 @@ void C_GearEnemy::Spawn()
 
 		fclose(fp);
 	}
+
 }
 
 void C_GearEnemy::Init()
@@ -74,11 +87,7 @@ void C_GearEnemy::Init()
 	{
 		m_explosion[i] = std::make_shared<C_Explosion>();
 	}
-
 	m_gearEnemyTex.Load("Textures/Enemy/gearEnemy.png");
-
-
-	Spawn();
 
 }
 
@@ -93,7 +102,6 @@ void C_GearEnemy::Move()
 	{
 		if (s_gearEnemy[i].m_aliveFlg)
 		{
-
 			s_gearEnemy[i].m_pos += s_gearEnemy[i].m_move;
 
 			s_gearEnemy[i].m_mat = Math::Matrix::CreateTranslation(s_gearEnemy[i].m_pos.x, s_gearEnemy[i].m_pos.y, 0);
@@ -124,8 +132,26 @@ void C_GearEnemy::AliveState()
 			{
 				s_gearEnemy[i].m_aliveFlg = false;
 				m_explosion[i]->Spawn(s_gearEnemy[i].m_pos);
+				m_aliveFalseCnt++;
 			}
 		}
+	}
+
+	for (int i = 0; i < gearEnemyNum; i++)
+	{
+		if (s_gearEnemy[i].m_aliveFlg)
+		{
+			if (s_gearEnemy[i].m_pos.x < screenLeft - m_radius)
+			{
+				s_gearEnemy[i].m_aliveFlg = false;
+				m_aliveFalseCnt++;
+			}
+		}
+	}
+
+	if (m_aliveFalseCnt>=gearEnemyNum  )
+	{
+		m_aliveFalseFlg = true;
 	}
 
 }

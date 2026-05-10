@@ -7,6 +7,7 @@
 #include"../../Object/Enemy/ShotEnemy/EnemyBullet.h"
 #include"../../UI/GameUI.h"
 #include"../../Collision/Collision.h"
+#include"GameController/GameController.h"
 // 敵
 #include"../../Object/Enemy//GearEnemy/GearEnemy.h"
 #include"../../Object/Enemy/SpikeEnemy/SpikeEnemy.h"
@@ -20,50 +21,44 @@ void C_GameScene::Draw()
 	m_gameUi->Draw2();
 
 
-	m_boss->Draw();
-
 	for (int i = 0; i < m_objList.size(); i++)
 	{
 		m_objList[i]->Draw();
 	}
-
-	
-
 	m_gameUi->Draw();
+
 }
 
 void C_GameScene::Update()
 {
-
 	m_gameUi->Update();
+
+	m_gameCtr->SpawnEnemies();
+
 
 	for (int i = 0; i < m_objList.size(); i++)
 	{
 		m_objList[i]->Update();
 	}
 	
-	m_boss->Update();
 
 	m_collision->Update();
 
 	if (GetAsyncKeyState('7') & 0x8000)
 	{
-		C_SceneManager::GetInstance().SetNextSceneType(C_SceneManager::SceneType::Title);
+		C_SceneManager::GetInstance().SetNextSceneType(C_SceneManager::SceneType::Restart);
 	}
-	
+
 }
 
 void C_GameScene::Init()
 {
 	m_gameUi = std::make_shared<C_GameUI>();
 
-
 	m_collision = std::make_shared<C_Collision>();
 
-	m_boss = std::make_shared<C_Boss>();
+	m_gameCtr = std::make_shared<C_GameController>();
 
-
-	
 	std::shared_ptr<C_Player>player;
 	player = std::make_shared<C_Player>();
 	m_objList.push_back(player);
@@ -88,22 +83,33 @@ void C_GameScene::Init()
 	shotEnemy = std::make_shared<C_ShotEnemy>();
 	m_objList.push_back(shotEnemy);
 
-	// プレイヤーの弾
-	std::shared_ptr<C_Bullet>bullet;
-	bullet = std::make_shared<C_Bullet>();
-	m_objList.push_back(bullet);
-
 	// 敵の弾
 	std::shared_ptr<C_EnemyBullet>enemyBullet;
 	enemyBullet = std::make_shared<C_EnemyBullet>();
 	m_objList.push_back(enemyBullet);
+
+	std::shared_ptr<C_Boss>boss;
+	boss = std::make_shared<C_Boss>();
+	m_objList.push_back(boss);
+
+
+	// プレイヤーの弾
+	std::shared_ptr<C_Bullet>bullet;
+	bullet = std::make_shared<C_Bullet>();
+	m_objList.push_back(bullet);
 
 
 	//インスタンス生成後にインスタンスを渡す
 	m_gameUi->SetInstance(player);
 	player->SetInstance(bullet);
 	shotEnemy->SetInstance(enemyBullet);
-	m_boss->SetInstance(player);
+	boss->SetInstance(player);
+
+	m_gameCtr->SetInstance(gearEnemy,
+						   spikeEnemy,
+						   rushEnemy,
+		                   shotEnemy,
+		                   boss);
 
 	m_collision->SetInstance(player,
 		                     bullet,
@@ -112,7 +118,7 @@ void C_GameScene::Init()
 		                     spikeEnemy,
 		                     rushEnemy,
 							 shotEnemy,
-							 m_boss);
+							 boss);
 
 
 }

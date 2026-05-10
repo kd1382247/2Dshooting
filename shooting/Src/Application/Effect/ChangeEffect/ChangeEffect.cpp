@@ -9,7 +9,7 @@ void C_ChangeEffect::Draw()
 	}
 }
 
-void C_ChangeEffect::Update(Math::Vector2 a_pos)
+void C_ChangeEffect::Update(Math::Vector2 a_pos,float a_scale)
 {
 	if (m_aliveFlg)
 	{
@@ -22,7 +22,9 @@ void C_ChangeEffect::Update(Math::Vector2 a_pos)
 
 		m_pos = { a_pos.x - 5,a_pos.y };
 
-		m_mat = Math::Matrix::CreateTranslation(m_pos.x, m_pos.y, 0);
+		m_transMat = Math::Matrix::CreateTranslation(m_pos.x, m_pos.y, 0);
+		m_scaleMat = Math::Matrix::CreateScale(a_scale, a_scale, 0);
+		m_mat = m_scaleMat * m_transMat;
 	}
 }
 

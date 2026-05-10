@@ -2,6 +2,9 @@
 
 
 #include"../../Effect/HitEffect/HitEffect.h"
+#include"../../Effect/DamagePopup/DamagePopup.h"
+
+
 void C_Bullet::Draw()
 {
 	for (int i = 0; i < bulletNum; i++)
@@ -17,6 +20,8 @@ void C_Bullet::Draw()
 	for (int i = 0; i < bulletNum; i++)
 	{
 		m_hitEffect[i]->Draw();
+
+		m_DamagePopup[i]->Draw();
 	}
 }
 
@@ -25,9 +30,12 @@ void C_Bullet::Update()
 	AliveState();
 	Move();
 
+	
 	for (int i = 0; i < bulletNum; i++)
 	{
 		m_hitEffect[i]->Update();
+
+		m_DamagePopup[i]->Update();
 	}
 }
 
@@ -40,8 +48,12 @@ void C_Bullet::Init()
 
 	for (int i = 0; i < bulletNum; i++)
 	{
+		// ヒットエフェクト
 		m_hitEffect[i] = std::make_shared<C_HitEffect>();
+		// 属性相性エフェクト
+		m_DamagePopup[i] = std::make_shared<C_DamagePopup>();
 	}
+
 }
 
 void C_Bullet::Spawn(Math::Vector2 a_pos,Element a_nowElement)
@@ -60,6 +72,7 @@ void C_Bullet::Spawn(Math::Vector2 a_pos,Element a_nowElement)
 				
 				s_bullet[i].m_pos = { a_pos.x + 20,a_pos.y };
 				m_hitFlg[i] = false;
+				m_shieldHitFlg[i] = false;
 				m_shotWait = 10;
 				break;
 			}
@@ -116,6 +129,12 @@ void C_Bullet::AliveState()
 				s_bullet[i].m_aliveFlg = false;
 
 				m_hitEffect[i]->Spawn(s_bullet[i].m_pos);
+
+				// ボスのシールドに当たった場合表示しない
+				if(!m_shieldHitFlg[i])
+				{
+					m_DamagePopup[i]->Spawn(s_bullet[i].m_pos,e_bulletPopupType[i]);
+				}
 			}
 		}
 	}

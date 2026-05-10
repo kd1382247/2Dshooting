@@ -32,7 +32,7 @@ void Scene::ImGuiUpdate()
 	if (ImGui::Begin("Debug Window"))
 	{
 		ImGui::Text("time : %f",m_time );
-		ImGui::Text("deg : %f",m_deg );
+		ImGui::Text("deg : %f",m_damage );
 	}
 	ImGui::End();
 }

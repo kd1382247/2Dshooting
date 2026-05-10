@@ -7,10 +7,12 @@ void C_SceneManager::Draw()
 
 void C_SceneManager::PreUpdate()
 {
+
 	if (e_currentSceneType != e_nextSceneType)
 	{
 		ChangeScene(e_nextSceneType);
 	}
+
 }
 
 void C_SceneManager::Update()

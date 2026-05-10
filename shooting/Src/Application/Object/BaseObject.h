@@ -1,5 +1,7 @@
 #pragma once
 
+#include"../Data/Element/Element.h"
+#include"../Data/DamageIndicator/DamageIndicator.h"
 
 class C_BaseObject
 {
@@ -13,12 +15,9 @@ public:
 	virtual void Init()=0;
 
 	
-	enum Element
-	{
-		Fire,
-		Grass,
-		Water
-	};
+	
+
+	
 
 protected:
 
@@ -42,5 +41,6 @@ protected:
 		Element       m_nowElement;
 	};
 
+	Element       e_elementTable[3] = { Fire,Grass,Water };
 	float         m_radius = {};
 };

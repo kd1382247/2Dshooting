@@ -40,14 +40,16 @@ public:
 
 	void Spawn();
 
+	bool GetAliveFalseFlg() { return m_aliveFalseFlg; }
 
 	// 当たり判定クラスで呼び出す関数
-	Math::Vector2 GetPos(int a_i) { return s_rushEnemy[a_i].m_pos; }
-	float         GetRadius() { return m_radius; }
-	int           GetNum() { return rushEnemyNum; }
-	bool          GetAliveFlg(int a_i) { return s_rushEnemy[a_i].m_aliveFlg; }
-	void Damage(int a_i) { m_hp[a_i]--; }
-	void SetHp(int a_hp, int a_i) { m_hp[a_i] = a_hp; }
+	Math::Vector2 GetPos(int a_i)                 { return s_rushEnemy[a_i].m_pos; }
+	float         GetRadius()                     { return m_radius; }
+	float         GetAttackPow()                  { return m_attackPow; }
+	int           GetNum()                        { return rushEnemyNum; }
+	Element       GetElement(int a_i)             { return s_rushEnemy[a_i].m_nowElement; }
+	bool          GetAliveFlg(int a_i)            { return s_rushEnemy[a_i].m_aliveFlg; }
+	void          Damage(int a_i, float a_damage) { m_hp[a_i]-=a_damage; }
 
 private:
 
@@ -59,7 +61,7 @@ private:
 
 
 	KdTexture        m_rushEnemyTex;
-	static const int rushEnemyNum = 12;
+	static const int rushEnemyNum = 14;
 	S_Object         s_rushEnemy[rushEnemyNum] = {};
 	EnemyMotion      e_enemyMotion[rushEnemyNum] = {};
 	RLMove           e_rlMove[rushEnemyNum];
@@ -71,6 +73,14 @@ private:
 	const float      m_moveSpeedY = 2.0f;
 
 	float            m_hp[rushEnemyNum] = {};
+	const float      m_maxHp = 80;
+	const float      m_attackPow = 10;
+
+	float            m_aliveFalseCnt = {};
+	bool             m_aliveFalseFlg = {};
+
+	int              m_randomElement = {};
+
 	// 行動パターン
 	float            m_moveCnt[rushEnemyNum] = {};
 

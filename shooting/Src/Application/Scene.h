@@ -25,6 +25,8 @@ public:
 
 	void SetTime(float a_time) { m_time = a_time; }
 	void SetDeg(float a_deg) { m_deg = a_deg; }
+	void SetDamage(float a_damage) { m_damage = a_damage; }
+
 
 private:
 
@@ -32,6 +34,7 @@ private:
 
 	float m_time;
 	float m_deg;
+	float m_damage;
 
 public:
 	static Scene& GetInstance()

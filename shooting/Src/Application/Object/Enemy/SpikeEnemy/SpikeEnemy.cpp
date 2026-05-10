@@ -33,34 +33,42 @@ void C_SpikeEnemy::Update()
 void C_SpikeEnemy::Spawn()
 {
 
-	// 回転する敵
-	for (int i = 0,j=0; i < spikeEnemyNum; i++)
-	{
-		if (!s_spikeEnemy[i].m_aliveFlg)
-		{
-			// 回転角度
-			m_deg[i] = m_degTable[j];
-			// 行動タイプ
-			m_enemyMoveType[i] = m_moveTypeTable[j];
-				
-			if (j >= 5)j = 0;
-			j++;
+	m_randomElement = rand() % 3;
 
-			s_spikeEnemy[i].m_aliveFlg = true;
-			s_spikeEnemy[i].m_pos = Math::Vector2::Zero;
-			s_spikeEnemy[i].m_move = Math::Vector2::Zero;
-			m_hp[i] = 5;
+	// 回転する敵
+	for (int i = 0, j = 0; i < spikeEnemyNum; i++)
+	{
+
+		// 回転角度
+		m_deg[i] = m_degTable[j];
+		// 行動タイプ
+		m_enemyMoveType[i] = m_moveTypeTable[j];
+
+		if (j >= 5)
+		{
+			j = 0; 
+			m_randomElement = rand() % 3;
 		}
+		j++;
+
+		s_spikeEnemy[i].m_aliveFlg = true;
+		s_spikeEnemy[i].m_pos = Math::Vector2::Zero;
+		s_spikeEnemy[i].m_move = Math::Vector2::Zero;
+
+		;
+		s_spikeEnemy[i].m_nowElement = e_elementTable[m_randomElement];
+
+		m_hp[i] = m_maxHp;
 	}
+
+	m_aliveFalseCnt = 0;
+	m_aliveFalseFlg = false;
 
 	for (int i = 0; i < centerNum; i++)
 	{
-		if(!s_center[i].m_aliveFlg)
-		{
-			s_center[i].m_pos = m_posTable[i];
-			s_center[i].m_move = { -1.0,0 };
-			s_center[i].m_aliveFlg = true;
-		}
+		s_center[i].m_pos = m_posTable[i];
+		s_center[i].m_move = { m_movePowX,0 };
+		s_center[i].m_aliveFlg = true;
 	}
 
 	m_radius = 32.0f;
@@ -69,13 +77,11 @@ void C_SpikeEnemy::Spawn()
 
 void C_SpikeEnemy::Init()
 {
-
 	for (int i = 0; i < spikeEnemyNum; i++)
 	{
 		m_explosion[i] = std::make_shared<C_Explosion>();
 	}
 	m_spikeEnemyTex.Load("Textures/Enemy/spikeEnemy.png");
-	Spawn();
 }
 
 void C_SpikeEnemy::Release()
@@ -171,6 +177,7 @@ void C_SpikeEnemy::AliveState()
 			if (s_spikeEnemy[i].m_pos.x < screenLeft - m_radius)
 			{
 				s_spikeEnemy[i].m_aliveFlg = false;
+				m_aliveFalseCnt++;
 			}
 		}
 	}
@@ -184,6 +191,20 @@ void C_SpikeEnemy::AliveState()
 			{
 				s_spikeEnemy[i].m_aliveFlg = false;
 				m_explosion[i]->Spawn(s_spikeEnemy[i].m_pos);
+				m_aliveFalseCnt++;
+			}
+		}
+	}
+
+	if( m_aliveFalseCnt >= spikeEnemyNum)
+	{
+		m_aliveFalseFlg = true;
+
+		for (int i = 0; i < centerNum; i++)
+		{
+			if (s_center[i].m_aliveFlg)
+			{
+				s_center[i].m_aliveFlg = false;
 			}
 		}
 	}

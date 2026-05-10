@@ -12,7 +12,7 @@ public:
 	
 	
 	void Draw();
-	void Update(Math::Vector2 a_pos);
+	void Update(Math::Vector2 a_pos,float a_scale);
 
 	bool GetAliveFlg() { return m_aliveFlg; }
 
@@ -28,6 +28,8 @@ private:
 	KdTexture     m_tex;
 	Math::Vector2 m_pos;
 	Math::Matrix  m_mat;
+	Math::Matrix  m_scaleMat;
+	Math::Matrix  m_transMat;
 	float         m_animCnt;
 	bool          m_aliveFlg;
 

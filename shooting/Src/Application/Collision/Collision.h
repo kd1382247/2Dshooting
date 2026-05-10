@@ -8,7 +8,7 @@ class C_SpikeEnemy;
 class C_RushEnemy;
 class C_ShotEnemy;
 class C_Boss;
-
+class C_ElementAffinity;
 
 class C_Collision
 {
@@ -63,21 +63,22 @@ private:
 	void CheckBulletBoss();
 	void CheckPlayerBoss();
 
+	// 弾とシールドの当たり判定
+	void CheckBulletShield();
+
 	// ボスの周りの雑魚敵との判定
 	void CheckBulletSubEnemy();
 	void CheckPlayerSubEnemy();
 
 
-
-
-
-	std::shared_ptr<C_Player>m_player=nullptr;
-	std::shared_ptr<C_Bullet>m_bullet=nullptr;
-	std::shared_ptr<C_EnemyBullet>m_enemyBullet=nullptr;
-	std::shared_ptr<C_GearEnemy>m_gearEnemy=nullptr;
-	std::shared_ptr<C_SpikeEnemy>m_spikeEnemy = nullptr;
-	std::shared_ptr<C_RushEnemy>m_rushEnemy = nullptr;
-	std::shared_ptr<C_ShotEnemy>m_shotEnemy = nullptr;
-	std::shared_ptr<C_Boss>m_boss = nullptr;
+	std::shared_ptr<C_Player>         m_player=nullptr;
+	std::shared_ptr<C_Bullet>         m_bullet=nullptr;
+	std::shared_ptr<C_EnemyBullet>    m_enemyBullet=nullptr;
+	std::shared_ptr<C_GearEnemy>      m_gearEnemy=nullptr;
+	std::shared_ptr<C_SpikeEnemy>     m_spikeEnemy = nullptr;
+	std::shared_ptr<C_RushEnemy>      m_rushEnemy = nullptr;
+	std::shared_ptr<C_ShotEnemy>      m_shotEnemy = nullptr;
+	std::shared_ptr<C_Boss>           m_boss = nullptr;
+	std::shared_ptr<C_ElementAffinity>m_elementAffinity=nullptr;
 
 };

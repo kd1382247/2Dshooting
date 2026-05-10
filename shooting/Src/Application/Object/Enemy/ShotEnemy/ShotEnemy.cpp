@@ -53,7 +53,6 @@ void C_ShotEnemy::Update()
 
 void C_ShotEnemy::Spawn()
 {
-	
 	for (int i = 0; i < shotEnemyNum; i++)
 	{
 		if (!s_shotEnemy[i].m_aliveFlg)
@@ -61,29 +60,35 @@ void C_ShotEnemy::Spawn()
 			s_shotEnemy[i].m_aliveFlg = true;
 			s_shotEnemy[i].m_move = { m_moveSpeedX,0 };
 			s_shotEnemy[i].m_angle = 90.0f;
-			m_hp[i] = 5;
+			m_hp[i] = m_maxHp;
 			int random = rand() % 461 - 200;
 			s_shotEnemy[i].m_pos.y = random;
 			m_shotFlg[i] = false;
 			m_shotWait[i] = 0.0f;
-			m_coolTime[i] = 60*2.0f;
+			m_coolTime[i] = 60 * 2.0f;
 			m_shotCnt[i] = 0;
+
+			m_randomElement = rand() % 3;
+			s_shotEnemy[i].m_nowElement = e_elementTable[m_randomElement];
 		}
 	}
+
+	m_aliveFalseCnt = 0;
+	m_aliveFalseFlg = false;
 
 	//　座標をCSVファイルから読み込む
 	FILE* fp;
 
-	if (fopen_s(&fp, "Data/Enemy/RushEnemyPos.csv", "r") == 0)
+	if (fopen_s(&fp, "Data/Enemy/Rush ShotEnemyPos.csv", "r") == 0)
 	{
 		char dummy[255];
 		for (int i = 0; i < shotEnemyNum; i++)
 		{
 			if (fgets(dummy, 255, fp) != nullptr)//1行読み込み
 			{
-				Math::Vector2 pos;
-				fscanf_s(fp, ",%f,%f", &pos.x, &pos.y);//頭に , で読み飛ばし
-				s_shotEnemy[i].m_pos.x = pos.x;
+				float pos;
+				fscanf_s(fp, ",%f", &pos);//頭に , で読み飛ばし
+				s_shotEnemy[i].m_pos.x = pos;
 			}
 		}
 
@@ -98,7 +103,6 @@ void C_ShotEnemy::Init()
 
 	m_enemyBullet = std::make_shared<C_EnemyBullet>();
 
-	Spawn();
 
 	for (int i = 0; i < shotEnemyNum; i++)
 	{
@@ -163,6 +167,7 @@ void C_ShotEnemy::AliveState()
 			if (s_shotEnemy[i].m_pos.x < screenLeft - m_radius - m_exhaustDistance)
 			{
 				s_shotEnemy[i].m_aliveFlg = false;
+				m_aliveFalseCnt++;
 			}
 		}
 	}
@@ -176,9 +181,16 @@ void C_ShotEnemy::AliveState()
 			{
 				s_shotEnemy[i].m_aliveFlg = false;
 				m_explosion[i]->Spawn(s_shotEnemy[i].m_pos);
+				m_aliveFalseCnt++;
 			}
 		}
 	}
+
+	if (m_aliveFalseCnt>=shotEnemyNum  )
+	{
+		m_aliveFalseFlg = true;
+	}
+
 }
 
 void C_ShotEnemy::Action()
@@ -190,7 +202,7 @@ void C_ShotEnemy::Action()
 			if (m_shotFlg[i])
 			{
 				m_coolTime[i]++;
-				if(m_coolTime[i]>60*3)
+				if(m_coolTime[i]>60*4)
 				{
 					if (m_shotWait[i] == 0)
 					{

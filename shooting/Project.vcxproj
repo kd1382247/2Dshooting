@@ -160,7 +160,11 @@
     <ClInclude Include="..\Library\tinygltf\stb_image_write.h" />
     <ClInclude Include="..\Library\tinygltf\tiny_gltf.h" />
     <ClInclude Include="Src\Application\Collision\Collision.h" />
+    <ClInclude Include="Src\Application\Collision\ElementAffinity.h" />
+    <ClInclude Include="Src\Application\Data\DamageIndicator\DamageIndicator.h" />
+    <ClInclude Include="Src\Application\Data\Element\Element.h" />
     <ClInclude Include="Src\Application\Effect\ChangeEffect\ChangeEffect.h" />
+    <ClInclude Include="Src\Application\Effect\DamagePopup\DamagePopup.h" />
     <ClInclude Include="Src\Application\Effect\Exhaust\Exhaust.h" />
     <ClInclude Include="Src\Application\Effect\Explosion\Explosion.h" />
     <ClInclude Include="Src\Application\Effect\HitEffect\HitEffect.h" />
@@ -206,7 +210,9 @@
     <ClCompile Include="..\Library\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="..\Library\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Src\Application\Collision\Collision.cpp" />
+    <ClCompile Include="Src\Application\Collision\ElementAffinity.cpp" />
     <ClCompile Include="Src\Application\Effect\ChangeEffect\ChangeEffect.cpp" />
+    <ClCompile Include="Src\Application\Effect\DamagePopup\DamagePopup.cpp" />
     <ClCompile Include="Src\Application\Effect\Exhaust\Exhaust.cpp" />
     <ClCompile Include="Src\Application\Effect\Explosion\Explosion.cpp" />
     <ClCompile Include="Src\Application\Effect\HitEffect\HitEffect.cpp" />

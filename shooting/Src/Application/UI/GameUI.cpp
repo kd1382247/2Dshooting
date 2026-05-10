@@ -96,19 +96,19 @@ void C_GameUI::Init()
 void C_GameUI::Update()
 {
 	
-	if (m_player->GetNowElement() == C_Player::Fire)
+	if (m_player->GetNowElement() == Fire)
 	{
 		m_fireAlpha = 1.0f;
 		m_waterAlpha = 0.5;
 		m_grassAlpha = 0.5;
 	}
-	if (m_player->GetNowElement() == C_Player::Grass)
+	if (m_player->GetNowElement() == Grass)
 	{
 		m_fireAlpha = 0.5f;
 		m_waterAlpha = 0.5;
 		m_grassAlpha = 1.0;
 	}
-	if (m_player->GetNowElement() == C_Player::Water)
+	if (m_player->GetNowElement() ==Water)
 	{
 		m_fireAlpha = 0.5f;
 		m_waterAlpha = 1.0;
@@ -126,8 +126,6 @@ void C_GameUI::Update()
 	s_waterIcon.m_mat = Math::Matrix::CreateTranslation(s_waterIcon.m_pos.x, s_waterIcon.m_pos.y, 0);
 
 	
-
-
 	// 背景
 	s_background.m_mat = Math::Matrix::CreateTranslation(s_background.m_pos.x, s_background.m_pos.y, 0);
 
@@ -161,7 +159,7 @@ void C_GameUI::Update()
 
 
 	// クールタイムバーの割合
-	m_coolTimeRate = m_player->GetCurrentCoolTime() / m_player->GetMaxCoolTime();
+	m_coolTimeRate = m_player->GetCurrentElChangeCoolTime() / m_player->GetMaxElChangeCoolTime();
 	//                         初期値   最大幅         最大幅      バーの割合
 	s_coolTimeBar.m_pos.x = m_baseX + (m_maxWidth - (m_maxWidth * m_coolTimeRate)) / 2;
 
