@@ -4,13 +4,12 @@
 class C_Exhaust;
 class C_Explosion;
 class C_EnemyBullet;
+class C_Score;
+class C_Player;
 
 class C_ShotEnemy :public C_BaseObject
 {
 public:
-
-
-	
 
 	C_ShotEnemy() { Init(); }
 	~C_ShotEnemy() override{ Release(); }
@@ -19,6 +18,16 @@ public:
 	void Update()override;
 	void Spawn();
 	bool GetAliveFalseFlg() { return m_aliveFalseFlg; }
+
+	void SetInstance(std::shared_ptr<C_EnemyBullet>a_enemyBullet,
+						 std::shared_ptr<C_Score>a_score,
+						 std::shared_ptr<C_Player>a_player) 
+						{ 
+							m_enemyBullet = a_enemyBullet;
+							m_score = a_score;
+							m_player = a_player;
+						}
+
 
 	// 当たり判定クラスで呼び出す関数
 	Math::Vector2 GetPos(int a_i)                 { return s_shotEnemy[a_i].m_pos; }
@@ -29,7 +38,8 @@ public:
 	float         GetAttackPow()                  { return m_attackPow; }
 	void          Damage(int a_i, float a_damage) { m_hp[a_i]-=a_damage; }
 
-	void          SetInstance(std::shared_ptr<C_EnemyBullet>a_enemyBullet) { m_enemyBullet = a_enemyBullet; }
+	void          SetMatchupType(int a_i, MatchupType a_matchupType) { e_matchupType[a_i] = a_matchupType; }
+	float         GetScore(MatchupType a_matchupType);
 
 private:
 
@@ -41,16 +51,18 @@ private:
 	void Action();
 
 
-	KdTexture m_shotEnemyTex;
+	KdTexture        m_shotEnemyTex;
 	static const int shotEnemyNum = 14;
-	S_Object  s_shotEnemy[shotEnemyNum] = {};
-	bool      m_shotFlg[shotEnemyNum] = {};
-	float     m_shotWait[shotEnemyNum] = {};
-	int       m_shotCnt[shotEnemyNum] = {};
-	float     m_coolTime[shotEnemyNum] = {};
+	S_Object         s_shotEnemy[shotEnemyNum] = {};
+	bool             m_shotFlg[shotEnemyNum] = {};
+	float            m_shotWait[shotEnemyNum] = {};
+	int              m_shotCnt[shotEnemyNum] = {};
+	float            m_coolTime[shotEnemyNum] = {};
+	MatchupType      e_matchupType[shotEnemyNum] = {};
 
-	float       m_aliveFalseCnt = {};
-	bool        m_aliveFalseFlg = {};
+
+	float            m_aliveFalseCnt = {};
+	bool             m_aliveFalseFlg = {};
 
 	const float      m_moveSpeedX = -1.5f;
 	const float      m_attackPow = 10;
@@ -58,6 +70,8 @@ private:
 	const float      m_maxHp = 100;
 	
 	int              m_randomElement = {};
+
+	const float      shotEnemyScore = 30000;
 
 	// 排気エフェクト
 	std::shared_ptr<C_Exhaust>m_exhaust[shotEnemyNum];
@@ -69,5 +83,8 @@ private:
 
 	std::shared_ptr<C_EnemyBullet>m_enemyBullet;
 
+	std::shared_ptr<C_Score>m_score;
+
+	std::shared_ptr<C_Player>m_player;
 
 };

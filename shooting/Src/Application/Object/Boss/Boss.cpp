@@ -3,13 +3,17 @@
 #include"../Player/Player.h"
 #include"../../Effect/Explosion/Explosion.h"
 #include"../../Effect/ChangeEffect/ChangeEffect.h"
+#include"../../UI/Result/Result.h"
+
 
 void C_Boss::Draw()
 {
+	DrawBossExplosion();
 
 	if (!s_boss.m_aliveFlg)return;
 
 	DrawBoss();
+	
 	DrawShield();
 	m_changeEffect->Draw();
 
@@ -19,6 +23,8 @@ void C_Boss::Draw()
 	
 	DrawGearEnemy();
 	DrawGEnemyWarning();
+
+	
 
 	// 歯車型の敵用の爆破エフェクト
 	for (int i = 0; i < gearEnemyNum; i++)
@@ -35,8 +41,13 @@ void C_Boss::Draw()
 
 void C_Boss::Update()
 {
+
+	UpdateBossExplosion();
+
 	if (!s_boss.m_aliveFlg)return;
 
+
+	AliveStateBoss();
 	MoveBoss();
 
 	UpdateShield();
@@ -53,8 +64,6 @@ void C_Boss::Update()
 	UpdateGEnemyWarning();
 	MoveGearEnemy();
 	
-	
-
 	// 歯車型の敵用の爆破エフェクト
 	for (int i = 0; i < gearEnemyNum; i++)
 	{
@@ -68,13 +77,12 @@ void C_Boss::Update()
 	}
 }
 
-
-
 void C_Boss::Init()
 {
 
 	m_changeEffect = std::make_shared<C_ChangeEffect>();
-	
+
+
 	for (int i = 0; i < gearEnemyNum; i++)
 	{
 		m_gEnemyExplosion[i] = std::make_shared<C_Explosion>();
@@ -87,6 +95,7 @@ void C_Boss::Init()
 	}
 
 	InitBoss();
+	InitBossExplosion();
 	InitShield();
 	InitSpikeEnemy();
 	InitGearEnemy();
@@ -98,9 +107,12 @@ void C_Boss::Init()
 void C_Boss::Release()
 {
 	m_bossTex.Release();
+	m_bossExplosionTex.Release();
+	m_shieldTex.Release();
 	m_spikeEnemyTex.Release();
 	m_gearEnemyTex.Release();
 	m_warningTex.Release();
+
 }
 
 void C_Boss::DrawBoss()
@@ -111,7 +123,6 @@ void C_Boss::DrawBoss()
 		SHADER.m_spriteShader.DrawTex(&m_bossTex, Math::Rectangle((int)m_bossAnimCnt * 192, (int)s_boss.m_nowElement * 192, 192, 192), 1.0f);
 	}
 }
-
 
 void C_Boss::MoveBoss()
 {
@@ -125,7 +136,7 @@ void C_Boss::MoveBoss()
 			{
 				s_boss.m_move.y *= -1;
 			}
-			if (s_boss.m_pos.x<200 + m_bossRadius || s_boss.m_pos.x>screenRight - m_bossRadius)
+			if (s_boss.m_pos.x<200 + m_bossRadius || s_boss.m_pos.x>screenRight - m_bossRadius-15)
 			{
 				s_boss.m_move.x *= -1;
 			}
@@ -172,7 +183,7 @@ void C_Boss::SpawnBoss()
 {
 	// ボス
 	s_boss.m_pos = m_bossInitPos;
-	m_bossHp = 1000;
+	m_bossHp = m_bossMaxHp;
 	s_boss.m_aliveFlg = true;
 
 	int random = rand() % 3;
@@ -220,6 +231,21 @@ void C_Boss::Action()
 
 }
 
+void C_Boss::AliveStateBoss()
+{
+	if (m_bossHp <= 0)
+	{
+		s_boss.m_aliveFlg = false;
+
+		// ゲームクリアフラグをtrueにする
+		m_result->SetClearFlg(true);
+
+		m_bossExpPos = s_boss.m_pos;
+		m_bossExpAliveFlg = true;
+	}
+
+}
+
 void C_Boss::SetBossMove()
 {
 	int random = rand() % 3;
@@ -253,6 +279,36 @@ void C_Boss::ElementChange()
 
 		m_changeEffect->SetAliveFlg(true);
 
+}
+
+void C_Boss::DrawBossExplosion()
+{
+	if (m_bossExpAliveFlg)
+	{
+		SHADER.m_spriteShader.SetMatrix(m_bossExpMat);
+		SHADER.m_spriteShader.DrawTex(&m_bossExplosionTex, Math::Rectangle((int)m_bossExpAnimCnt*144, 0, 144, 144), m_bossExpAlpha);
+	}
+}
+
+void C_Boss::UpdateBossExplosion()
+{
+	if (m_bossExpAliveFlg)
+	{
+		m_bossExpAlpha = 1.0f;
+		m_bossExpAnimCnt+=0.1;
+		if (m_bossExpAnimCnt > 8)
+		{
+			m_bossAnimCnt = 0;
+			m_bossExpAliveFlg = false;
+		}
+
+		m_bossExpMat = Math::Matrix::CreateTranslation(m_bossExpPos.x, m_bossExpPos. y, 0);
+	}
+}
+
+void C_Boss::InitBossExplosion()
+{
+	m_bossExplosionTex.Load("Textures/Boss/explosion.png");
 }
 
 void C_Boss::DrawShield()
@@ -456,7 +512,7 @@ void C_Boss::MoveSpikeEnemy()
 
 void C_Boss::InitSpikeEnemy()
 {
-	m_spikeEnemyTex.Load("Textures/Boss/spikeEnemy.png");
+	m_spikeEnemyTex.Load("Textures/Enemy/spikeEnemy.png");
 }
 
 void C_Boss::AliveStateSpikeEnemy()
@@ -484,6 +540,7 @@ void C_Boss::AliveStateSpikeEnemy()
 				m_sEnemyFalseCnt++;
 
 				m_sEnemyExplosion[i]->Spawn(s_spikeEnemy[i].m_pos);
+				m_player->CoolTimeCntUp();
 			}
 		}
 	}
@@ -491,7 +548,7 @@ void C_Boss::AliveStateSpikeEnemy()
 	if (m_sEnemyFalseCnt >= spikeEnemyNum && !m_bossMoveFlg)
 	{
 		m_sEnemySpawnCnt++;
-		if (m_sEnemySpawnCnt > 60 * 5)
+		if (m_sEnemySpawnCnt > 60 * 3)
 		{
 			SpawnSEWarning();
 			m_sEnemySpawnCnt = 0;
@@ -509,14 +566,17 @@ void C_Boss::AliveStateSpikeEnemy()
 				m_sEnemyExplosion[i]->Spawn(s_spikeEnemy[i].m_pos);
 			}
 		}
+		m_sEnemySpawnCnt=0;
+		m_sEnemyFalseCnt = 0;
 	}
 
 }
 
 void C_Boss::SpawnSpikeEnemy()
 {
+	m_sERandomElement = rand() % 3;
 
-	for (int i = 0; i < spikeEnemyNum; i++)
+	for (int i = 0,j=0; i < spikeEnemyNum; i++)
 	{
 		// 回転角度
 		m_sEnemyDeg[i] = m_sEnemyDegTable[i];
@@ -524,11 +584,26 @@ void C_Boss::SpawnSpikeEnemy()
 		s_spikeEnemy[i].m_aliveFlg = true;
 		s_spikeEnemy[i].m_pos = Math::Vector2::Zero;
 		s_spikeEnemy[i].m_move = Math::Vector2::Zero;
-		s_spikeEnemy[i].m_nowElement = s_boss.m_nowElement;
 		m_sEnemyMoveFlg[i] = false;
 		m_homingCnt[i] = 0;
 		m_homingFlg[i] = false;
 		m_sEnemyHp[i] = m_sEnemyMaxHp;
+
+		if (m_bossHp > 800)
+		{
+			s_spikeEnemy[i].m_nowElement = s_boss.m_nowElement;
+		}
+		else
+		{
+			if (j >= 3)
+			{
+				j = 0;
+				m_sERandomElement = rand() % 3;
+			}
+			s_spikeEnemy[i].m_nowElement = e_elementTable[m_sERandomElement];
+			j++;
+		}
+
 
 		m_sEnemyAttackMove[i] = { m_AttackMoveSpeedX,0 };
 
@@ -691,7 +766,7 @@ void C_Boss::MoveGearEnemy()
 
 void C_Boss::InitGearEnemy()
 {
-	m_gearEnemyTex.Load("Textures/Boss/gearEnemy.png");
+	m_gearEnemyTex.Load("Textures/Enemy/gearEnemy.png");
 }
 
 void C_Boss::AliveStateGearEnemy()
@@ -708,6 +783,7 @@ void C_Boss::AliveStateGearEnemy()
 				m_gEnemyFalseCnt++;
 
 				m_gEnemyExplosion[i]->Spawn(s_gearEnemy[i].m_pos);
+				m_player->CoolTimeCntUp();
 			}
 		}
 	}
@@ -716,8 +792,15 @@ void C_Boss::AliveStateGearEnemy()
 	{
 		SetBossMove();
 		m_gEnemyFalseCnt = 0;
-		m_sEWarningFlg = false;
 
+		m_sEWarningFlg = false;
+		for (int i = 0; i < spikeEnemyNum; i++)
+		{
+			if (s_sEWarning[i].m_aliveFlg)
+			{
+				s_sEWarning[i].m_aliveFlg = false;
+			}
+		}
 		// シールド解除
 		s_shield.m_shieldReleaseFlg = true;
 		s_shield.m_animCnt = { 0,2 };
@@ -726,8 +809,9 @@ void C_Boss::AliveStateGearEnemy()
 
 void C_Boss::SpawnGearEnemy()
 {
+	m_gERandomElement = rand() % 3;
 
-	for (int i = 0; i < gearEnemyNum; i++)
+	for (int i = 0,j=0; i < gearEnemyNum; i++)
 	{
 		// 回転角度
 		m_gEnemyDeg[i] = m_gEnemyDegTable[i];
@@ -735,7 +819,24 @@ void C_Boss::SpawnGearEnemy()
 		s_gearEnemy[i].m_aliveFlg = true;
 		s_gearEnemy[i].m_pos = Math::Vector2::Zero;
 		s_gearEnemy[i].m_move = Math::Vector2::Zero;
-		s_gearEnemy[i].m_nowElement = s_boss.m_nowElement;
+
+		if(m_bossHp>800)
+		{
+			s_gearEnemy[i].m_nowElement = s_boss.m_nowElement;
+		}
+		else
+		{
+			if (j >= 2)
+			{
+				j = 0;
+				m_gERandomElement = rand() % 3;
+			}
+			s_gearEnemy[i].m_nowElement = e_elementTable[m_gERandomElement];
+			j++;
+		}
+
+		
+
 		m_gEnemyHp[i] = m_gEnemyMaxHp;
 
 	}

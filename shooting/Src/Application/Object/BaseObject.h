@@ -1,7 +1,7 @@
 #pragma once
 
 #include"../Data/Element/Element.h"
-#include"../Data/DamageIndicator/DamageIndicator.h"
+#include"../Data/MatchupType/MatchupType.h"
 
 class C_BaseObject
 {
@@ -15,10 +15,6 @@ public:
 	virtual void Init()=0;
 
 	
-	
-
-	
-
 protected:
 
 	virtual void Release();

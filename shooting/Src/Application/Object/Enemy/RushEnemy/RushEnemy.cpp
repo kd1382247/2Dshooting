@@ -2,7 +2,8 @@
 
 #include"../../../Effect/Exhaust/Exhaust.h"
 #include"../../../Effect/Explosion/Explosion.h"
-
+#include"../../../UI/Score/Score.h"
+#include"../../Player/Player.h"
 
 void C_RushEnemy::Draw()
 {
@@ -50,12 +51,10 @@ void C_RushEnemy::Update()
 
 void C_RushEnemy::Spawn()
 {
+	m_randomElement = rand() % 3;
 
-	for (int i = 0; i < rushEnemyNum; i++)
+	for (int i = 0,j=0; i < rushEnemyNum; i++)
 	{
-		if (!s_rushEnemy[i].m_aliveFlg)
-		{
-
 			if (i % 2 == 0)
 			{
 				e_rlMove[i] = Right;
@@ -68,14 +67,17 @@ void C_RushEnemy::Spawn()
 			s_rushEnemy[i].m_angle = 90.0f;
 			e_enemyMotion[i] = Idle;
 			m_hp[i] = m_maxHp;
+			m_moveFlg[i] = false;
 			int random = rand() % 461 - 200;
 			s_rushEnemy[i].m_pos.y = random;
 
-			m_randomElement = rand() % 3;
+			if (j >= 2)
+			{
+				j = 0;
+				m_randomElement = rand() % 3;
+			}
+			j++;
 			s_rushEnemy[i].m_nowElement = e_elementTable[m_randomElement];
-
-
-		}
 	}
 
 	m_aliveFalseCnt = 0;
@@ -98,6 +100,22 @@ void C_RushEnemy::Spawn()
 		}
 
 		fclose(fp);
+	}
+}
+
+float C_RushEnemy::GetScore(MatchupType a_matchupType)
+{
+	if (a_matchupType == WEAK)
+	{
+		return rushEnemyScore * 2;
+	}
+	if (a_matchupType == NORMAL)
+	{
+		return rushEnemyScore;
+	}
+	if (a_matchupType == RESIST)
+	{
+		return rushEnemyScore / 2;
 	}
 }
 
@@ -131,42 +149,50 @@ void C_RushEnemy::Move()
 	{
 		if (s_rushEnemy[i].m_aliveFlg)
 		{
-
-			s_rushEnemy[i].m_move.y = 0;
-
-			// 左に動くとき
-			if (s_move[i].m_leftMoveFlg)
+			// 敵が画面内に来たら
+			if (s_rushEnemy[i].m_pos.x < 640)
 			{
-
-				s_rushEnemy[i].m_move.y = m_moveSpeedY * -1;
-
-				s_move[i].m_leftMoveCnt++;
-				if (s_move[i].m_leftMoveCnt < 60 * 0.3f)e_enemyMotion[i] = MinLeftMove;
-				if (s_move[i].m_leftMoveCnt > 60 * 0.3f)e_enemyMotion[i] = MaxLeftMove;
-			}
-			else
-			{
-				s_move[i].m_leftMoveCnt = 0.0f;
+				m_moveFlg[i] = true;
 			}
 
-			// 右に動くとき
-			if (s_move[i].m_rightMoveFlg)
+			if (m_moveFlg[i])
 			{
-				s_rushEnemy[i].m_move.y = m_moveSpeedY;
+				s_rushEnemy[i].m_move.y = 0;
 
-				s_move[i].m_rightMoveCnt++;
-				if (s_move[i].m_rightMoveCnt < 60 * 0.3f)e_enemyMotion[i] = MinRightMove;
-				if (s_move[i].m_rightMoveCnt > 60 * 0.3f)e_enemyMotion[i] = MaxRightMove;
+				// 左に動くとき
+				if (s_move[i].m_leftMoveFlg)
+				{
+
+					s_rushEnemy[i].m_move.y = m_moveSpeedY * -1;
+
+					s_move[i].m_leftMoveCnt++;
+					if (s_move[i].m_leftMoveCnt < 60 * 0.3f)e_enemyMotion[i] = MinLeftMove;
+					if (s_move[i].m_leftMoveCnt > 60 * 0.3f)e_enemyMotion[i] = MaxLeftMove;
+				}
+				else
+				{
+					s_move[i].m_leftMoveCnt = 0.0f;
+				}
+
+				// 右に動くとき
+				if (s_move[i].m_rightMoveFlg)
+				{
+					s_rushEnemy[i].m_move.y = m_moveSpeedY;
+
+					s_move[i].m_rightMoveCnt++;
+					if (s_move[i].m_rightMoveCnt < 60 * 0.3f)e_enemyMotion[i] = MinRightMove;
+					if (s_move[i].m_rightMoveCnt > 60 * 0.3f)e_enemyMotion[i] = MaxRightMove;
+				}
+				else
+				{
+					s_move[i].m_rightMoveCnt = 0.0f;
+				}
 			}
-			else
-			{
-				s_move[i].m_rightMoveCnt = 0.0f;
-			}
+				s_rushEnemy[i].m_move.x = m_moveSpeedX * -1;
 
-			s_rushEnemy[i].m_move.x = m_moveSpeedX * -1;
-
-			//左右に動いていなければ待機モーション
-			if (!s_move[i].m_leftMoveFlg && !s_move[i].m_rightMoveCnt)e_enemyMotion[i] = Idle;
+				//左右に動いていなければ待機モーション
+				if (!s_move[i].m_leftMoveFlg && !s_move[i].m_rightMoveCnt)e_enemyMotion[i] = Idle;
+			
 		}
 	}
 
@@ -232,6 +258,9 @@ void C_RushEnemy::AliveState()
 				s_rushEnemy[i].m_aliveFlg = false;
 				m_explosion[i]->Spawn(s_rushEnemy[i].m_pos);
 				m_aliveFalseCnt++;
+
+				m_score->ScoreCntUp(GetScore(e_matchupType[i]));
+				m_player->CoolTimeCntUp();
 			}
 		}
 	}

@@ -5,9 +5,9 @@
 class C_Bullet;
 class C_Exhaust;
 class C_ChangeEffect;
-
-class C_GameScene;
-
+class C_Explosion;
+class C_HitEffect;
+class C_Result;
 
 class C_Player:public C_BaseObject
 {
@@ -30,32 +30,46 @@ public:
 	void Draw()    override;
 	void Update()  override;
 	
+	// インスタンスをセット
+	void SetInstance(std::shared_ptr<C_Bullet>a_bullet,
+		             std::shared_ptr<C_Result>a_result)
+	{
+		m_bullet = a_bullet;
+		m_result = a_result;
+	}
+
+
+	Element       GetNowElement()                     { return s_player.m_nowElement; }
+	Math::Vector2 GetPos()                            { return s_player.m_pos; }
 	
-	void SetInstance(std::shared_ptr<C_Bullet>a_bullet) { m_bullet = a_bullet; }
-	Element GetNowElement() { return s_player.m_nowElement; }
-	Math::Vector2 GetPos() { return s_player.m_pos; }
-	void SetAliveFlg(bool a_flg) { s_player.m_aliveFlg = a_flg; }
-
-	float GetRadius() { return m_radius; }
-	bool  GetAliveFlg() { return s_player.m_aliveFlg; }
-
-	bool GetHitCoolTimeFlg() { return  m_hitCoolTimeFlg; }
-	void SetHitCoolTimeFlg(bool a_flg) { m_hitCoolTimeFlg = a_flg; }
-
-
+	float         GetRadius()                         { return m_radius; }
+	bool          GetAliveFlg()                       { return s_player.m_aliveFlg; }
+	// ヒットフラグ関連のゲッター
+	bool          GetHitCoolTimeFlg()                 { return  m_hitCoolTimeFlg; }
+	void          SetHitCoolTimeFlg(bool a_flg)       { m_hitCoolTimeFlg = a_flg; }
+	void          SetAliveFlg(bool a_flg)             { s_player.m_aliveFlg = a_flg; }
 	// HP関連のゲッター
-	float GetMaxHp() { return m_maxHp; }
-	float GetCurrentHp() { return m_hp; }
+	float         GetMaxHp()                          { return m_maxHp; }
+	float         GetCurrentHp()                      { return m_hp; }
 
 	// クールタイムのゲッター
-	float GetMaxElChangeCoolTime() { return m_maxElChangeCoolTime; }
-	float GetCurrentElChangeCoolTime() { return m_elChangeCoolTime; }
+	float         GetMaxElChangeCoolTime()            { return m_maxElChangeCoolTime; }
+	float         GetCurrentElChangeCoolTime()        { return m_elChangeCoolTime; }
 
+	void          SetHitFlg(bool a_flg,Element a_element)
+	{
+		m_hitFlg = a_flg;
+		m_hitEffectType = a_element;
+	}
 
-
-
-	void SetOwner(C_GameScene* a_owner) { m_owner = a_owner; }
-
+	void CoolTimeCntUp()
+	{
+		m_elChangeCoolTime += 30;
+		if (m_elChangeCoolTime >= m_maxElChangeCoolTime)
+		{
+			m_elChangeCoolTime = m_maxElChangeCoolTime;
+		}
+	}
 
 	void Damage(float a_damage)
 	{ 
@@ -64,19 +78,7 @@ public:
 	}
 
 
-private:
-
-
-	float m_hoge = {};
-
-	std::shared_ptr<C_Bullet>m_bullet=nullptr;
-
-	std::shared_ptr<C_Exhaust>m_exhaust=nullptr;
-	const float               m_exhaustAngle = 270.0f;
-
-	std::shared_ptr<C_ChangeEffect>m_changeEffect=nullptr;
-	
-	C_GameScene* m_owner=nullptr;
+private:	
 
 	//解放処理
 	void Init()    override;
@@ -85,11 +87,12 @@ private:
 	// プレイヤーの動き
 	void Move();
 
+	// 生存フラグの状態管理
+	void AliveState();
+
 	void ElementChangeCoolTime();
 
 	void HitCoolTime();
-
-
 
 	//弾発射関数
 	void Shoot();
@@ -99,37 +102,61 @@ private:
 
 
 	KdTexture     m_playerTex;
-	S_Object      s_player;
+	S_Object      s_player = {};
 	
-	PlayerMotion  e_playerMotion;
+	PlayerMotion  e_playerMotion = {};
 	
-	const int m_playerWidht=55;
-	const int m_playerHight=35;
+	const int     m_playerWidht=55;
+	const int     m_playerHight=35;
 
-	float         m_rightMoveCnt;
-	float         m_leftMoveCnt;
-	bool          m_rightMoveFlg;
-	bool          m_leftMoveFlg;
+	float         m_rightMoveCnt = {};
+	float         m_leftMoveCnt = {};
+	bool          m_rightMoveFlg = {};
+	bool          m_leftMoveFlg = {};
 
 	const float   m_moveSpeed=5.0f;
 
 	// 体力
 	const float   m_maxHp = 100;
-	float         m_hp = 100;
+	float         m_hp = {};
 	// クールタイム
-	const float   m_maxElChangeCoolTime = 300;
-	float         m_elChangeCoolTime=300;
+	const float   m_maxElChangeCoolTime = 240;
+	float         m_elChangeCoolTime=240;
 
-	bool          m_keyFlg;
+	bool          m_keyFlg = {};
 
-	bool m_hitCoolTimeFlg = {};
-	int  m_hitCoolTime = {};
+	bool          m_hitCoolTimeFlg = {};
+	int           m_hitCoolTime = {};
+	
+	Element       m_hitEffectType = {};
+	bool          m_hitFlg = {};
 
 	// ダメージを受けた際の点滅
-	float m_alpha;
-	float m_flashCnt;
+	float          m_alpha = {};
+	float          m_flashCnt = {};
 
 	float         m_frame = 0;
 	float         m_time=0;
 	float         m_timeCnt=0;
+
+
+	// 弾
+	std::shared_ptr<C_Bullet>      m_bullet = nullptr;
+
+	// 排気エフェクト
+	std::shared_ptr<C_Exhaust>     m_exhaust = nullptr;
+	const float                    m_exhaustAngle = 270.0f;
+
+	// チェンジエフェクト
+	std::shared_ptr<C_ChangeEffect>m_changeEffect = nullptr;
+
+	// 爆破エフェクト
+	std::shared_ptr<C_Explosion>   m_explosion = nullptr;
+	bool                           m_expSpawnFlg = {};
+
+	// ヒットエフェクト
+	std::shared_ptr<C_HitEffect>   m_hitEffect = nullptr;
+
+	// リザルト
+	std::shared_ptr<C_Result>      m_result=nullptr;
 };

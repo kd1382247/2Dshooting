@@ -106,14 +106,20 @@
     <Filter Include="Src\Application\Data">
       <UniqueIdentifier>{0dcbfd5a-b4c4-48ef-a579-87d5c5fc576b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Src\Application\Data\DamageIndicator">
-      <UniqueIdentifier>{a7cd4b6d-9a70-46be-973e-a8708a24fa7d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Src\Application\Data\Element">
       <UniqueIdentifier>{ff354c5d-7107-4413-b017-cc1d8c17eebf}</UniqueIdentifier>
     </Filter>
     <Filter Include="Src\Application\Effect\DamagePopup">
       <UniqueIdentifier>{a0e99ca9-d2b6-4098-804c-d83371a1b67c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\UI\Score">
+      <UniqueIdentifier>{7f5bbc34-83b0-4760-add4-e5f5e3884ca2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\UI\Result">
+      <UniqueIdentifier>{7929e86d-b2d7-4d5d-886a-1861c0688251}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Application\Data\MatchupType">
+      <UniqueIdentifier>{a7cd4b6d-9a70-46be-973e-a8708a24fa7d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -273,17 +279,23 @@
     <ClInclude Include="Src\Application\Object\Boss\Boss.h">
       <Filter>Src\Application\Object\Boss</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Data\DamageIndicator\DamageIndicator.h">
-      <Filter>Src\Application\Data\DamageIndicator</Filter>
-    </ClInclude>
     <ClInclude Include="Src\Application\Data\Element\Element.h">
       <Filter>Src\Application\Data\Element</Filter>
     </ClInclude>
     <ClInclude Include="Src\Application\Effect\DamagePopup\DamagePopup.h">
       <Filter>Src\Application\Effect\DamagePopup</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Application\Collision\ElementAffinity.h">
+    <ClInclude Include="Src\Application\Collision\MatchupTypeCalculator.h">
       <Filter>Src\Application\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\UI\Score\Score.h">
+      <Filter>Src\Application\UI\Score</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\UI\Result\Result.h">
+      <Filter>Src\Application\UI\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Application\Data\MatchupType\MatchupType.h">
+      <Filter>Src\Application\Data\MatchupType</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -416,8 +428,14 @@
     <ClCompile Include="Src\Application\Effect\DamagePopup\DamagePopup.cpp">
       <Filter>Src\Application\Effect\DamagePopup</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Application\Collision\ElementAffinity.cpp">
+    <ClCompile Include="Src\Application\Collision\MatchupTypeCalculator.cpp">
       <Filter>Src\Application\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\UI\Score\Score.cpp">
+      <Filter>Src\Application\UI\Score</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Application\UI\Result\Result.cpp">
+      <Filter>Src\Application\UI\Result</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

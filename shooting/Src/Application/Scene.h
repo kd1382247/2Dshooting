@@ -24,7 +24,7 @@ public:
 	void ImGuiUpdate();
 
 	void SetTime(float a_time) { m_time = a_time; }
-	void SetDeg(float a_deg) { m_deg = a_deg; }
+	void SetHp(float a_hp) { m_hp = a_hp; }
 	void SetDamage(float a_damage) { m_damage = a_damage; }
 
 
@@ -33,7 +33,7 @@ private:
 	Scene() {}
 
 	float m_time;
-	float m_deg;
+	float m_hp;
 	float m_damage;
 
 public:

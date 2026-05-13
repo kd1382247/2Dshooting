@@ -3,93 +3,102 @@
 #include"../Bullet/Bullet.h"
 #include"../../Effect/Exhaust/Exhaust.h"
 #include"../../Effect/ChangeEffect/ChangeEffect.h"
+#include"../../Effect/HitEffect/HitEffect.h"
+#include"../../Effect/Explosion/Explosion.h"
+#include"../../UI/Result/Result.h"
 #include"../../Scene.h"
 
 
 void C_Player::Draw()
 {
-	if (s_player.m_aliveFlg)
-	{
-		SHADER.m_spriteShader.SetMatrix(s_player.m_mat);
-		SHADER.m_spriteShader.DrawTex(&m_playerTex, Math::Rectangle((int)e_playerMotion * 96, (int)s_player.m_nowElement * 96, 96, 96), m_alpha);
-	}
-	
+
+	m_explosion->Draw();
+	m_hitEffect->Draw();
+
+	if (!s_player.m_aliveFlg)return;
+
+	SHADER.m_spriteShader.SetMatrix(s_player.m_mat);
+	SHADER.m_spriteShader.DrawTex(&m_playerTex, Math::Rectangle((int)e_playerMotion * 96, (int)s_player.m_nowElement * 96, 96, 96), m_alpha);
+
+
 	m_exhaust->Draw(s_player.m_aliveFlg);
 	m_changeEffect->Draw();
 }
 
 void C_Player::Update()
 {
-	if (s_player.m_aliveFlg)
+
+	m_explosion->Update();
+
+	// ヒットフラグがtrueだったら
+	if (m_hitFlg)
 	{
-		Move();
-
-		if (GetAsyncKeyState(VK_SPACE) & 0x8000)
-		{
-			Shoot();
-		}
-
-		HitCoolTime();
-
-		ElementChangeCoolTime();
-
-		m_timeCnt++;
-		if (m_timeCnt > 60 * 1)
-		{
-			m_time++;
-			m_timeCnt = 0.0f;
-			SCENE.SetTime(m_time);
-		}
-
-		SCENE.SetDamage(m_hoge);
-
-		ElementChange();
-
-		m_changeEffect->Update(s_player.m_pos,1);
-
-		m_exhaust->Update(s_player.m_aliveFlg,s_player.m_pos, m_exhaustAngle,-38);
-
-		
-		m_frame++;
-
+		m_hitEffect->Spawn(s_player.m_pos, m_hitEffectType);
+		m_hitFlg = false;
 	}
+	m_hitEffect->Update();
+
+	if (!s_player.m_aliveFlg)return;
+
+	AliveState();
+
+	Move();
+
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
+	{
+		Shoot();
+	}
+
+	HitCoolTime();
+
+	ElementChangeCoolTime();
+
+	m_timeCnt++;
+	if (m_timeCnt > 60 * 1)
+	{
+		m_time++;
+		m_timeCnt = 0.0f;
+		SCENE.SetTime(m_time);
+	}
+
+
+	ElementChange();
+
+	m_changeEffect->Update(s_player.m_pos, 1);
+
+	m_exhaust->Update(s_player.m_aliveFlg, s_player.m_pos, m_exhaustAngle, -38);
+
+
+	m_frame++;
+
 }
+
 
 void C_Player::Init()
 {
-	m_exhaust = std::make_shared<C_Exhaust>();
+	m_exhaust =      std::make_shared<C_Exhaust>();
 	m_changeEffect = std::make_shared<C_ChangeEffect>();
-
+	m_hitEffect =    std::make_shared<C_HitEffect>();
+	m_explosion =    std::make_shared<C_Explosion>();
 
 	m_playerTex.Load("Textures/Player/player.png");
 
 	s_player.m_aliveFlg = true;
 	s_player.m_angle = 270.0f;
-	s_player.m_pos = { 0.0f,0.0f };
-	s_player.m_move = { 0.0f,0.0f };
+	s_player.m_pos = { -200.0f,0.0f };
+	m_hp = m_maxHp;
 
 	e_playerMotion = Idle;
-
-	m_rightMoveCnt = 0.0f;
-	m_leftMoveCnt = 0.0f;
-	m_rightMoveFlg = false;
-	m_leftMoveFlg = false;
-
-	s_player.m_nowElement = Element::Fire;
-	m_keyFlg = false;
 
 	m_radius = 25.0f;
 
 	m_alpha = 1.0f;
 	m_flashCnt = 0;
-
-
 }
 
 void C_Player::Release()
 {
 	m_playerTex.Release();
-	
 }
 
 void C_Player::Move()
@@ -163,9 +172,23 @@ void C_Player::Move()
 
 }
 
+void C_Player::AliveState()
+{
+	if (m_hp <= 0)
+	{
+		m_result->SetGameOverFlg(true);
+		s_player.m_aliveFlg = false;
+		if(!m_expSpawnFlg)
+		{
+			m_explosion->Spawn(s_player.m_pos);
+			m_expSpawnFlg = true;
+		}
+	}
+
+}
+
 void C_Player::ElementChangeCoolTime()
 {
-
 	if (m_frame > 60 * 0.01)
 	{
 		m_frame = 0.0f;

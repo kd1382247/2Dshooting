@@ -4,6 +4,8 @@
 
 class C_Exhaust;
 class C_Explosion;
+class C_Score;
+class C_Player;
 
 class C_RushEnemy :public C_BaseObject
 {
@@ -42,6 +44,14 @@ public:
 
 	bool GetAliveFalseFlg() { return m_aliveFalseFlg; }
 
+	void SetInstance(std::shared_ptr<C_Score>a_score,
+					 std::shared_ptr<C_Player>a_player)
+					{
+						m_score = a_score;
+						m_player = a_player;
+					}
+
+
 	// 当たり判定クラスで呼び出す関数
 	Math::Vector2 GetPos(int a_i)                 { return s_rushEnemy[a_i].m_pos; }
 	float         GetRadius()                     { return m_radius; }
@@ -50,6 +60,9 @@ public:
 	Element       GetElement(int a_i)             { return s_rushEnemy[a_i].m_nowElement; }
 	bool          GetAliveFlg(int a_i)            { return s_rushEnemy[a_i].m_aliveFlg; }
 	void          Damage(int a_i, float a_damage) { m_hp[a_i]-=a_damage; }
+
+	void          SetMatchupType(int a_i, MatchupType a_matchupType) { e_matchupType[a_i] = a_matchupType; }
+	float         GetScore(MatchupType a_matchupType);
 
 private:
 
@@ -65,6 +78,8 @@ private:
 	S_Object         s_rushEnemy[rushEnemyNum] = {};
 	EnemyMotion      e_enemyMotion[rushEnemyNum] = {};
 	RLMove           e_rlMove[rushEnemyNum];
+	MatchupType      e_matchupType[rushEnemyNum] = {};
+	bool             m_moveFlg[rushEnemyNum] = {};
 
 	// 左右のアニメーションを管理する変数
 	S_Move           s_move[rushEnemyNum] = {};
@@ -73,13 +88,15 @@ private:
 	const float      m_moveSpeedY = 2.0f;
 
 	float            m_hp[rushEnemyNum] = {};
-	const float      m_maxHp = 80;
+	const float      m_maxHp = 100;
 	const float      m_attackPow = 10;
 
 	float            m_aliveFalseCnt = {};
 	bool             m_aliveFalseFlg = {};
 
 	int              m_randomElement = {};
+
+	const float      rushEnemyScore = 20000;
 
 	// 行動パターン
 	float            m_moveCnt[rushEnemyNum] = {};
@@ -91,4 +108,7 @@ private:
 
 	std::shared_ptr<C_Explosion>m_explosion[rushEnemyNum];
 
+	std::shared_ptr<C_Score>m_score;
+
+	std::shared_ptr<C_Player>m_player;
 };

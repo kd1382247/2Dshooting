@@ -28,7 +28,7 @@ public:
 	Element       GetElement(int a_i)                     { return s_bullet[a_i].m_nowElement; }
 	void          SetHitFlg(int a_i, bool a_flg)          { m_hitFlg[a_i] = a_flg; }
 	void          SetShieldHitFlg(int a_i, bool a_flg)    { m_shieldHitFlg[a_i] = a_flg; }
-	void          SetPopupType(int a_i, PopupType a_type) { e_bulletPopupType[a_i] = a_type; }
+	void          SetMatchupType(int a_i, MatchupType a_type) { e_bulletMatchupType[a_i] = a_type; }
 
 private:
 
@@ -42,7 +42,7 @@ private:
 	static const int bulletNum = 50;
 	S_Object         s_bullet[bulletNum] = {};
 	bool             m_hitFlg[bulletNum] = {};
-	PopupType        e_bulletPopupType[bulletNum] = {};
+	MatchupType      e_bulletMatchupType[bulletNum] = {};
 
 	bool             m_shieldHitFlg[bulletNum] = {};
 

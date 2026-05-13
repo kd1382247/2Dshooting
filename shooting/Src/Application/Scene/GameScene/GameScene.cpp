@@ -8,6 +8,8 @@
 #include"../../UI/GameUI.h"
 #include"../../Collision/Collision.h"
 #include"GameController/GameController.h"
+#include"../../UI/Score/Score.h"
+#include"../../UI/Result/Result.h"
 // 敵
 #include"../../Object/Enemy//GearEnemy/GearEnemy.h"
 #include"../../Object/Enemy/SpikeEnemy/SpikeEnemy.h"
@@ -18,6 +20,7 @@
 
 void C_GameScene::Draw()
 {
+
 	m_gameUi->Draw2();
 
 
@@ -27,41 +30,57 @@ void C_GameScene::Draw()
 	}
 	m_gameUi->Draw();
 
+	m_score->Draw();
+
+	m_result->Draw();
+
 }
 
 void C_GameScene::Update()
 {
-	m_gameUi->Update();
-
-	m_gameCtr->SpawnEnemies();
-
-
-	for (int i = 0; i < m_objList.size(); i++)
-	{
-		m_objList[i]->Update();
-	}
-	
-
-	m_collision->Update();
 
 	if (GetAsyncKeyState('7') & 0x8000)
 	{
 		C_SceneManager::GetInstance().SetNextSceneType(C_SceneManager::SceneType::Restart);
 	}
+	
 
+	if (!m_result->GetResultFlg())
+	{
+		m_gameCtr->SpawnEnemies();
+
+		
+		for (int i = 0; i < m_objList.size(); i++)
+		{
+			m_objList[i]->Update();
+		}
+
+		m_score->Update();
+		
+		m_collision->Update();
+	}
+
+	m_result->Update();
+	m_gameUi->Update();
+	
 }
 
 void C_GameScene::Init()
 {
+	// ゲーム画面のUI
 	m_gameUi = std::make_shared<C_GameUI>();
 
+	// 当たり判定
 	m_collision = std::make_shared<C_Collision>();
 
+	// ゲームコントローラー
 	m_gameCtr = std::make_shared<C_GameController>();
 
-	std::shared_ptr<C_Player>player;
-	player = std::make_shared<C_Player>();
-	m_objList.push_back(player);
+	// スコア
+	m_score = std::make_shared<C_Score>();
+	
+	// リザルト
+	m_result = std::make_shared<C_Result>();
 
 	// 歯車型の敵
 	std::shared_ptr<C_GearEnemy>gearEnemy;
@@ -88,10 +107,15 @@ void C_GameScene::Init()
 	enemyBullet = std::make_shared<C_EnemyBullet>();
 	m_objList.push_back(enemyBullet);
 
+	// ボス
 	std::shared_ptr<C_Boss>boss;
 	boss = std::make_shared<C_Boss>();
 	m_objList.push_back(boss);
 
+	// プレイヤー
+	std::shared_ptr<C_Player>player;
+	player = std::make_shared<C_Player>();
+	m_objList.push_back(player);
 
 	// プレイヤーの弾
 	std::shared_ptr<C_Bullet>bullet;
@@ -100,10 +124,15 @@ void C_GameScene::Init()
 
 
 	//インスタンス生成後にインスタンスを渡す
-	m_gameUi->SetInstance(player);
-	player->SetInstance(bullet);
-	shotEnemy->SetInstance(enemyBullet);
-	boss->SetInstance(player);
+	m_gameUi->  SetInstance(player,boss);
+	player->    SetInstance(bullet,m_result);
+	gearEnemy-> SetInstance(m_score,player);
+	spikeEnemy->SetInstance(m_score,player);
+	rushEnemy-> SetInstance(m_score,player);
+	shotEnemy-> SetInstance(enemyBullet,m_score,player);
+	boss->      SetInstance(player,m_result);
+
+	
 
 	m_gameCtr->SetInstance(gearEnemy,
 						   spikeEnemy,

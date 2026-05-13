@@ -29,11 +29,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpszArgs, int
 // アプリケーション初期設定
 bool Application::Init(int w, int h)
 {
-
+	
 	//===================================================================
 	// ウィンドウ作成
 	//===================================================================
-	if (m_window.Create(w, h, "ElementTrinity", "Window") == false) {
+	if (m_window.Create(w, h, "ElementTrinity","Window") == false) {
 		MessageBoxA(nullptr, "ウィンドウ作成に失敗", "エラー", MB_OK);
 		return false;
 	}
@@ -102,6 +102,10 @@ bool Application::Init(int w, int h)
 		io.Fonts->AddFontDefault();
 		io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msgothic.ttc", 13.0f, &config, glyphRangesJapanese);
 	}
+
+	// 例えばカーソルを消したい場合
+	ShowCursor(false);
+
 
 	return true;
 }

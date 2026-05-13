@@ -32,9 +32,9 @@ public:
 	void SpawnEnemies();
 
 private:
-
+	
 	float m_gameCnt = {};
-	float m_spawnPatternCnt = {};
+	float m_spawnPatternCnt = 4;
 	bool  m_spawnFlg = {};
 
 	std::shared_ptr<C_GearEnemy>      m_gearEnemy = nullptr;

@@ -1,6 +1,6 @@
-#include "ElementAffinity.h"
+#include "MatchupTypeCalculator.h"
 
-PopupType C_ElementAffinity::GetPopupType(Element a_bullet, Element a_enemy)
+MatchupType C_ElementAffinity::GetMatchupType(Element a_bullet, Element a_enemy)
 {
 
 	// 同じ属性判定
@@ -25,7 +25,7 @@ PopupType C_ElementAffinity::GetPopupType(Element a_bullet, Element a_enemy)
 	}
 }
 
-float C_ElementAffinity::CalculateElementDamage(Element a_player, Element a_enemy,  float a_attackPow)
+float C_ElementAffinity::CalculateElementDamageToEnemy(Element a_player, Element a_enemy,  float a_attackPow)
 {
 
 	float damage = a_attackPow;
@@ -50,4 +50,35 @@ float C_ElementAffinity::CalculateElementDamage(Element a_player, Element a_enem
 		return damage /2;
 	}
 }
+
+float C_ElementAffinity::CalculateElementDamageToPlayer(Element a_player, Element a_enemy, float a_attackPow)
+{
+	float damage = a_attackPow;
+	// 同じ属性判定
+	if (a_player == a_enemy)
+	{
+		return damage;
+	}
+
+	// 有利属性判定
+	if (a_player == Fire && a_enemy == Grass ||
+		a_player == Grass && a_enemy == Water ||
+		a_player == Water && a_enemy == Fire)
+	{
+		return damage / 2;
+	}
+
+	// 不利属性判定
+	if (a_player == Fire && a_enemy == Water ||
+		a_player == Grass && a_enemy == Fire ||
+		a_player == Water && a_enemy == Grass)
+	{
+		
+		return damage * 2;
+	}
+
+	
+}
+
+
 

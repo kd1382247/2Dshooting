@@ -1,6 +1,6 @@
 #pragma once
 
-#include"../../Data/DamageIndicator/DamageIndicator.h"
+#include"../../Data/MatchupType/MatchupType.h"
 
 class C_DamagePopup
 {
@@ -16,7 +16,7 @@ public:
 	void Draw();
 	void Update();
 
-	void Spawn(Math::Vector2 a_pos,PopupType a_popupType);
+	void Spawn(Math::Vector2 a_pos,MatchupType a_matchupType);
 
 private:
 
@@ -29,11 +29,12 @@ private:
 	
 	KdTexture       m_normalTex;
 	
-	PopupType       e_popupType;
+	MatchupType     e_matchupType;
 	Math::Vector2   m_pos = {};
 	Math::Matrix    m_mat = {};
 	float           m_displayCnt = {};
 	bool            m_aliveFlg = {};
+	float           m_alpha = {};
 
 	
 

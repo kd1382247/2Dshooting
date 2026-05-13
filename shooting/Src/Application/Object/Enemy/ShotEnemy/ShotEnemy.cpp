@@ -3,6 +3,8 @@
 #include"../../../Effect/Exhaust/Exhaust.h"
 #include"../../../Effect/Explosion/Explosion.h"
 #include"EnemyBullet.h"
+#include"../../../UI/Score/Score.h"
+#include"../../Player/Player.h"
 
 void C_ShotEnemy::Draw()
 {
@@ -53,7 +55,8 @@ void C_ShotEnemy::Update()
 
 void C_ShotEnemy::Spawn()
 {
-	for (int i = 0; i < shotEnemyNum; i++)
+	m_randomElement = rand() % 3;
+	for (int i = 0,j=0; i < shotEnemyNum; i++)
 	{
 		if (!s_shotEnemy[i].m_aliveFlg)
 		{
@@ -68,7 +71,13 @@ void C_ShotEnemy::Spawn()
 			m_coolTime[i] = 60 * 2.0f;
 			m_shotCnt[i] = 0;
 
-			m_randomElement = rand() % 3;
+			if (j >= 2)
+			{
+				j = 0;
+				m_randomElement = rand() % 3;
+			}
+			j++;
+			
 			s_shotEnemy[i].m_nowElement = e_elementTable[m_randomElement];
 		}
 	}
@@ -93,6 +102,22 @@ void C_ShotEnemy::Spawn()
 		}
 
 		fclose(fp);
+	}
+}
+
+float C_ShotEnemy::GetScore(MatchupType a_matchupType)
+{
+	if (a_matchupType == WEAK)
+	{
+		return shotEnemyScore * 2;
+	}
+	if (a_matchupType == NORMAL)
+	{
+		return shotEnemyScore;
+	}
+	if (a_matchupType == RESIST)
+	{
+		return shotEnemyScore / 2;
 	}
 }
 
@@ -182,6 +207,9 @@ void C_ShotEnemy::AliveState()
 				s_shotEnemy[i].m_aliveFlg = false;
 				m_explosion[i]->Spawn(s_shotEnemy[i].m_pos);
 				m_aliveFalseCnt++;
+
+				m_score->ScoreCntUp(GetScore(e_matchupType[i]));
+				m_player->CoolTimeCntUp();
 			}
 		}
 	}

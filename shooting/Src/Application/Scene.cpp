@@ -25,6 +25,8 @@ void Scene::Release()
 
 void Scene::ImGuiUpdate()
 {
+
+	return;
 	ImGui::SetNextWindowPos(ImVec2(20, 20), ImGuiSetCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiSetCond_Once);
 
@@ -32,7 +34,8 @@ void Scene::ImGuiUpdate()
 	if (ImGui::Begin("Debug Window"))
 	{
 		ImGui::Text("time : %f",m_time );
-		ImGui::Text("deg : %f",m_damage );
+		ImGui::Text("hp : %f",m_hp );
+		ImGui::Text("fps : %d",APP.m_fps );
 	}
 	ImGui::End();
 }

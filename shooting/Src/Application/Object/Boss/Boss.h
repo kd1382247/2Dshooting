@@ -4,7 +4,7 @@
 class C_Player;
 class C_Explosion;
 class C_ChangeEffect; 
-
+class C_Result;
 
 class C_Boss :public C_BaseObject
 {
@@ -37,7 +37,18 @@ public:
 
 	void SpawnBoss();
 
-	void SetInstance(std::shared_ptr<C_Player>a_player) { m_player = a_player; }
+	void SetInstance(std::shared_ptr<C_Player>a_player,
+					 std::shared_ptr<C_Result>a_result)
+	{
+		m_player = a_player; 
+		m_result = a_result;
+	}
+
+	// HP関連のゲッター
+	float GetMaxHp()     { return m_bossMaxHp; }
+	float GetCurrentHp() { return m_bossHp; }
+
+
 
 
 	// 当たり判定クラスで呼び出す関数(トゲ型の敵)
@@ -68,8 +79,13 @@ public:
 	float         BossGetRadius()                        { return m_bossRadius; }
 	float         BossGetAttackPow()                     { return m_bossAttackPow; }
 	bool          BossGetAliveFlg()                      { return s_boss.m_aliveFlg; }
-	void          BossDamage(float a_damage)             { m_bossHp-=a_damage; }
 	Element       BossGetElement()                       { return s_boss.m_nowElement; }
+	void          BossDamage(float a_damage)
+														 {
+														   m_bossHp -= a_damage;
+														   if (m_bossHp <= 0)m_bossHp = 0;
+														 }
+
 
 	// 当たり判定クラスで呼び出す関数(シールド)
 	Math::Vector2 ShieldGetPos()                         { return s_shield.m_pos; }
@@ -87,9 +103,15 @@ private:
 	void MoveBoss();
 	void InitBoss();
 	void Action();
+	void AliveStateBoss();
 	void SetBossMove();
 	void ElementChange();
 	
+	// ボスの爆破エフェクト
+	void DrawBossExplosion();
+	void UpdateBossExplosion();
+	void InitBossExplosion();
+
 	// シールド
 	void DrawShield();
 	void UpdateShield();
@@ -121,13 +143,14 @@ private:
 	void AliveStateGEWarning();
 	void SpawnGEWarning();
 
+
 	
 	// ボス
 	KdTexture       m_bossTex;
 	S_Object        s_boss = {};
-    const Math::Vector2	m_bossInitPos = { 400,60 };
+    const Math::Vector2	m_bossInitPos = { 380,60 };
 	float           m_bossAnimCnt = {};
-	const float     m_bossMaxHp = 1000;
+	const float     m_bossMaxHp = 100;
 	float           m_bossHp = {};
 	float           m_bossActionCnt = {};
 	bool            m_rotationAttackFlg = {};
@@ -137,8 +160,16 @@ private:
 	float           m_bossMoveCnt = {};
 	float           m_enemySpawnCnt = {};
     float           m_bossAttackPow = 10;
+	const float     m_bossScore = 50000;
 
 
+	// ボスの爆破エフェクト
+	KdTexture     m_bossExplosionTex;
+	Math::Vector2 m_bossExpPos = {};
+	Math::Matrix  m_bossExpMat;
+	float         m_bossExpAnimCnt = {};
+	bool          m_bossExpAliveFlg = {};
+	float         m_bossExpAlpha = 0.0f;
 
 	// ボスのシールド
 	KdTexture   m_shieldTex;
@@ -162,7 +193,9 @@ private:
 	float            m_sEnemyHp[spikeEnemyNum] = {}; 
 
 	float            m_sEnemyFalseCnt={};
-	
+	int              m_sERandomElement = {};
+
+
 	const float      m_sEnemyMaxHp = 60;
 	const float      m_sEnemyRadius = 32;
 	const float      m_sEnemyAttackPow = 8;
@@ -191,6 +224,7 @@ private:
 	const float      m_gEnemyRadius = 32;
 	const float      m_gEnemyAttackPow = 8;
 	float            m_gEnemySpawnCnt = {};
+	int              m_gERandomElement = {};
 
 
 	// 警告画像
@@ -213,9 +247,12 @@ private:
 	bool          m_sEWarningFlg = true;
 
 
-	//
+	// プレイヤー
 	std::shared_ptr<C_Player>m_player;
 	
+	// リザルト
+	std::shared_ptr<C_Result>m_result;
+
 	// 属性チェンジエフェクト
 	std::shared_ptr<C_ChangeEffect>m_changeEffect;
 

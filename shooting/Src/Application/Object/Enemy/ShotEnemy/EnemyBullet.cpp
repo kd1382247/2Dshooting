@@ -106,7 +106,7 @@ void C_EnemyBullet::AliveState()
 			{
 				s_bullet[i].m_aliveFlg = false;
 
-				m_hitEffect[i]->Spawn(s_bullet[i].m_pos);
+				m_hitEffect[i]->Spawn(s_bullet[i].m_pos,s_bullet[i].m_nowElement);
 			}
 		}
 	}

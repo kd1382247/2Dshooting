@@ -1,6 +1,7 @@
 #include "GameUI.h"
 
 #include"../Object/Player/Player.h"
+#include"../Object/Boss/Boss.h"
 
 void C_GameUI::Draw()
 {
@@ -12,7 +13,7 @@ void C_GameUI::Draw()
 
 	//HPバー(緑)描画
 	SHADER.m_spriteShader.SetMatrix(s_hpBar.m_mat);
-	SHADER.m_spriteShader.DrawTex(&m_hpBarTex, Math::Rectangle(0, 0, 215*m_hpRate, 19), 1.0f);
+	SHADER.m_spriteShader.DrawTex(&m_hpBarTex, Math::Rectangle(0, 0, 215 * m_hpRate, 19), 1.0f);
 
 	//HPアイコン描画
 	SHADER.m_spriteShader.SetMatrix(s_hpIcon.m_mat);
@@ -20,11 +21,26 @@ void C_GameUI::Draw()
 
 	//クールタイムバー描画
 	SHADER.m_spriteShader.SetMatrix(s_coolTimeBar.m_mat);
-	SHADER.m_spriteShader.DrawTex(&m_coolTimeBarTex, Math::Rectangle(0, 0, 215*m_coolTimeRate, 19), 1.0f);
+	SHADER.m_spriteShader.DrawTex(&m_coolTimeBarTex, Math::Rectangle(0, 0, 215 * m_coolTimeRate, 19), 1.0f);
 
 	//クールタイムアイコン描画
 	SHADER.m_spriteShader.SetMatrix(s_coolTimeIcon.m_mat);
 	SHADER.m_spriteShader.DrawTex(&m_coolTimeIconTex, Math::Rectangle(0, 0, 258, 30), 1.0f);
+
+
+	// ボスのHPパネル
+	SHADER.m_spriteShader.SetMatrix(s_bossHpIconPanel.m_mat);
+	SHADER.m_spriteShader.DrawTex(&m_bossHpIconPanelTex, Math::Rectangle(0, 0, 19, 580), m_bossHpAlpha);
+
+
+	//ボスHPバー
+	SHADER.m_spriteShader.SetMatrix(s_bossHpBar.m_mat);
+	SHADER.m_spriteShader.DrawTex(&m_bossHpBarTex, Math::Rectangle(0, 0, 19, 580 * m_bossHpRate), m_bossHpAlpha);
+
+	//ボスHPアイコン
+	SHADER.m_spriteShader.SetMatrix(s_bossHpIcon.m_mat);
+	SHADER.m_spriteShader.DrawTex(&m_bossHpIconTex, Math::Rectangle(0, 0, 30, 590), m_bossHpAlpha);
+
 
 
 	// 炎アイコン描画
@@ -68,15 +84,27 @@ void C_GameUI::Init()
 	s_hpIcon.m_pos = { -260.0f,-300.0f };
 
 	m_hpBarTex.Load("Textures/UI/hpBar_g_.png");
-	s_hpBar.m_pos = { -243.0f,-300.0f };
+	s_hpBar.m_pos = { -243.5f,-300.0f };
 	m_maxWidth = -213;
-	m_baseX = -243.0f;
+	m_baseX = -243.5f;
 
 	m_coolTimeIconTex.Load("Textures/UI/coolTimeIcon.png");
 	s_coolTimeIcon.m_pos = { -260.0f ,-335.0f };
 
 	m_coolTimeBarTex.Load("Textures/UI/coolTimeBar.png");
-	s_coolTimeBar.m_pos = { -243.0f,-335.0f };
+	s_coolTimeBar.m_pos = { -243.5f,-335.0f };
+
+
+	m_bossHpIconTex.Load("Textures/UI/bossHpIcon.png");
+	s_bossHpIcon.m_pos = { 625,60 };
+
+	m_bossHpBarTex.Load("Textures/UI/bossHpBar.png");
+	s_bossHpBar.m_pos = { 625,60 };
+	m_maxHight = 580;
+	m_baseY = 60;
+
+	m_bossHpIconPanelTex.Load("Textures/UI/hpIconPanel.png");
+	s_bossHpIconPanel.m_pos = { 625,60 };
 
 
 	m_fireIconTex.Load("Textures/UI/fireIcon.png");
@@ -158,10 +186,41 @@ void C_GameUI::Update()
 
 
 
+	// ボスのHP関連の透明度
+	if (m_boss->BossGetAliveFlg())
+	{
+		// ボスの生存フラグがtrueになったら
+		m_bossHpAlpha = 1.0f;
+	}
+	else
+	{
+		// ボスが死んだら徐々にフェードアウト
+		m_bossHpAlpha -= 0.05f;
+		if (m_bossHpAlpha <= 0)
+		{
+			m_bossHpAlpha = 0;
+		}
+	}
+
+	// ボスHPバーの割合
+	m_bossHpRate = m_boss->GetCurrentHp() / m_boss->GetMaxHp();
+	//                   初期値   最大幅         最大幅     バーの割合
+    s_bossHpBar.m_pos.y = m_baseY - (m_maxHight - (m_maxHight * m_bossHpRate)) / 2;
+
+	// ボスHPアイコン
+	s_bossHpIcon.m_mat = Math::Matrix::CreateTranslation(s_bossHpIcon.m_pos.x, s_bossHpIcon.m_pos.y, 0);
+	//　ボスHPバー
+	s_bossHpBar.m_mat = Math::Matrix::CreateTranslation(s_bossHpBar.m_pos.x, s_bossHpBar.m_pos.y, 0);
+
+	// ボスHPパネル
+	s_bossHpIconPanel.m_mat = Math::Matrix::CreateTranslation(s_bossHpIconPanel.m_pos.x, s_bossHpIconPanel.m_pos.y, 0);
+
+
 	// クールタイムバーの割合
 	m_coolTimeRate = m_player->GetCurrentElChangeCoolTime() / m_player->GetMaxElChangeCoolTime();
 	//                         初期値   最大幅         最大幅      バーの割合
 	s_coolTimeBar.m_pos.x = m_baseX + (m_maxWidth - (m_maxWidth * m_coolTimeRate)) / 2;
+
 
 	// クールタイムアイコン
 	s_coolTimeIcon.m_mat = Math::Matrix::CreateTranslation(s_coolTimeIcon.m_pos.x, s_coolTimeIcon.m_pos.y, 0);
@@ -173,12 +232,21 @@ void C_GameUI::Update()
 void C_GameUI::Release()
 {
 	m_backgroundTex.Release();
+
 	m_starsTex.Release();
+
 	m_hpIconTex.Release();
 	m_coolTimeIconTex.Release();
 	m_coolTimeBarTex.Release();
+
 	m_hudPanelTex.Release();
+
 	m_fireIconTex.Release();
 	m_waterIconTex.Release();
 	m_grassIconTex.Release();
+
+
+	m_bossHpBarTex.Release();
+	m_bossHpIconPanelTex.Release();
+	m_bossHpIconTex.Release();
 }

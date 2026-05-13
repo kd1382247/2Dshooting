@@ -1,6 +1,6 @@
 #pragma once
 class C_Player;
-
+class C_Boss;
 class C_GameUI
 {
 public:
@@ -19,11 +19,17 @@ public:
 	void Draw2();
 	void Update();
 	
-	void SetInstance(std::shared_ptr<C_Player>a_player) { m_player = a_player; }
+	void SetInstance(std::shared_ptr<C_Player>a_player,
+					 std::shared_ptr<C_Boss>a_boss)
+	 { 
+		m_player = a_player; 
+		m_boss = a_boss;
+	 }
 
 private:
 
 	std::shared_ptr<C_Player>m_player;
+	std::shared_ptr<C_Boss>m_boss;
 
 	void Init();
 	void Release();
@@ -44,6 +50,7 @@ private:
 	KdTexture m_hpIconTex;      //HP枠
 	S_UI      s_hpIcon; 
 
+
 	KdTexture m_coolTimeIconTex;//HP枠
 	S_UI      s_coolTimeIcon;
 
@@ -55,6 +62,21 @@ private:
 	KdTexture m_coolTimeBarTex; //クールタイムバー
 	S_UI      s_coolTimeBar;
 	float     m_coolTimeRate = 0;
+
+	KdTexture m_bossHpIconTex;
+	S_UI      s_bossHpIcon = {};
+
+	KdTexture m_bossHpBarTex;     //ボスHPバー
+	S_UI      s_bossHpBar = {};
+	float     m_bossHpRate = {};
+	float     m_maxHight;
+	float     m_baseY;
+	
+	KdTexture m_bossHpIconPanelTex;
+	S_UI      s_bossHpIconPanel = {};
+
+	float     m_bossHpAlpha = 0.0f;
+
 
 	float     m_maxWidth;
 	float     m_baseX;

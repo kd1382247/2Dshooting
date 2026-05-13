@@ -1,10 +1,12 @@
 #pragma once
+#include"../../Data/Element/Element.h"
 
 struct S_HitEffect
 {
 	Math::Vector2 m_pos;
 	Math::Matrix  m_mat;
 	float         m_animCnt;
+	Element       m_nowElement;
 	bool          m_aliveFlg;
 };
 
@@ -18,7 +20,7 @@ public:
 
 	void Draw();
 	void Update();
-	void Spawn(Math::Vector2 a_pos);
+	void Spawn(Math::Vector2 a_pos,Element a_element);
 
 	
 private:

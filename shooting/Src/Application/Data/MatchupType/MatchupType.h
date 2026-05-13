@@ -1,6 +1,6 @@
 #pragma once
 
-enum PopupType
+enum MatchupType
 {
 	NORMAL,
 	WEAK,

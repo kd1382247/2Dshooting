@@ -160,9 +160,9 @@
     <ClInclude Include="..\Library\tinygltf\stb_image_write.h" />
     <ClInclude Include="..\Library\tinygltf\tiny_gltf.h" />
     <ClInclude Include="Src\Application\Collision\Collision.h" />
-    <ClInclude Include="Src\Application\Collision\ElementAffinity.h" />
-    <ClInclude Include="Src\Application\Data\DamageIndicator\DamageIndicator.h" />
+    <ClInclude Include="Src\Application\Collision\MatchupTypeCalculator.h" />
     <ClInclude Include="Src\Application\Data\Element\Element.h" />
+    <ClInclude Include="Src\Application\Data\MatchupType\MatchupType.h" />
     <ClInclude Include="Src\Application\Effect\ChangeEffect\ChangeEffect.h" />
     <ClInclude Include="Src\Application\Effect\DamagePopup\DamagePopup.h" />
     <ClInclude Include="Src\Application\Effect\Exhaust\Exhaust.h" />
@@ -186,6 +186,8 @@
     <ClInclude Include="Src\Application\Scene\TitleScene\Title.h" />
     <ClInclude Include="Src\Application\Scene\TitleScene\TitleScene.h" />
     <ClInclude Include="Src\Application\UI\GameUI.h" />
+    <ClInclude Include="Src\Application\UI\Result\Result.h" />
+    <ClInclude Include="Src\Application\UI\Score\Score.h" />
     <ClInclude Include="Src\System\Audio\KdAudio.h" />
     <ClInclude Include="src\System\Direct3D\KdDirect3D.h" />
     <ClInclude Include="Src\System\Direct3D\KdDirect3DHelper.h" />
@@ -210,7 +212,7 @@
     <ClCompile Include="..\Library\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="..\Library\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Src\Application\Collision\Collision.cpp" />
-    <ClCompile Include="Src\Application\Collision\ElementAffinity.cpp" />
+    <ClCompile Include="Src\Application\Collision\MatchupTypeCalculator.cpp" />
     <ClCompile Include="Src\Application\Effect\ChangeEffect\ChangeEffect.cpp" />
     <ClCompile Include="Src\Application\Effect\DamagePopup\DamagePopup.cpp" />
     <ClCompile Include="Src\Application\Effect\Exhaust\Exhaust.cpp" />
@@ -234,6 +236,8 @@
     <ClCompile Include="Src\Application\Scene\TitleScene\Title.cpp" />
     <ClCompile Include="Src\Application\Scene\TitleScene\TitleScene.cpp" />
     <ClCompile Include="Src\Application\UI\GameUI.cpp" />
+    <ClCompile Include="Src\Application\UI\Result\Result.cpp" />
+    <ClCompile Include="Src\Application\UI\Score\Score.cpp" />
     <ClCompile Include="Src\System\Audio\KdAudio.cpp" />
     <ClCompile Include="src\System\Direct3D\KdDirect3D.cpp" />
     <ClCompile Include="Src\System\Direct3D\KdDirect3DHelper.cpp" />

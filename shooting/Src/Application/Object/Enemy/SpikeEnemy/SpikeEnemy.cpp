@@ -1,6 +1,8 @@
 #include "SpikeEnemy.h"
 
 #include"../../../Effect/Explosion/Explosion.h"
+#include"../../../UI/Score/Score.h"
+#include"../../Player/Player.h"
 
 void C_SpikeEnemy::Draw()
 {
@@ -46,7 +48,7 @@ void C_SpikeEnemy::Spawn()
 
 		if (j >= 5)
 		{
-			j = 0; 
+			j = 0;
 			m_randomElement = rand() % 3;
 		}
 		j++;
@@ -66,13 +68,46 @@ void C_SpikeEnemy::Spawn()
 
 	for (int i = 0; i < centerNum; i++)
 	{
-		s_center[i].m_pos = m_posTable[i];
 		s_center[i].m_move = { m_movePowX,0 };
 		s_center[i].m_aliveFlg = true;
+	}
+	// 座標読込
+	FILE* fp;
+
+	if (fopen_s(&fp, "Data/Enemy/SpikeEnemyPos.csv", "r") == 0)
+	{
+		char dummy[255];
+		for (int i = 0; i < centerNum; i++)
+		{
+			if (fgets(dummy, 255, fp) != nullptr)//1行読み込み
+			{
+				Math::Vector2 pos;
+				fscanf_s(fp, ",%f,%f", &pos.x, &pos.y);//頭に , で読み飛ばし
+				s_center[i].m_pos = pos;
+			}
+		}
+
+		fclose(fp);
 	}
 
 	m_radius = 32.0f;
 
+}
+
+float C_SpikeEnemy::GetScore(MatchupType a_matchupType)
+{
+	if (a_matchupType == WEAK)
+	{
+		return spikeEnemyScore * 2;
+	}
+	if (a_matchupType == NORMAL)
+	{
+		return spikeEnemyScore;
+	}
+	if (a_matchupType == RESIST)
+	{
+		return spikeEnemyScore / 2;
+	}
 }
 
 void C_SpikeEnemy::Init()
@@ -192,6 +227,9 @@ void C_SpikeEnemy::AliveState()
 				s_spikeEnemy[i].m_aliveFlg = false;
 				m_explosion[i]->Spawn(s_spikeEnemy[i].m_pos);
 				m_aliveFalseCnt++;
+
+				m_score->ScoreCntUp(GetScore(e_matchupType[i]));
+				m_player->CoolTimeCntUp();
 			}
 		}
 	}

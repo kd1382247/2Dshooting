@@ -128,12 +128,12 @@ void C_Bullet::AliveState()
 			{
 				s_bullet[i].m_aliveFlg = false;
 
-				m_hitEffect[i]->Spawn(s_bullet[i].m_pos);
+				m_hitEffect[i]->Spawn(s_bullet[i].m_pos,s_bullet[i].m_nowElement);
 
 				// ボスのシールドに当たった場合表示しない
 				if(!m_shieldHitFlg[i])
 				{
-					m_DamagePopup[i]->Spawn(s_bullet[i].m_pos,e_bulletPopupType[i]);
+					m_DamagePopup[i]->Spawn(s_bullet[i].m_pos,e_bulletMatchupType[i]);
 				}
 			}
 		}

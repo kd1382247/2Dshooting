@@ -5,7 +5,7 @@ void C_HitEffect::Draw()
 	if (s_hitEffect.m_aliveFlg)
 	{
 		SHADER.m_spriteShader.SetMatrix(s_hitEffect.m_mat);
-		SHADER.m_spriteShader.DrawTex(&m_hitEffectTex, Math::Rectangle((int)s_hitEffect.m_animCnt * 60, 0, 60, 60), 1.0f);
+		SHADER.m_spriteShader.DrawTex(&m_hitEffectTex, Math::Rectangle((int)s_hitEffect.m_animCnt * 64, s_hitEffect.m_nowElement*64, 64, 64), 1.0f);
 	}
 }
 
@@ -15,8 +15,8 @@ void C_HitEffect::Update()
 	if (s_hitEffect.m_aliveFlg)
 	{
 		// アニメーション
-		s_hitEffect.m_animCnt += 0.8;
-		if (s_hitEffect.m_animCnt > 9)
+		s_hitEffect.m_animCnt += 0.2;
+		if (s_hitEffect.m_animCnt > 4)
 		{
 			s_hitEffect.m_aliveFlg = false;
 		}
@@ -26,7 +26,7 @@ void C_HitEffect::Update()
 
 }
 
-void C_HitEffect::Spawn(Math::Vector2 a_pos)
+void C_HitEffect::Spawn(Math::Vector2 a_pos,Element a_element)
 {
 
 	if (!s_hitEffect.m_aliveFlg)
@@ -34,12 +34,13 @@ void C_HitEffect::Spawn(Math::Vector2 a_pos)
 		s_hitEffect.m_pos = a_pos;
 		s_hitEffect.m_animCnt = 0.0f;
 		s_hitEffect.m_aliveFlg = true;
+		s_hitEffect.m_nowElement = a_element;
 	}
 }
 
 void C_HitEffect::Init()
 {
-	m_hitEffectTex.Load("Textures/Effect/collisionEffect.png");
+	m_hitEffectTex.Load("Textures/Effect/hitEffect.png");
 	s_hitEffect = {};
 }
 

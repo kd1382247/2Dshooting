@@ -1,6 +1,8 @@
 #include "GearEnemy.h"
 
 #include "../../../Effect/Explosion/Explosion.h"
+#include"../../../UI/Score/Score.h"
+#include"../../Player/Player.h"
 
 void C_GearEnemy::Draw()
 {
@@ -40,9 +42,9 @@ void C_GearEnemy::Spawn()
 	m_randomElement = rand() % 3;
 
 	//敵の初期化
-	for (int i = 0,j=0; i < gearEnemyNum; i++)
+	for (int i = 0, j = 0; i < gearEnemyNum; i++)
 	{
-		if (j >= 2)
+		if (j >= 4)
 		{
 			j = 0;
 			m_randomElement = rand() % 3;
@@ -62,6 +64,7 @@ void C_GearEnemy::Spawn()
 
 	FILE* fp;
 
+
 	if (fopen_s(&fp, "Data/Enemy/GearEnemyPos.csv", "r") == 0)
 	{
 		char dummy[255];
@@ -78,6 +81,23 @@ void C_GearEnemy::Spawn()
 		fclose(fp);
 	}
 
+
+}
+
+float C_GearEnemy::GetScore(MatchupType a_matchupType)
+{
+	if (a_matchupType == WEAK)
+	{
+		return gearEnemyScore * 2;
+	}
+	if (a_matchupType == NORMAL)
+	{
+		return gearEnemyScore;
+	}
+	if (a_matchupType == RESIST)
+	{
+		return gearEnemyScore / 2;
+	}
 }
 
 void C_GearEnemy::Init()
@@ -133,6 +153,10 @@ void C_GearEnemy::AliveState()
 				s_gearEnemy[i].m_aliveFlg = false;
 				m_explosion[i]->Spawn(s_gearEnemy[i].m_pos);
 				m_aliveFalseCnt++;
+
+				m_score->ScoreCntUp(GetScore(e_matchupType[i]));
+				m_player->CoolTimeCntUp();
+				
 			}
 		}
 	}
