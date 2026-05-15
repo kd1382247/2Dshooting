@@ -1,11 +1,11 @@
 #include "Exhaust.h"
 
-void C_Exhaust::Draw(bool a_flg)
+void C_Exhaust::Draw(bool a_flg,float a_alpha)
 {
 	if (a_flg)
 	{
 		SHADER.m_spriteShader.SetMatrix(m_mat);
-		SHADER.m_spriteShader.DrawTex(&m_tex, Math::Rectangle((int)m_animCnt * 96, 0, 96, 96), 1.0f);
+		SHADER.m_spriteShader.DrawTex(&m_tex, Math::Rectangle((int)m_animCnt * 96, 0, 96, 96), a_alpha);
 	}
 }
 

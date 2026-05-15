@@ -50,7 +50,7 @@ private:
 	void AliveState();
 
 	
-	static const int gearEnemyNum = 16;
+	static const int gearEnemyNum = 20;
 
 	KdTexture   m_gearEnemyTex;
 	S_Object    s_gearEnemy[gearEnemyNum]{};
@@ -61,14 +61,12 @@ private:
 	const float m_movePowX = -1.5f;
 	MatchupType   e_matchupType[gearEnemyNum] = {};
 
-
 	float       m_aliveFalseCnt = {};
 	bool        m_aliveFalseFlg = {};
-
 	int         m_randomElement = {};
-
 	const float gearEnemyScore = 10000;
 
+	bool        m_spawnFlg = {};
 
 	std::shared_ptr<C_Explosion>m_explosion[gearEnemyNum];
 

@@ -120,8 +120,8 @@ private:
 	const float   m_maxHp = 100;
 	float         m_hp = {};
 	// クールタイム
-	const float   m_maxElChangeCoolTime = 240;
-	float         m_elChangeCoolTime=240;
+	const float   m_maxElChangeCoolTime = 180;
+	float         m_elChangeCoolTime=180;
 
 	bool          m_keyFlg = {};
 

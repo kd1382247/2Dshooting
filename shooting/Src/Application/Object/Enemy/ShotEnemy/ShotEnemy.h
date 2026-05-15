@@ -52,7 +52,7 @@ private:
 
 
 	KdTexture        m_shotEnemyTex;
-	static const int shotEnemyNum = 14;
+	static const int shotEnemyNum = 26;
 	S_Object         s_shotEnemy[shotEnemyNum] = {};
 	bool             m_shotFlg[shotEnemyNum] = {};
 	float            m_shotWait[shotEnemyNum] = {};
@@ -67,7 +67,7 @@ private:
 	const float      m_moveSpeedX = -1.5f;
 	const float      m_attackPow = 10;
 	float            m_hp[shotEnemyNum] = {};
-	const float      m_maxHp = 100;
+	const float      m_maxHp = 80;
 	
 	int              m_randomElement = {};
 
@@ -77,6 +77,8 @@ private:
 	std::shared_ptr<C_Exhaust>m_exhaust[shotEnemyNum];
 	const float               m_exhaustAngle = 90.0f;
 	const float               m_exhaustDistance = 38;
+
+	bool                      m_spawnFlg = {};
 
 
 	std::shared_ptr<C_Explosion>  m_explosion[shotEnemyNum];

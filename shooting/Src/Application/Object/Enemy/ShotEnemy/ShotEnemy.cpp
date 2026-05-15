@@ -8,6 +8,8 @@
 
 void C_ShotEnemy::Draw()
 {
+	// スポーンしていなかったら
+	if (!m_spawnFlg)return;
 
 	// 敵
 	for (int i = 0; i < shotEnemyNum; i++)
@@ -22,7 +24,7 @@ void C_ShotEnemy::Draw()
 	// 排気エフェクト
 	for (int i = 0; i < shotEnemyNum; i++)
 	{
-		m_exhaust[i]->Draw(s_shotEnemy[i].m_aliveFlg);
+		m_exhaust[i]->Draw(s_shotEnemy[i].m_aliveFlg,1.0f);
 	}
 
 	// 爆破エフェクト
@@ -35,6 +37,10 @@ void C_ShotEnemy::Draw()
 
 void C_ShotEnemy::Update()
 {
+
+	// スポーンしていなかったら
+	if (!m_spawnFlg)return;
+
 	AliveState();
 	Move();
 	Action();
@@ -64,8 +70,6 @@ void C_ShotEnemy::Spawn()
 			s_shotEnemy[i].m_move = { m_moveSpeedX,0 };
 			s_shotEnemy[i].m_angle = 90.0f;
 			m_hp[i] = m_maxHp;
-			int random = rand() % 461 - 200;
-			s_shotEnemy[i].m_pos.y = random;
 			m_shotFlg[i] = false;
 			m_shotWait[i] = 0.0f;
 			m_coolTime[i] = 60 * 2.0f;
@@ -84,20 +88,21 @@ void C_ShotEnemy::Spawn()
 
 	m_aliveFalseCnt = 0;
 	m_aliveFalseFlg = false;
+	m_spawnFlg = true;
 
 	//　座標をCSVファイルから読み込む
 	FILE* fp;
 
-	if (fopen_s(&fp, "Data/Enemy/Rush ShotEnemyPos.csv", "r") == 0)
+	if (fopen_s(&fp, "Data/Enemy/ShotEnemyPos.csv", "r") == 0)
 	{
 		char dummy[255];
 		for (int i = 0; i < shotEnemyNum; i++)
 		{
 			if (fgets(dummy, 255, fp) != nullptr)//1行読み込み
 			{
-				float pos;
-				fscanf_s(fp, ",%f", &pos);//頭に , で読み飛ばし
-				s_shotEnemy[i].m_pos.x = pos;
+				Math::Vector2 pos;
+				fscanf_s(fp, ",%f,%f", &pos.x,&pos.y);//頭に , で読み飛ばし
+				s_shotEnemy[i].m_pos = pos;
 			}
 		}
 
@@ -209,6 +214,7 @@ void C_ShotEnemy::AliveState()
 				m_aliveFalseCnt++;
 
 				m_score->ScoreCntUp(GetScore(e_matchupType[i]));
+				m_score->KillsCntUp(e_matchupType[i]);
 				m_player->CoolTimeCntUp();
 			}
 		}
@@ -236,12 +242,7 @@ void C_ShotEnemy::Action()
 					{
 						m_enemyBullet->Spawn(s_shotEnemy[i].m_pos, s_shotEnemy[i].m_nowElement);
 						m_shotWait[i] = 20;
-						m_shotCnt[i]++;
-						if (m_shotCnt[i] >= 3)
-						{
-							m_shotCnt[i] = 0;
-							m_coolTime[i] = 0.0f;
-						}
+						m_coolTime[i] = 0.0f;
 					}
 				}
 			}

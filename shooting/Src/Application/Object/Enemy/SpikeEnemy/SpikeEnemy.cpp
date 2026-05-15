@@ -6,6 +6,9 @@
 
 void C_SpikeEnemy::Draw()
 {
+
+	if (!m_spawnFlg)return;
+
 	for (int i = 0; i < spikeEnemyNum; i++)
 	{
 		if (s_spikeEnemy[i].m_aliveFlg)
@@ -23,6 +26,8 @@ void C_SpikeEnemy::Draw()
 
 void C_SpikeEnemy::Update()
 {
+	if (!m_spawnFlg)return;
+
 	AliveState();
 	Move();
 	Animation();
@@ -65,6 +70,7 @@ void C_SpikeEnemy::Spawn()
 
 	m_aliveFalseCnt = 0;
 	m_aliveFalseFlg = false;
+	m_spawnFlg = true;
 
 	for (int i = 0; i < centerNum; i++)
 	{
@@ -229,6 +235,7 @@ void C_SpikeEnemy::AliveState()
 				m_aliveFalseCnt++;
 
 				m_score->ScoreCntUp(GetScore(e_matchupType[i]));
+				m_score->KillsCntUp(e_matchupType[i]);
 				m_player->CoolTimeCntUp();
 			}
 		}

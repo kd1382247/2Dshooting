@@ -47,7 +47,7 @@ float C_ElementAffinity::CalculateElementDamageToEnemy(Element a_player, Element
 		a_player == Grass && a_enemy == Fire ||
 		a_player == Water && a_enemy == Grass)
 	{
-		return damage /2;
+		return damage /1.5;
 	}
 }
 

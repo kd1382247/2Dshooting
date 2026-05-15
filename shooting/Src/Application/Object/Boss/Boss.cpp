@@ -4,6 +4,7 @@
 #include"../../Effect/Explosion/Explosion.h"
 #include"../../Effect/ChangeEffect/ChangeEffect.h"
 #include"../../UI/Result/Result.h"
+#include"../../UI/Score/Score.h"
 
 
 void C_Boss::Draw()
@@ -128,8 +129,9 @@ void C_Boss::MoveBoss()
 {
 	if (m_bossMoveFlg)
 	{
-
-		m_bossMoveCnt++;
+		
+			m_bossMoveCnt++;
+		
 		if (m_bossMoveCnt < 60 * 8.5)
 		{
 			if (s_boss.m_pos.y > screenTop - m_bossRadius || s_boss.m_pos.y < screenBottom + m_bossRadius)
@@ -210,20 +212,25 @@ void C_Boss::Action()
 {
 	if (!m_rotationAttackFlg && !m_homingAttackFlg)
 	{
-		m_bossActionCnt++;
+		if (m_initGESpawnFlg && m_initSESpawnFlg)
+		{
+			m_bossActionCnt++;
+		}
 		if (m_bossActionCnt > 60 * 5)
 		{
 
-			int ramdom = rand() % 2;
+			//int random = rand() % 2;
 
 
-			if (ramdom == 0)
+			if (m_bossAttackPattern == 0)
 			{
 				m_homingAttackFlg = true;
+				m_bossAttackPattern = 1;
 			}
-			if (ramdom == 1)
+			if (m_bossAttackPattern == 1&&!m_homingAttackFlg)
 			{
 				m_rotationAttackFlg = true;
+				m_bossAttackPattern = 0;
 			}
 			m_bossActionCnt = 0;
 		}
@@ -233,18 +240,37 @@ void C_Boss::Action()
 
 void C_Boss::AliveStateBoss()
 {
-	if (m_bossHp <= 0)
+	if (m_bossHp <= 0&&s_boss.m_aliveFlg)
 	{
 		s_boss.m_aliveFlg = false;
 
 		// ゲームクリアフラグをtrueにする
 		m_result->SetClearFlg(true);
+		
+ 		m_score->ScoreCntUp(GetScore(e_bossMatchupType));
 
 		m_bossExpPos = s_boss.m_pos;
 		m_bossExpAliveFlg = true;
 	}
 
 }
+
+float C_Boss::GetScore(MatchupType a_matchupType)
+{
+	if (a_matchupType == WEAK)
+	{
+		return bossScore * 2;
+	}
+	if (a_matchupType == NORMAL)
+	{
+		return bossScore;
+	}
+	if (a_matchupType == RESIST)
+	{
+		return bossScore / 2;
+	}
+}
+
 
 void C_Boss::SetBossMove()
 {
@@ -253,7 +279,6 @@ void C_Boss::SetBossMove()
 	s_boss.m_move = { 4,2 };
 	m_bossMoveCnt = 0;
 	m_bossMoveFlg = true;
-
 }
 
 void C_Boss::ElementChange()
@@ -278,7 +303,6 @@ void C_Boss::ElementChange()
 		}
 
 		m_changeEffect->SetAliveFlg(true);
-
 }
 
 void C_Boss::DrawBossExplosion()
@@ -612,7 +636,7 @@ void C_Boss::SpawnSpikeEnemy()
 	m_homingAttackFlg = false;
 	m_rotationAttackFlg = false;
 	m_sEnemyFalseCnt = 0;
-
+	m_initSESpawnFlg = true;
 }
 
 void C_Boss::DrawSEnemyWarning()
@@ -835,12 +859,12 @@ void C_Boss::SpawnGearEnemy()
 			j++;
 		}
 
-		
-
 		m_gEnemyHp[i] = m_gEnemyMaxHp;
 
 	}
 	m_gEnemyFalseCnt = 0;
+
+	m_initGESpawnFlg = true;
 }
 
 void C_Boss::DrawGEnemyWarning()

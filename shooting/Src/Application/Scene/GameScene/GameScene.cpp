@@ -39,30 +39,38 @@ void C_GameScene::Draw()
 void C_GameScene::Update()
 {
 
-	if (GetAsyncKeyState('7') & 0x8000)
-	{
-		C_SceneManager::GetInstance().SetNextSceneType(C_SceneManager::SceneType::Restart);
-	}
-	
 
 	if (!m_result->GetResultFlg())
 	{
 		m_gameCtr->SpawnEnemies();
 
-		
 		for (int i = 0; i < m_objList.size(); i++)
 		{
 			m_objList[i]->Update();
 		}
-
-		m_score->Update();
 		
 		m_collision->Update();
+		m_score->Update();
+		
 	}
 
-	m_result->Update();
-	m_gameUi->Update();
+	if (m_result->GetResultFlg())
+	{
+		// リスタート
+		if (GetAsyncKeyState('R') & 0x8000)
+		{
+			C_SceneManager::GetInstance().SetNextSceneType(C_SceneManager::SceneType::Restart);
+		}
+		// タイトル
+		if (GetAsyncKeyState('T') & 0x8000)
+		{
+			C_SceneManager::GetInstance().SetNextSceneType(C_SceneManager::SceneType::Title);
+		}
+		
+	}
 	
+	m_gameUi->Update();
+	m_result->Update();
 }
 
 void C_GameScene::Init()
@@ -125,13 +133,14 @@ void C_GameScene::Init()
 
 	//インスタンス生成後にインスタンスを渡す
 	m_gameUi->  SetInstance(player,boss);
+	m_score->SetInstance(m_result);
 	player->    SetInstance(bullet,m_result);
 	gearEnemy-> SetInstance(m_score,player);
 	spikeEnemy->SetInstance(m_score,player);
 	rushEnemy-> SetInstance(m_score,player);
 	shotEnemy-> SetInstance(enemyBullet,m_score,player);
-	boss->      SetInstance(player,m_result);
-
+	boss->      SetInstance(player,m_result,m_score);
+	
 	
 
 	m_gameCtr->SetInstance(gearEnemy,

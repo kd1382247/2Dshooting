@@ -7,6 +7,8 @@
 
 void C_RushEnemy::Draw()
 {
+	// スポーンしていなかったら
+	if (!m_spawnFlg)return;
 
 	for (int i = 0; i < rushEnemyNum; i++)
 	{
@@ -19,7 +21,7 @@ void C_RushEnemy::Draw()
 	// 排気エフェクト
 	for (int i = 0; i < rushEnemyNum; i++)
 	{
-		m_exhaust[i]->Draw(s_rushEnemy[i].m_aliveFlg);
+		m_exhaust[i]->Draw(s_rushEnemy[i].m_aliveFlg,1.0f);
 	}
 
 	// 爆破エフェクト
@@ -31,6 +33,9 @@ void C_RushEnemy::Draw()
 
 void C_RushEnemy::Update()
 {
+	// スポーンしていなかったら
+	if (!m_spawnFlg)return;
+
 	AliveState();
 	Move();
 	MovePattern();
@@ -67,9 +72,6 @@ void C_RushEnemy::Spawn()
 			s_rushEnemy[i].m_angle = 90.0f;
 			e_enemyMotion[i] = Idle;
 			m_hp[i] = m_maxHp;
-			m_moveFlg[i] = false;
-			int random = rand() % 461 - 200;
-			s_rushEnemy[i].m_pos.y = random;
 
 			if (j >= 2)
 			{
@@ -82,20 +84,21 @@ void C_RushEnemy::Spawn()
 
 	m_aliveFalseCnt = 0;
 	m_aliveFalseFlg = false;
+	m_spawnFlg = true;
 
 	//　座標をCSVファイルから読み込む
 	FILE* fp;
 
-	if (fopen_s(&fp, "Data/Enemy/Rush ShotEnemyPos.csv", "r") == 0)
+	if (fopen_s(&fp, "Data/Enemy/RushEnemyPos.csv", "r") == 0)
 	{
 		char dummy[255];
 		for (int i = 0; i < rushEnemyNum; i++)
 		{
 			if (fgets(dummy, 255, fp) != nullptr)//1行読み込み
 			{
-				float pos;
-				fscanf_s(fp, ",%f", &pos);//頭に , で読み飛ばし
-				s_rushEnemy[i].m_pos.x = pos;
+				Math::Vector2 pos;
+				fscanf_s(fp, ",%f,%f", &pos.x,&pos.y);//頭に , で読み飛ばし
+				s_rushEnemy[i].m_pos = pos;
 			}
 		}
 
@@ -149,50 +152,43 @@ void C_RushEnemy::Move()
 	{
 		if (s_rushEnemy[i].m_aliveFlg)
 		{
-			// 敵が画面内に来たら
-			if (s_rushEnemy[i].m_pos.x < 640)
+
+			s_rushEnemy[i].m_move.y = 0;
+
+			// 左に動くとき
+			if (s_move[i].m_leftMoveFlg)
 			{
-				m_moveFlg[i] = true;
+
+				s_rushEnemy[i].m_move.y = m_moveSpeedY * -1;
+
+				s_move[i].m_leftMoveCnt++;
+				if (s_move[i].m_leftMoveCnt < 60 * 0.3f)e_enemyMotion[i] = MinLeftMove;
+				if (s_move[i].m_leftMoveCnt > 60 * 0.3f)e_enemyMotion[i] = MaxLeftMove;
+			}
+			else
+			{
+				s_move[i].m_leftMoveCnt = 0.0f;
 			}
 
-			if (m_moveFlg[i])
+			// 右に動くとき
+			if (s_move[i].m_rightMoveFlg)
 			{
-				s_rushEnemy[i].m_move.y = 0;
+				s_rushEnemy[i].m_move.y = m_moveSpeedY;
 
-				// 左に動くとき
-				if (s_move[i].m_leftMoveFlg)
-				{
-
-					s_rushEnemy[i].m_move.y = m_moveSpeedY * -1;
-
-					s_move[i].m_leftMoveCnt++;
-					if (s_move[i].m_leftMoveCnt < 60 * 0.3f)e_enemyMotion[i] = MinLeftMove;
-					if (s_move[i].m_leftMoveCnt > 60 * 0.3f)e_enemyMotion[i] = MaxLeftMove;
-				}
-				else
-				{
-					s_move[i].m_leftMoveCnt = 0.0f;
-				}
-
-				// 右に動くとき
-				if (s_move[i].m_rightMoveFlg)
-				{
-					s_rushEnemy[i].m_move.y = m_moveSpeedY;
-
-					s_move[i].m_rightMoveCnt++;
-					if (s_move[i].m_rightMoveCnt < 60 * 0.3f)e_enemyMotion[i] = MinRightMove;
-					if (s_move[i].m_rightMoveCnt > 60 * 0.3f)e_enemyMotion[i] = MaxRightMove;
-				}
-				else
-				{
-					s_move[i].m_rightMoveCnt = 0.0f;
-				}
+				s_move[i].m_rightMoveCnt++;
+				if (s_move[i].m_rightMoveCnt < 60 * 0.3f)e_enemyMotion[i] = MinRightMove;
+				if (s_move[i].m_rightMoveCnt > 60 * 0.3f)e_enemyMotion[i] = MaxRightMove;
 			}
-				s_rushEnemy[i].m_move.x = m_moveSpeedX * -1;
+			else
+			{
+				s_move[i].m_rightMoveCnt = 0.0f;
+			}
 
-				//左右に動いていなければ待機モーション
-				if (!s_move[i].m_leftMoveFlg && !s_move[i].m_rightMoveCnt)e_enemyMotion[i] = Idle;
-			
+			s_rushEnemy[i].m_move.x = m_moveSpeedX * -1;
+
+			//左右に動いていなければ待機モーション
+			if (!s_move[i].m_leftMoveFlg && !s_move[i].m_rightMoveCnt)e_enemyMotion[i] = Idle;
+
 		}
 	}
 
@@ -213,9 +209,7 @@ void C_RushEnemy::Move()
 				s_rushEnemy[i].m_pos.y = screenBottom + m_radius;
 			}
 		}
-
 	}
-
 
 	// 行列作成＋座標更新
 	for (int i = 0; i < rushEnemyNum; i++)
@@ -229,7 +223,6 @@ void C_RushEnemy::Move()
 			s_rushEnemy[i].m_mat = s_rushEnemy[i].m_rotationMat * s_rushEnemy[i].m_transMat;
 		}
 	}
-
 }
 
 void C_RushEnemy::AliveState()
@@ -260,6 +253,7 @@ void C_RushEnemy::AliveState()
 				m_aliveFalseCnt++;
 
 				m_score->ScoreCntUp(GetScore(e_matchupType[i]));
+				m_score->KillsCntUp(e_matchupType[i]);
 				m_player->CoolTimeCntUp();
 			}
 		}

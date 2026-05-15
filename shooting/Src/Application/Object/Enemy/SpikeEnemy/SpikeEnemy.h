@@ -89,7 +89,7 @@ private:
 	int              m_randomElement = {};
 
 	const float      spikeEnemyScore = 15000;
-
+	bool             m_spawnFlg = {};
 
 	std::shared_ptr<C_Explosion>m_explosion[spikeEnemyNum];
 

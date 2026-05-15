@@ -31,11 +31,16 @@ public:
 	
 	void SpawnEnemies();
 
+
 private:
 	
 	float m_gameCnt = {};
-	float m_spawnPatternCnt = 4;
-	bool  m_spawnFlg = {};
+	float m_spawnPatternCnt = 0;
+	bool  m_spawnFlg = false;
+
+	
+
+	static const int cnt=4;
 
 	std::shared_ptr<C_GearEnemy>      m_gearEnemy = nullptr;
 	std::shared_ptr<C_SpikeEnemy>     m_spikeEnemy = nullptr;

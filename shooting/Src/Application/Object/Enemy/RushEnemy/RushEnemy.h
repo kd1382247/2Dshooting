@@ -74,12 +74,11 @@ private:
 
 
 	KdTexture        m_rushEnemyTex;
-	static const int rushEnemyNum = 14;
+	static const int rushEnemyNum = 18;
 	S_Object         s_rushEnemy[rushEnemyNum] = {};
 	EnemyMotion      e_enemyMotion[rushEnemyNum] = {};
 	RLMove           e_rlMove[rushEnemyNum];
 	MatchupType      e_matchupType[rushEnemyNum] = {};
-	bool             m_moveFlg[rushEnemyNum] = {};
 
 	// 左右のアニメーションを管理する変数
 	S_Move           s_move[rushEnemyNum] = {};
@@ -100,6 +99,8 @@ private:
 
 	// 行動パターン
 	float            m_moveCnt[rushEnemyNum] = {};
+
+	bool             m_spawnFlg = {};
 
 	// 排気エフェクト
 	std::shared_ptr<C_Exhaust>m_exhaust[rushEnemyNum];

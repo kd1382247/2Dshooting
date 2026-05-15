@@ -12,7 +12,6 @@
 
 void C_Collision::Update()
 {
-
 	// 歯車型の敵との判定
 	CheckBulletGearEnemy();
 	CheckPlayerGearEnemy();
@@ -251,6 +250,7 @@ void C_Collision::CheckBulletBoss()
 			if (pos.Length() < m_bullet->GetRadius() + m_boss->BossGetRadius())
 			{
 				m_boss->BossDamage(m_elementAffinity->CalculateElementDamageToEnemy(m_bullet->GetElement(bu), m_boss->BossGetElement(), m_bullet->GetAttackPow()));
+				m_boss->BossSetMatchupType(m_elementAffinity->GetMatchupType(m_bullet->GetElement(bu), m_boss->BossGetElement()));
 				m_bullet->SetHitFlg(bu,true);
 				m_bullet->SetMatchupType(bu, m_elementAffinity->GetMatchupType(m_bullet->GetElement(bu), m_boss->BossGetElement()));
 			}

@@ -10,23 +10,21 @@
 
 void C_GameController::SpawnEnemies()
 {
+
 	m_gameCnt++;
-	
+
 	if (m_spawnPatternCnt == 0)
 	{
-		
-
 		if (!m_spawnFlg)
 		{
 			m_gearEnemy->Spawn();
 			m_spawnFlg = true;
 		}
-		if (m_gameCnt>60*15)
+		if (m_gameCnt > 60 * 15 || m_gearEnemy->GetAliveFalseFlg())
 		{
 			m_spawnPatternCnt = 1;
 			m_spawnFlg = false;
 		}
-		
 	}
 	if (m_spawnPatternCnt == 1)
 	{
@@ -37,7 +35,7 @@ void C_GameController::SpawnEnemies()
 			m_spawnFlg = true;
 		}
 
-		if (m_gameCnt > 60 * 30)
+		if (m_gameCnt > 60 * 30 || m_spikeEnemy->GetAliveFalseFlg())
 		{
 			m_spawnPatternCnt = 2;
 			m_spawnFlg = false;
@@ -50,7 +48,7 @@ void C_GameController::SpawnEnemies()
 			m_rushEnemy->Spawn();
 			m_spawnFlg = true;
 		}
-		if (m_gameCnt > 60 * 60)
+		if (m_gameCnt > 60 * 65 || m_rushEnemy->GetAliveFalseFlg())
 		{
 			m_spawnPatternCnt = 3;
 			m_spawnFlg = false;
@@ -70,6 +68,7 @@ void C_GameController::SpawnEnemies()
 			m_spawnFlg = false;
 		}
 	}
+
 	if (m_spawnPatternCnt == 4)
 	{
 		if (!m_spawnFlg)

@@ -160,8 +160,6 @@ void C_GameUI::Update()
 	// HUD
 	s_hudPanel.m_mat = Math::Matrix::CreateTranslation(s_hudPanel.m_pos.x, s_hudPanel.m_pos.y, 0);
 
-
-
 	//星のアニメーション
 	m_starAnimCnt += 0.2;
 	if (m_starAnimCnt > 9.0f)
@@ -176,8 +174,8 @@ void C_GameUI::Update()
 
 	// HPバーの割合
 	m_hpRate = m_player->GetCurrentHp() / m_player->GetMaxHp();
-	//                   初期値   最大幅         最大幅     バーの割合  
-	s_hpBar.m_pos.x = m_baseX + (m_maxWidth - (m_maxWidth * m_hpRate)) / 2;
+	//                 基準値    最大幅         最大幅     バーの割合  
+	s_hpBar.m_pos.x = m_baseX + (m_maxWidth - (m_maxWidth * m_hpRate))/2 ;
 
 	// HPアイコン
 	s_hpIcon.m_mat = Math::Matrix::CreateTranslation(s_hpIcon.m_pos.x, s_hpIcon.m_pos.y, 0);
@@ -204,7 +202,7 @@ void C_GameUI::Update()
 
 	// ボスHPバーの割合
 	m_bossHpRate = m_boss->GetCurrentHp() / m_boss->GetMaxHp();
-	//                   初期値   最大幅         最大幅     バーの割合
+	//                     基準値     最大幅         最大幅     バーの割合
     s_bossHpBar.m_pos.y = m_baseY - (m_maxHight - (m_maxHight * m_bossHpRate)) / 2;
 
 	// ボスHPアイコン
@@ -218,8 +216,8 @@ void C_GameUI::Update()
 
 	// クールタイムバーの割合
 	m_coolTimeRate = m_player->GetCurrentElChangeCoolTime() / m_player->GetMaxElChangeCoolTime();
-	//                         初期値   最大幅         最大幅      バーの割合
-	s_coolTimeBar.m_pos.x = m_baseX + (m_maxWidth - (m_maxWidth * m_coolTimeRate)) / 2;
+	//                       基準値     最大幅         最大幅      バーの割合
+	s_coolTimeBar.m_pos.x = m_baseX + (m_maxWidth - (m_maxWidth * m_coolTimeRate))/2;
 
 
 	// クールタイムアイコン

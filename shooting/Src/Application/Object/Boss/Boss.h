@@ -5,6 +5,7 @@ class C_Player;
 class C_Explosion;
 class C_ChangeEffect; 
 class C_Result;
+class C_Score;
 
 class C_Boss :public C_BaseObject
 {
@@ -38,10 +39,12 @@ public:
 	void SpawnBoss();
 
 	void SetInstance(std::shared_ptr<C_Player>a_player,
-					 std::shared_ptr<C_Result>a_result)
+					 std::shared_ptr<C_Result>a_result,
+					 std::shared_ptr<C_Score>a_score)
 	{
 		m_player = a_player; 
 		m_result = a_result;
+		m_score = a_score;
 	}
 
 	// HP関連のゲッター
@@ -80,12 +83,12 @@ public:
 	float         BossGetAttackPow()                     { return m_bossAttackPow; }
 	bool          BossGetAliveFlg()                      { return s_boss.m_aliveFlg; }
 	Element       BossGetElement()                       { return s_boss.m_nowElement; }
+	void          BossSetMatchupType(MatchupType a_type) { e_bossMatchupType= a_type; }
 	void          BossDamage(float a_damage)
 														 {
 														   m_bossHp -= a_damage;
 														   if (m_bossHp <= 0)m_bossHp = 0;
 														 }
-
 
 	// 当たり判定クラスで呼び出す関数(シールド)
 	Math::Vector2 ShieldGetPos()                         { return s_shield.m_pos; }
@@ -106,6 +109,8 @@ private:
 	void AliveStateBoss();
 	void SetBossMove();
 	void ElementChange();
+	float GetScore(MatchupType a_matchupType);
+
 	
 	// ボスの爆破エフェクト
 	void DrawBossExplosion();
@@ -150,7 +155,7 @@ private:
 	S_Object        s_boss = {};
     const Math::Vector2	m_bossInitPos = { 380,60 };
 	float           m_bossAnimCnt = {};
-	const float     m_bossMaxHp = 100;
+	const float     m_bossMaxHp = 1500;
 	float           m_bossHp = {};
 	float           m_bossActionCnt = {};
 	bool            m_rotationAttackFlg = {};
@@ -160,7 +165,10 @@ private:
 	float           m_bossMoveCnt = {};
 	float           m_enemySpawnCnt = {};
     float           m_bossAttackPow = 10;
-	const float     m_bossScore = 50000;
+	const float     bossScore = 100000;
+	MatchupType     e_bossMatchupType = {};
+
+	bool            m_bossAttackPattern=0;
 
 
 	// ボスの爆破エフェクト
@@ -177,7 +185,6 @@ private:
 	const float m_shieldRadius = 50;
 
 
-
 	// トゲ型の敵の変数
 	KdTexture        m_spikeEnemyTex;
 	static const int spikeEnemyNum = 15;
@@ -185,15 +192,13 @@ private:
 
 	float            m_sEnemyDegTable[spikeEnemyNum] = { 0,24,48,72,96,120,144,168,192,216,240,264,288,312,336 };
 	float            m_sEnemyDeg[spikeEnemyNum] = {};
-
 	float            m_sEnemyAnimCnt[spikeEnemyNum] = {};  // アニメーション
-
 	float            m_sEnemyMoveFlg[spikeEnemyNum] = {};  // 攻撃時用
 	float            m_sEnemyMoveWait = {};                // 少しずつ敵を動かす
 	float            m_sEnemyHp[spikeEnemyNum] = {}; 
-
 	float            m_sEnemyFalseCnt={};
 	int              m_sERandomElement = {};
+	bool             m_initSESpawnFlg = {};   // 1回目スポーンフラグ
 
 
 	const float      m_sEnemyMaxHp = 60;
@@ -225,6 +230,7 @@ private:
 	const float      m_gEnemyAttackPow = 8;
 	float            m_gEnemySpawnCnt = {};
 	int              m_gERandomElement = {};
+	bool             m_initGESpawnFlg = {};   // 1回目スポーンフラグ
 
 
 	// 警告画像
@@ -255,6 +261,9 @@ private:
 
 	// 属性チェンジエフェクト
 	std::shared_ptr<C_ChangeEffect>m_changeEffect;
+
+	// スコア
+	std::shared_ptr<C_Score>m_score;
 
 	// 爆破エフェクト
 	std::shared_ptr<C_Explosion>m_gEnemyExplosion[gearEnemyNum];

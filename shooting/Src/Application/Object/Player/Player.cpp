@@ -21,7 +21,7 @@ void C_Player::Draw()
 	SHADER.m_spriteShader.DrawTex(&m_playerTex, Math::Rectangle((int)e_playerMotion * 96, (int)s_player.m_nowElement * 96, 96, 96), m_alpha);
 
 
-	m_exhaust->Draw(s_player.m_aliveFlg);
+	m_exhaust->Draw(s_player.m_aliveFlg,m_alpha);
 	m_changeEffect->Draw();
 }
 
@@ -47,6 +47,11 @@ void C_Player::Update()
 	if (GetAsyncKeyState(VK_SPACE) & 0x8000)
 	{
 		Shoot();
+	}
+
+	if (GetAsyncKeyState('2') & 0x8000)
+	{
+		m_hp = m_maxHp;
 	}
 
 	HitCoolTime();
@@ -85,7 +90,7 @@ void C_Player::Init()
 
 	s_player.m_aliveFlg = true;
 	s_player.m_angle = 270.0f;
-	s_player.m_pos = { -200.0f,0.0f };
+	s_player.m_pos = { -200.0f,60.0f };
 	m_hp = m_maxHp;
 
 	e_playerMotion = Idle;
@@ -164,7 +169,6 @@ void C_Player::Move()
 
 
 	s_player.m_pos += s_player.m_move;
-
 
 	s_player.m_transMat = Math::Matrix::CreateTranslation(s_player.m_pos.x, s_player.m_pos.y, 0);
 	s_player.m_rotationMat = Math::Matrix::CreateRotationZ(ToRadians(s_player.m_angle));

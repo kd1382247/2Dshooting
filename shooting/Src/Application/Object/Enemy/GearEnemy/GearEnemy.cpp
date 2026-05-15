@@ -7,6 +7,9 @@
 void C_GearEnemy::Draw()
 {
 
+	// スポーンしていなかったら
+	if (!m_spawnFlg)return;
+
 	for (int i = 0; i < gearEnemyNum; i++)
 	{
 		if(s_gearEnemy[i].m_aliveFlg)
@@ -24,7 +27,9 @@ void C_GearEnemy::Draw()
 
 void C_GearEnemy::Update()
 {
-	
+	// スポーンしていなかったら
+	if (!m_spawnFlg)return;
+
 	AliveState();
 
 	Animation();
@@ -59,6 +64,7 @@ void C_GearEnemy::Spawn()
 
 	m_aliveFalseCnt = 0;
 	m_aliveFalseFlg = false;
+	m_spawnFlg = true;
 
 	m_radius = 32.0f;
 
@@ -155,6 +161,7 @@ void C_GearEnemy::AliveState()
 				m_aliveFalseCnt++;
 
 				m_score->ScoreCntUp(GetScore(e_matchupType[i]));
+				m_score->KillsCntUp(e_matchupType[i]);
 				m_player->CoolTimeCntUp();
 				
 			}
